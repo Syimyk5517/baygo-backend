@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler{
     @ExceptionHandler(AlreadyExistException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse alreadyExistException(AlreadyExistException a){
         return new ExceptionResponse(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 a.getMessage(),
                 a.getClass().getSimpleName());
     }
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler(BadCredentialException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionResponse badCredentialException(BadCredentialException b){
         return new ExceptionResponse(
@@ -49,15 +49,11 @@ public class GlobalExceptionHandler{
                 a.getClass().getSimpleName());
     }
     @ExceptionHandler(MessageSendingException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse messageSendingException(MessageSendingException m){
         return new ExceptionResponse(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 m.getMessage(),
                 m.getClass().getSimpleName());
     }
-
-
-
-
 }
