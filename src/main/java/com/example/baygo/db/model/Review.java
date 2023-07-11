@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
+
 @Getter
 @Setter
 @Entity
@@ -17,9 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_seq")
-    @SequenceGenerator(name = "review_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_gen")
+    @SequenceGenerator(name = "review_gen", sequenceName = "review_seq", allocationSize = 1)
     private Long id;
     private String text;
     private int grade;
@@ -29,10 +31,10 @@ public class Review {
     private List<String> images;
     private LocalDateTime dateAndTime;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 }

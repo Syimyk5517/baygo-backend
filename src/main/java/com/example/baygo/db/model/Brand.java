@@ -14,9 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Brand {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brand_seq")
-    @SequenceGenerator(name = "brand_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brand_gen")
+    @SequenceGenerator(name = "brand_gen", sequenceName = "brand_seq", allocationSize = 1)
     private Long id;
     private String logo;
     private String name;

@@ -14,9 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SubCategory {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_category_seq")
-    @SequenceGenerator(name = "sub_category_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_category_gen")
+    @SequenceGenerator(name = "sub_category_gen", sequenceName = "sub_category_seq", allocationSize = 1)
     private Long id;
     private String name;
 }

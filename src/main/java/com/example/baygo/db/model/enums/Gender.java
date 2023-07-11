@@ -1,4 +1,4 @@
-package com.example.baygo.db.enums;
+package com.example.baygo.db.model.enums;
 
 public enum Gender {
     MALE,

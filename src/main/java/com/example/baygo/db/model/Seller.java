@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Getter
 @Setter
 @Entity
@@ -16,9 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Seller {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_seq")
-    @SequenceGenerator(name = "seller_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_gen")
+    @SequenceGenerator(name = "seller_gen", sequenceName = "seller_seq", allocationSize = 1)
     private Long id;
     private String photo;
     private String address;
@@ -29,15 +30,15 @@ public class Seller {
     private String aboutStore;
     private String vendorCodeOfSeller;
 
-    @OneToOne(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "seller", cascade = ALL)
     @JoinColumn(name = "chat_id")
     private Chat chat;
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = ALL)
     @JoinColumn(name = "seller_id")
     private List<Product> products;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
 }

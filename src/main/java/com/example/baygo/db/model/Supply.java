@@ -1,6 +1,6 @@
 package com.example.baygo.db.model;
 
-import com.example.baygo.db.enums.SupplyStatus;
+import com.example.baygo.db.model.enums.SupplyStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+
+import static jakarta.persistence.CascadeType.*;
 
 @Getter
 @Setter
@@ -19,9 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Supply {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_seq")
-    @SequenceGenerator(name = "supply_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_gen")
+    @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1)
     private Long id;
     private String supplyNumber;
     private String supplyType;
@@ -35,15 +35,11 @@ public class Supply {
     @Enumerated(EnumType.STRING)
     private SupplyStatus status;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "seller_id")
     private Seller seller;
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "supplies_sub_products",
-            joinColumns = @JoinColumn(name = "supply_id"),
-            inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
-    private List<SubProduct> subProducts;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
 }

@@ -14,9 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Warehouse {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "warehouse_seq")
-    @SequenceGenerator(name = "warehouse_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "warehouse_gen")
+    @SequenceGenerator(name = "warehouse_gen", sequenceName = "warehouse_seq", allocationSize = 1)
     private Long id;
     private String name;
     private String location;

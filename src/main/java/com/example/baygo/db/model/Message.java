@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Getter
 @Setter
 @Entity
@@ -17,18 +19,17 @@ import java.util.List;
 @AllArgsConstructor
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_seq")
-    @SequenceGenerator(name = "message_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_gen")
+    @SequenceGenerator(name = "message_gen", sequenceName = "message_seq", allocationSize = 1)
     private Long id;
     private String message;
     private LocalDateTime time;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "chat_id")
     private Chat chat;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true)
+    @OneToMany(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "message_id")
     private List<Buyer> buyers;
 

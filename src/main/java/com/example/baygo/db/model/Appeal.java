@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Getter
 @Setter
 @Entity
@@ -14,15 +16,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Appeal {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appeal_seq")
-    @SequenceGenerator(name = "appeal_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appeal_gen")
+    @SequenceGenerator(name = "appeal_gen", sequenceName = "appeal_seq", allocationSize = 1)
     private Long id;
     private String title;
     private String divide;
     private String detailedAppeal;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 }

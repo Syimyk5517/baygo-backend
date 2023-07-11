@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Getter
 @Setter
 @Entity
@@ -18,9 +20,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class SubProduct {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_product_seq")
-    @SequenceGenerator(name = "sub_product_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_product_gen")
+    @SequenceGenerator(name = "sub_product_gen", sequenceName = "sub_product_seq", allocationSize = 1)
     private Long id;
     private String colorHexCode;
     private String mainImage;
@@ -30,9 +31,7 @@ public class SubProduct {
     private Map<String, Integer> sizeAndQuantity;
     private BigDecimal price;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
-    @ManyToMany(mappedBy = "subProducts", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private List<Supply> supplies;
 }
