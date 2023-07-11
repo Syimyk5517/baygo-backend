@@ -33,3 +33,4 @@ src/main/resources/application-kutman.properties
 
 ### VS Code ###
 .vscode/
+src/main/resources/application-golden.properties
