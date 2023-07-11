@@ -34,15 +34,18 @@ public class Product {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "discount_id")
     private Discount discount;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<SubProduct> subProducts;
 

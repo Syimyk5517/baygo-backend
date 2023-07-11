@@ -31,31 +31,38 @@ public class Buyer {
 
     @OneToMany(mappedBy = "buyer", cascade = ALL)
     private List<Appeal> appeals;
+
     @ManyToMany(mappedBy = "buyers", cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<Chat> chats;
+
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "buyers_sub_products",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> favorites;
+
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "buyers_sub_products",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> basket;
+
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "buyers_sub_products",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> lastViews;
+
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "order_id")
     private Order order;
+
     @ManyToMany(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinTable(name = "buyers_sub_products",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private Map<Integer, SubProduct> prodCount;
+
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;

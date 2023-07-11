@@ -30,6 +30,7 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = ALL)
     private Seller seller;
+
     @OneToOne(mappedBy = "user", cascade = ALL)
     private Buyer buyer;
 }

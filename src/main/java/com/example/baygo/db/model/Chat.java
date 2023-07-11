@@ -29,8 +29,10 @@ public class Chat {
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "buyers_id"))
     private List<Buyer> buyers;
+
     @OneToMany(mappedBy = "chat", cascade = ALL)
     private List<Message> messages;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Seller seller;
 }

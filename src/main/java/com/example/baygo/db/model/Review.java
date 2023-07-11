@@ -34,6 +34,7 @@ public class Review {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
+
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;

@@ -32,5 +32,4 @@ public class Message {
     @OneToMany(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "message_id")
     private List<Buyer> buyers;
-
 }

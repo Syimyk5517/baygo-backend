@@ -40,6 +40,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = {REFRESH, DETACH, MERGE, PERSIST})
     private List<Buyer> buyers;
+
     @ElementCollection
     @JoinTable(name = "orders_sub_products",
             joinColumns = @JoinColumn(name = "order_id"))
