@@ -30,8 +30,8 @@ build/
 !**/src/test/**/build/
 
 src/main/resources/application-kutman.properties
+src/main/resources/application-golden.properties
+src/main/resources/application-saltanat.properties
 
 ### VS Code ###
 .vscode/
-src/main/resources/application-golden.properties
-D
