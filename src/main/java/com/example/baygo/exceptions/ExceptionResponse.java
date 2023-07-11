@@ -8,12 +8,12 @@ import org.springframework.http.HttpStatus;
 @Setter
 public class ExceptionResponse {
     private HttpStatus httpStatus;
-    private String ExceptionClassName;
     private String message;
+    private String exceptionClassName;
 
-    public ExceptionResponse(HttpStatus httpStatus, String exceptionClassName, String message) {
+    public ExceptionResponse(HttpStatus httpStatus, String message, String exceptionClassName) {
         this.httpStatus = httpStatus;
-        ExceptionClassName = exceptionClassName;
         this.message = message;
+        this.exceptionClassName = exceptionClassName;
     }
 }
