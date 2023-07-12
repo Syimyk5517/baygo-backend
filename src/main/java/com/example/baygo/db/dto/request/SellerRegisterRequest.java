@@ -32,7 +32,7 @@ public record SellerRegisterRequest(
         @NotBlank(message = "Имя магазина не должен быть пустым")
         String nameOfStore,
         @NotBlank(message = "ИНН не должен быть пустым")
-        @Pattern(regexp = "\\d{10}|\\d{14}", message = "Invalid passport INN")
+        @Pattern(regexp = "\\d{10}|\\d{14}", message = "Некоррекный  INN")
         String ITN,
         @NotBlank(message = "BIC не должен быть пустым")
         @BicValid(message = "Некоррекный BIC")
