@@ -2,10 +2,7 @@ package com.example.baygo.db.model;
 
 import com.example.baygo.db.model.enums.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +16,7 @@ import static jakarta.persistence.CascadeType.*;
 @Table(name = "buyers")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Buyer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "buyer_gen")

@@ -1,6 +1,6 @@
-package com.example.baygo.exceptions.handler;
+package com.example.baygo.db.exceptions.handler;
 
-import com.example.baygo.exceptions.*;
+import com.example.baygo.db.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

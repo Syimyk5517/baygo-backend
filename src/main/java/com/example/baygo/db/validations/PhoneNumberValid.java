@@ -1,4 +1,4 @@
-package com.example.baygo.validations;
+package com.example.baygo.db.validations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
