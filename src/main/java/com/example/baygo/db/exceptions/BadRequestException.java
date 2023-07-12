@@ -1,4 +1,4 @@
-package com.example.baygo.exceptions;
+package com.example.baygo.db.exceptions;
 
 public class BadRequestException extends RuntimeException{
     public BadRequestException(){

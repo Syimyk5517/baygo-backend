@@ -2,10 +2,7 @@ package com.example.baygo.db.model;
 
 import com.example.baygo.db.model.enums.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +16,7 @@ import static jakarta.persistence.CascadeType.*;
 @Table(name = "buyers")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Buyer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "buyer_gen")
@@ -42,10 +40,10 @@ public class Buyer {
     private List<SubProduct> favorites;
 
     @ManyToMany(cascade = ALL)
-    @JoinTable(name = "buyers_sub_products",
+    @JoinTable(name = "buyers_sub_products_size",
             joinColumns = @JoinColumn(name = "buyer_id"),
-            inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
-    private List<SubProduct> basket;
+            inverseJoinColumns = @JoinColumn(name = "sub_products_size_id"))
+    private List<Size> basket;
 
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "buyers_sub_products",
