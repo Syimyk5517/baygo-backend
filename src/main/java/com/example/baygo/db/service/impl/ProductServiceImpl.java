@@ -4,13 +4,16 @@ import com.example.baygo.db.dto.request.ProductRequest;
 import com.example.baygo.db.dto.request.SizeRequest;
 import com.example.baygo.db.dto.request.SubProductRequest;
 import com.example.baygo.db.dto.responces.SimpleResponse;
+import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.db.repository.*;
 import com.example.baygo.db.service.ProductService;
-import com.example.baygo.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,11 +22,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
     private final SubProductRepository subProductRepository;
     private final SizeRepository sizeRepository;
+    private final ProductRepository productRepository;
+    private final SellerRepository sellerRepository;
 
 
     @Override
@@ -38,9 +44,9 @@ public class ProductServiceImpl implements ProductService {
                 });
 
         Product product = new Product();
-        product.setName(request.name());
         product.setManufacturer(request.manufacturer());
         product.setDescription(request.description());
+        product.setName(request.name());
         product.setDateOfCreate(LocalDate.now());
         product.setArticul(UUID.randomUUID().toString().substring(0, 8));
         product.setStyle(request.style());
@@ -48,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
         product.setComposition(request.composition());
         product.setSubCategory(subCategory);
         product.setBrand(brand);
+        product.setSeller(getAuthenticate());
 
         for (SubProductRequest subProduct : request.subProducts()) {
             SubProduct subProduct1 = new SubProduct();
@@ -55,16 +62,17 @@ public class ProductServiceImpl implements ProductService {
             subProduct1.setColor(subProduct.color());
             subProduct1.setImages(subProduct.images());
             subProduct1.setPrice(subProduct.price());
-            product.addSubProduct(subProduct1);
+            subProduct1.setProduct(product);
             subProductRepository.save(subProduct1);
 
             for (SizeRequest size : subProduct.sizes()) {
                 Size size1 = new Size();
                 size1.setSize(size.size());
                 size1.setBarcode(size.barcode());
+                size1.setSubProduct(subProduct1);
                 sizeRepository.save(size1);
             }
-
+            productRepository.save(product);
         }
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Продукт успешно сохранено!!!").build();
     }
@@ -77,5 +85,15 @@ public class ProductServiceImpl implements ProductService {
             randomHash = randomHash.substring(0, 8);
         }
         return Math.abs(Integer.parseInt(randomHash));
+    }
+
+    private Seller getAuthenticate() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        log.info("Token has been taken!");
+        return sellerRepository.findUserByEmail(login).orElseThrow(() -> {
+            log.error("Seller not found!");
+            return new NotFoundException("Seller not found!");
+        }).getSeller();
     }
 }

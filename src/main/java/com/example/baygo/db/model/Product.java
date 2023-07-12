@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
 
 @Getter
 @Setter
@@ -51,11 +53,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<SubProduct> subProducts;
 
-    public void addSubProduct(SubProduct subProduct) {
-        if (subProducts == null) {
-            subProducts = new ArrayList<>();
-        }
-        subProducts.add(subProduct);
-    }
-
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 }
