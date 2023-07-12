@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Getter
 @Setter
@@ -20,11 +19,8 @@ public class Size {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "size_gen")
     @SequenceGenerator(name = "size_gen", sequenceName = "size_seq", allocationSize = 1)
     private Long id;
-
     private String size;
-
     private int barcode;
-
     private int quantity;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})

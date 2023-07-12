@@ -1,4 +1,4 @@
-package com.example.baygo.validations;
+package com.example.baygo.db.validations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,11 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = PhoneNumberValidator.class)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Constraint(validatedBy = NameValidator.class)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PhoneNumberValid {
-    String message() default "Неверный номер телефона";
+public @interface NameValid {
+    String message() default "Неверное имя";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
