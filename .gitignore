@@ -33,6 +33,5 @@ src/main/resources/application-kutman.properties
 src/main/resources/application-golden.properties
 src/main/resources/application-saltanat.properties
 src/main/resources/application-local.properties
-
 ### VS Code ###
 .vscode/
