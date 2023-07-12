@@ -2,7 +2,6 @@ package com.example.baygo.db.service.impl;
 
 import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.response.SuppliesResponse;
-import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import com.example.baygo.db.service.SupplyService;

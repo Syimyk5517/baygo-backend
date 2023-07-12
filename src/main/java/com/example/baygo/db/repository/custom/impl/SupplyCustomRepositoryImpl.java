@@ -1,7 +1,6 @@
 package com.example.baygo.db.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.SuppliesResponse;
-import com.example.baygo.db.model.Supply;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import lombok.RequiredArgsConstructor;
