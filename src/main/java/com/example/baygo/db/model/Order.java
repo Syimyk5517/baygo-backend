@@ -42,9 +42,9 @@ public class Order {
     private List<Buyer> buyers;
 
     @ElementCollection
-    @JoinTable(name = "orders_sub_products",
+    @JoinTable(name = "orders_sub_products_size",
             joinColumns = @JoinColumn(name = "order_id"))
-    @MapKeyJoinColumn(name = "sub_product_id")
+    @MapKeyJoinColumn(name = "sub_products_size_id")
     @Cascade({CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
-    private Map<SubProduct, Integer> productCount;
+    private Map<Size, Integer> productCount;
 }

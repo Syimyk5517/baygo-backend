@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
+
 @Getter
 @Setter
 @Entity
@@ -14,10 +17,17 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Size {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sizes_gen")
-    @SequenceGenerator(name = "sizes_gen", sequenceName = "sizes_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "size_gen")
+    @SequenceGenerator(name = "size_gen", sequenceName = "size_seq", allocationSize = 1)
     private Long id;
+
     private String size;
+
     private int barcode;
-    int quantity;
+
+    private int quantity;
+
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    @JoinColumn(name = "sub_product_id")
+    private SubProduct subProduct;
 }

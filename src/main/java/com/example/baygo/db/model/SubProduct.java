@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -27,11 +28,11 @@ public class SubProduct {
     @ElementCollection
     private List<String> images;
     private BigDecimal price;
+
+    @OneToMany(mappedBy = "subProduct", cascade = ALL)
+    private List<Size> sizes;
+
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
-    @OneToMany(cascade = ALL)
-    @JoinTable(name = "sub_product_size")
-    List<Size> sizes;
-
 }
