@@ -32,6 +32,7 @@ build/
 src/main/resources/application-kutman.properties
 src/main/resources/application-golden.properties
 src/main/resources/application-saltanat.properties
+src/main/resources/application-jiide.properties
 
 ### VS Code ###
 .vscode/
