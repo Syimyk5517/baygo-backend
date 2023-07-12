@@ -9,7 +9,7 @@ import java.util.List;
 
 public record ProductRequest (
         @NotNull(message = "Категория должна быть указана!!!")
-        Long categoryId,
+        Long subCategoryId,
         @NotNull(message = "Марка должна быть указана!!!")
         Long brandId,
         @NotBlank(message = "Страна производства должна быть указана!!!")

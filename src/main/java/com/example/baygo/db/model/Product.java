@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -49,5 +50,12 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<SubProduct> subProducts;
+
+    public void addSubProduct(SubProduct subProduct) {
+        if (subProducts == null) {
+            subProducts = new ArrayList<>();
+        }
+        subProducts.add(subProduct);
+    }
 
 }

@@ -1,17 +1,16 @@
 package com.example.baygo.db.service.impl;
 
 import com.example.baygo.db.dto.request.ProductRequest;
+import com.example.baygo.db.dto.request.SizeRequest;
+import com.example.baygo.db.dto.request.SubProductRequest;
 import com.example.baygo.db.dto.responces.SimpleResponse;
-import com.example.baygo.db.model.Brand;
-import com.example.baygo.db.model.Category;
-import com.example.baygo.db.model.Product;
-import com.example.baygo.db.repository.BrandRepository;
-import com.example.baygo.db.repository.CategoryRepository;
-import com.example.baygo.db.repository.ProductRepository;
+import com.example.baygo.db.model.*;
+import com.example.baygo.db.repository.*;
 import com.example.baygo.db.service.ProductService;
 import com.example.baygo.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,14 +20,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class ProductServiceImpl implements ProductService {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
+    private final SubProductRepository subProductRepository;
+    private final SizeRepository sizeRepository;
+
 
     @Override
     public SimpleResponse saveProduct(ProductRequest request) {
-        Category category = categoryRepository.findById(request.categoryId()).orElseThrow(() -> {
-            throw new NotFoundException("Категория с идентификатором: " + request.categoryId() + " не найдена!");
+        SubCategory subCategory = subCategoryRepository.findById(request.subCategoryId()).orElseThrow(() -> {
+            throw new NotFoundException("Подкатегория с идентификатором: " + request.subCategoryId() + " не найдена!");
         });
 
         Brand brand = brandRepository.findById(request.brandId())
@@ -45,8 +46,36 @@ public class ProductServiceImpl implements ProductService {
         product.setStyle(request.style());
         product.setSeason(request.season());
         product.setComposition(request.composition());
+        product.setSubCategory(subCategory);
+        product.setBrand(brand);
 
+        for (SubProductRequest subProduct : request.subProducts()) {
+            SubProduct subProduct1 = new SubProduct();
+            subProduct1.setColorHexCode(subProduct.colorHexCode());
+            subProduct1.setColor(subProduct.color());
+            subProduct1.setImages(subProduct.images());
+            subProduct1.setPrice(subProduct.price());
+            product.addSubProduct(subProduct1);
+            subProductRepository.save(subProduct1);
 
-        return null;
+            for (SizeRequest size : subProduct.sizes()) {
+                Size size1 = new Size();
+                size1.setSize(size.size());
+                size1.setBarcode(size.barcode());
+                sizeRepository.save(size1);
+            }
+
+        }
+        return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Продукт успешно сохранено!!!").build();
+    }
+
+    @Override
+    public int getBarcode() {
+        int hashCode = UUID.randomUUID().hashCode();
+        String randomHash = String.valueOf(hashCode);
+        if (randomHash.length() > 8) {
+            randomHash = randomHash.substring(0, 8);
+        }
+        return Math.abs(Integer.parseInt(randomHash));
     }
 }
