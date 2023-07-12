@@ -1,7 +1,7 @@
-package com.example.baygo.repository.custom.impl;
+package com.example.baygo.db.repository.customRepository;
 
-import com.example.baygo.dto.response.TransitDirectionResponse;
-import com.example.baygo.repository.custom.CustomTransitDirectionRepository;
+import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
+import com.example.baygo.db.repository.CustomTransitDirectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,7 +13,7 @@ import java.util.List;
 public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirectionRepository {
     private final JdbcTemplate jdbcTemplate;
     @Override
-    public List<TransitDirectionResponse> getAllTransactions(String location) {
+    public List<SupplyTransitDirectionResponse> getAllTransactions(String location) {
 
         String transitDirectionQuery= """
                 SELECT
@@ -26,7 +26,7 @@ public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirect
                 WHERE w.location = ?""";
 
         return jdbcTemplate.query(transitDirectionQuery, (resultSet, i)->
-                new TransitDirectionResponse(
+                new SupplyTransitDirectionResponse(
                         resultSet.getLong("warehouseId"),
                         resultSet.getInt("transit_wareHouse"),
                         resultSet.getString("location"),
