@@ -6,7 +6,6 @@ import com.example.baygo.db.validations.PasswordValid;
 import com.example.baygo.db.validations.PhoneNumberValid;
 import jakarta.validation.constraints.*;
 
-
 import java.time.LocalDate;
 
 public record SellerRegisterRequest(

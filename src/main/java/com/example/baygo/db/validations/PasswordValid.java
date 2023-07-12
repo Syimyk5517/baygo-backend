@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordValid {
     String message() default "Пароль должен содержать не менее одной буквы, одну цифру и иметь длину не менее 8 символов!";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

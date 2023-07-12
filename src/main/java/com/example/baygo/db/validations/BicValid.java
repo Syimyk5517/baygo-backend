@@ -15,7 +15,9 @@ import java.lang.annotation.*;
 @Pattern(regexp = "^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$")
 public @interface BicValid {
     String message() default "Invalid BIC";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
 

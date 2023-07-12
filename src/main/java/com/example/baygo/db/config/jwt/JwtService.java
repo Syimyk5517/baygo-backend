@@ -28,9 +28,12 @@ import java.util.function.Function;
  * @created at 11.07.2023 11:11
  */
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class JwtService {
     @Value("${spring.jwt.secret-key}")
     private String SECRET_KEY;
+    private final UserRepository userRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -83,5 +86,15 @@ public class JwtService {
     private Key getSingKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private User getAuthenticate() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        log.info("Токен взят!");
+        return userRepository.findByEmail(login).orElseThrow(() -> {
+            log.error("Пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь!");
+            return new NotFoundException("пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь");
+        });
     }
 }

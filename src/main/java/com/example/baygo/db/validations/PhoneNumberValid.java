@@ -9,10 +9,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = PhoneNumberValidator.class)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PhoneNumberValid {
     String message() default "Неверный номер телефона";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
