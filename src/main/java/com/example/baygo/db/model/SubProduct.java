@@ -27,11 +27,13 @@ public class SubProduct {
     private String mainImage;
     @ElementCollection
     private List<String> images;
-    @ElementCollection
-    private Map<String, Integer> sizeAndQuantity;
     private BigDecimal price;
+
+    @OneToMany(mappedBy = "subProduct", cascade = ALL)
+    private List<Size> sizes;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
+
 }

@@ -40,10 +40,10 @@ public class Buyer {
     private List<SubProduct> favorites;
 
     @ManyToMany(cascade = ALL)
-    @JoinTable(name = "buyers_sub_products",
+    @JoinTable(name = "buyers_sub_products_size",
             joinColumns = @JoinColumn(name = "buyer_id"),
-            inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
-    private List<SubProduct> basket;
+            inverseJoinColumns = @JoinColumn(name = "sub_products_size_id"))
+    private List<Size> basket;
 
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "buyers_sub_products",
