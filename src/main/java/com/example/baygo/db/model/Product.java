@@ -26,7 +26,8 @@ public class Product {
     private double rating;
     private LocalDate dateOfCreate;
     private LocalDate dateOfChange;
-    private String barcode;
+    private String articul;
+    private String style;
     private String season;
     private String composition;
     private boolean isDraft;

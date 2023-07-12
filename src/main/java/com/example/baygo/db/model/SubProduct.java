@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -24,14 +23,15 @@ public class SubProduct {
     @SequenceGenerator(name = "sub_product_gen", sequenceName = "sub_product_seq", allocationSize = 1)
     private Long id;
     private String colorHexCode;
-    private String mainImage;
+    private String color;
     @ElementCollection
     private List<String> images;
-    @ElementCollection
-    private Map<String, Integer> sizeAndQuantity;
     private BigDecimal price;
-
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
+    @OneToMany(cascade = ALL)
+    @JoinTable(name = "sub_product_size")
+    List<Size> sizes;
+
 }
