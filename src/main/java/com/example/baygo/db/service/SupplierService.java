@@ -1,9 +1,9 @@
-package com.example.baygo.service;
+package com.example.baygo.db.service;
 
 import com.example.baygo.dto.response.TransitDirectionResponse;
 
 import java.util.List;
 
 public interface SupplierService {
-    List<TransitDirectionResponse> getAllTransactions();
+    List<TransitDirectionResponse> getAllTransactions(String location);
 }

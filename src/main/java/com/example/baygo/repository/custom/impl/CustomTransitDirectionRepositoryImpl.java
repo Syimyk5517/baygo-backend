@@ -13,21 +13,23 @@ import java.util.List;
 public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirectionRepository {
     private final JdbcTemplate jdbcTemplate;
     @Override
-    public List<TransitDirectionResponse> getAllTransactions(String name) {
+    public List<TransitDirectionResponse> getAllTransactions(String location) {
 
         String transitDirectionQuery= """
-                select 
-                w.id as id,
-                w.name as name,
-                w.location as location
-                from warehouses w join  supplies s on s.supply_cost where id = w.id and w.name
-                """;
-
+                SELECT
+                    w.id AS id,
+                    w.transit_warehouse AS transit_warehouse,
+                    w.location AS location,
+                    s.supply_cost AS supply_cost
+                FROM warehouses w
+                JOIN supplies s ON w.id = s.warehouse_id
+                WHERE w.location = ?""";
 
         return jdbcTemplate.query(transitDirectionQuery, (resultSet, i)->
                 new TransitDirectionResponse(
                         resultSet.getLong("warehouseId"),
-                        resultSet.getInt("transitWareHouse"),
-                        resultSet.getBigDecimal("supplyCost")));
+                        resultSet.getInt("transit_wareHouse"),
+                        resultSet.getString("location"),
+                        resultSet.getBigDecimal("supply_cost")),location);
     }
 }

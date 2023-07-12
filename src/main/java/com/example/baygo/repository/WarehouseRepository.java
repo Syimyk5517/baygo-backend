@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
-    Optional<Warehouse> findById(List<Long> warehouseId);
-    List<TransitDirectionResponse> getAllTransitions();
+  //  List<TransitDirectionResponse> getAllTransits(String name);
 }
+
+
