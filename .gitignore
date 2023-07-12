@@ -33,4 +33,7 @@ src/main/resources/application-kutman.properties
 
 ### VS Code ###
 .vscode/
+
+
+src/main/resources/application-kanykei.properties
 src/main/resources/application-golden.properties
