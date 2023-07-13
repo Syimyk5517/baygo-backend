@@ -36,19 +36,19 @@ public class Buyer {
     private List<Chat> chats;
 
     @ManyToMany(cascade = ALL)
-    @JoinTable(name = "buyers_sub_products",
+    @JoinTable(name = "buyers_favorites",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> favorites;
 
     @ManyToMany(cascade = ALL)
-    @JoinTable(name = "buyers_sub_products_size",
+    @JoinTable(name = "buyers_baskets",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_size_id"))
     private List<Size> basket;
 
     @ManyToMany(cascade = ALL)
-    @JoinTable(name = "buyers_sub_products",
+    @JoinTable(name = "buyers_last_views",
             joinColumns = @JoinColumn(name = "buyer_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> lastViews;
@@ -56,12 +56,6 @@ public class Buyer {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "order_id")
     private Order order;
-
-    @ManyToMany(cascade = {PERSIST, MERGE, REFRESH, DETACH})
-    @JoinTable(name = "buyers_sub_products",
-            joinColumns = @JoinColumn(name = "buyer_id"),
-            inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
-    private Map<Integer, SubProduct> prodCount;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
