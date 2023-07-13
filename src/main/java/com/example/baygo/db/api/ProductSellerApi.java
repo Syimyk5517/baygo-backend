@@ -2,6 +2,7 @@ package com.example.baygo.db.api;
 
 import com.example.baygo.db.dto.request.ProductRequest;
 import com.example.baygo.db.dto.response.ColorResponse;
+import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,5 +41,21 @@ public class ProductSellerApi {
     @PreAuthorize("hasAuthority('SELLER')")
     public int getBarcode(){
         return productService.getBarcode();
+    }
+
+    @Operation(summary = "Get all product", description = "This method gets all products of seller")
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public List<ProductResponseForSeller> getAllProductForSeller(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "11") int size){
+        return productService.findAll(page,size);
+    }
+
+    @Operation(summary = "Get all product with filter", description = "This method gets all products filtered")
+    @GetMapping("/all-filter")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public List<ProductResponseForSeller> getAllProductForSellerWithFilter(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "11") int size){
+        return productService.findAllWithFilter(page,size);
     }
 }
