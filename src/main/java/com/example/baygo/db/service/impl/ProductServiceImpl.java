@@ -53,7 +53,6 @@ public class ProductServiceImpl implements ProductService {
             subProduct1.setColor(subProduct.color());
             subProduct1.setImages(subProduct.images());
             subProduct1.setPrice(subProduct.price());
-            subProduct1.setVendorNumberOfSeller(subProduct.vendorNumberOfSeller());
             subProduct1.setProduct(product);
 
             for (SizeRequest size : subProduct.sizes()) {

@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record SubProductRequest(
-        @NotBlank(message = "Артикул продавца должен быть указан!!!")
-        String vendorNumberOfSeller,
         @NotBlank(message = "Код цвета должен быть указан!!!")
         String colorHexCode,
         @NotBlank(message = "Цвет должен быть указан!!!")
