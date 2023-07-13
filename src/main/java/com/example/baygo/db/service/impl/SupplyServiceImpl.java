@@ -1,6 +1,7 @@
 package com.example.baygo.db.service.impl;
 
 import com.example.baygo.db.config.jwt.JwtService;
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
@@ -21,7 +22,7 @@ public class SupplyServiceImpl implements SupplyService {
     private final SupplyCustomRepository customRepository;
 
     @Override
-    public List<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status,int page,int pageSize) {
+    public PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize) {
         Long currentUserId = jwtService.getAuthenticate().getId();
         return customRepository.getAllSuppliesOfSeller(currentUserId,supplyNumber,status,page,pageSize);
     }

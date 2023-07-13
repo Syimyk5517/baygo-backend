@@ -1,5 +1,6 @@
 package com.example.baygo.db.repository.custom.impl;
 
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -15,7 +17,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize) {
+    public PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize) {
 
         String sql = """
                 SELECT s.id , s.supply_number, s.supply_type, s.created_at, s.quantity_of_products, s.accepted_products,
@@ -38,7 +40,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         int offset = (page - 1) * pageSize;
         sql += " LIMIT " + pageSize + " OFFSET " + offset;
 
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
+        List<SuppliesResponse> suppliesResponses = jdbcTemplate.query(sql, (rs, rowNum) ->
                 SuppliesResponse.builder()
                         .id(rs.getLong("id"))
                         .supplyNumber(rs.getString("supply_number"))
@@ -53,5 +55,11 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         .user(rs.getString("phone_number"))
                         .status(SupplyStatus.valueOf(rs.getString("status")))
                         .build());
+        return PaginationResponse.<List<SuppliesResponse>>builder()
+                .elements(Collections.singletonList(suppliesResponses))
+                .page(page)
+                .pageSize(pageSize)
+                .build();
+
     }
 }

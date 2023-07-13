@@ -1,5 +1,6 @@
 package com.example.baygo.db.api;
 
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.service.SupplyService;
@@ -19,10 +20,10 @@ import java.util.List;
 public class SupplyApi {
     private final SupplyService service;
 
-    @PreAuthorize("hasAuthority('SELLER')")
+//    @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
     @GetMapping
-    List<SuppliesResponse> getAllSuppliesOfSeller
+    PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller
             (@RequestParam(required = false) String supplyNumber,
              @RequestParam(required = false) SupplyStatus status,
              @RequestParam(required = false, defaultValue = "1") int page,
