@@ -27,7 +27,7 @@ public class SupplyServiceImpl implements SupplyService {
                 .supplyId(supply.getId())
                 .supplyNumber(supply.getSupplyNumber())
                 .warehouseName(supply.getWarehouse().getName())
-                .supplyType(supply.getSupplyType().name())
+                .supplyType(supply.getSupplyType())
                 .sellerPhoneNumber(supply.getSeller().getUser().getPhoneNumber())
                 .supplyCost(supply.getSupplyCost())
                 .preliminaryCostOfAcceptance(supply.getSupplyCost())//
