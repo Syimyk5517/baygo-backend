@@ -35,8 +35,7 @@ public class Seller {
     @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;
 
-    @OneToMany(cascade = ALL)
-    @JoinColumn(name = "seller_id")
+    @OneToMany(mappedBy = "seller",cascade = ALL)
     private List<Product> products;
 
     @OneToOne(cascade = ALL)

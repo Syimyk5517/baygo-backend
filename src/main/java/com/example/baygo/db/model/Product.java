@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
+
 @Getter
 @Setter
 @Entity
@@ -26,19 +29,16 @@ public class Product {
     private double rating;
     private LocalDate dateOfCreate;
     private LocalDate dateOfChange;
-    private String article;
-    private String barcode;
+    private String articul;
+    private String style;
     private String season;
     private String composition;
     private boolean isDraft;
+    private String brand;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name = "brand_id")
-    private Brand brand;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "discount_id")
@@ -50,4 +50,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<SubProduct> subProducts;
 
+    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 }
