@@ -37,7 +37,8 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         sql += " ORDER BY s.created_at DESC ";
 
         String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
-            int count = jdbcTemplate.queryForObject(countSql, Integer.class);
+        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
+        int count = countResult != null ? countResult : 0;
         int totalCount = (int) Math.ceil((double) count / pageSize);
 
         int offset = (page - 1) * pageSize;
