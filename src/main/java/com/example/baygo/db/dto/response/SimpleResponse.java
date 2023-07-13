@@ -1,4 +1,4 @@
-package com.example.baygo.db.dto.responces;
+package com.example.baygo.db.dto.response;
 
 import lombok.Builder;
 import org.springframework.http.HttpStatus;

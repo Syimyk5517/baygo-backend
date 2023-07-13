@@ -3,7 +3,7 @@ package com.example.baygo.db.service.impl;
 import com.example.baygo.db.dto.request.ProductRequest;
 import com.example.baygo.db.dto.request.SizeRequest;
 import com.example.baygo.db.dto.request.SubProductRequest;
-import com.example.baygo.db.dto.responces.SimpleResponse;
+import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.db.repository.*;
