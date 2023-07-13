@@ -23,10 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author altynbek
- * @created at 11.07.2023 11:11
- */
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -88,7 +85,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private User getAuthenticate() {
+    public User getAuthenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
         log.info("Токен взят!");
