@@ -13,6 +13,7 @@ import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.Gender;
 import com.example.baygo.db.model.enums.Role;
+import com.example.baygo.db.repository.SellerRepository;
 import com.example.baygo.db.repository.UserRepository;
 import com.example.baygo.db.service.AuthenticationService;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final SellerRepository sellerRepository;
 
 
     @Override
@@ -87,13 +89,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (split.equals(request.password())) {
             throw new BadRequestException("Создайте более надежный пароль");
         }
-        Seller seller = Seller.builder()
-                .ITN(request.ITN())
-                .address(request.address())
-                .BIC(request.BIC())
-                .nameOfStore(request.nameOfStore())
-                .vendorNumber(UUID.randomUUID().toString().substring(0, 6).toUpperCase())
-                .build();
         User user = User.builder()
                 .email(request.email())
                 .firstName(request.firstName())
@@ -101,10 +96,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .phoneNumber(request.phoneNumber())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.SELLER)
-                .seller(seller)
                 .build();
 
-        userRepository.save(user);
+        Seller seller = Seller.builder()
+                .ITN(request.ITN())
+                .address(request.address())
+                .BIC(request.BIC())
+                .nameOfStore(request.nameOfStore())
+                .vendorNumber(UUID.randomUUID().toString().substring(0, 6).toUpperCase())
+                .user(user)
+                .build();
+
+        sellerRepository.save(seller);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
         String token = jwtService.generateToken(user);
 

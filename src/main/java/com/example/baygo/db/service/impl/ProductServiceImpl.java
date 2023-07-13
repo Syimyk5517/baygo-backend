@@ -1,5 +1,6 @@
 package com.example.baygo.db.service.impl;
 
+import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.ProductRequest;
 import com.example.baygo.db.dto.request.SizeRequest;
 import com.example.baygo.db.dto.request.SubProductRequest;
@@ -12,8 +13,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,10 +24,8 @@ import java.util.UUID;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
-    private final SubProductRepository subProductRepository;
     private final SizeRepository sizeRepository;
-    private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
+    private final JwtService jwtService;
 
 
     @Override
@@ -48,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
         product.setSeason(request.season());
         product.setComposition(request.composition());
         product.setSubCategory(subCategory);
-        product.setSeller(getAuthenticate());
+        product.setSeller(jwtService.getAuthenticate().getSeller());
 
         for (SubProductRequest subProduct : request.subProducts()) {
             SubProduct subProduct1 = new SubProduct();
@@ -58,7 +55,6 @@ public class ProductServiceImpl implements ProductService {
             subProduct1.setPrice(subProduct.price());
             subProduct1.setVendorNumberOfSeller(subProduct.vendorNumberOfSeller());
             subProduct1.setProduct(product);
-            subProductRepository.save(subProduct1);
 
             for (SizeRequest size : subProduct.sizes()) {
                 Size size1 = new Size();
@@ -67,7 +63,6 @@ public class ProductServiceImpl implements ProductService {
                 size1.setSubProduct(subProduct1);
                 sizeRepository.save(size1);
             }
-            productRepository.save(product);
         }
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Продукт успешно сохранено!!!").build();
     }
@@ -80,15 +75,5 @@ public class ProductServiceImpl implements ProductService {
             randomHash = randomHash.substring(0, 8);
         }
         return Math.abs(Integer.parseInt(randomHash));
-    }
-
-    private Seller getAuthenticate() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String login = authentication.getName();
-        log.info("Token has been taken!");
-        return sellerRepository.findUserByEmail(login).orElseThrow(() -> {
-            log.error("Seller not found!");
-            return new NotFoundException("Seller not found!");
-        }).getSeller();
     }
 }
