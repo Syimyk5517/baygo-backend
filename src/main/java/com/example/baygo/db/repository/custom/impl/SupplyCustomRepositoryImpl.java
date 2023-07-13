@@ -21,18 +21,19 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                 SELECT s.id , s.supply_number, s.supply_type, s.created_at, s.quantity_of_products, s.accepted_products,
                 s.commission, s.supply_cost, s.planned_date, s.actual_date, u.phone_number, s.status
                 FROM supplies s
-                JOIN users u ON s.seller_id = u.id
+                JOIN sellers s2 on s.seller_id = s2.id
+                JOIN users u on s2.user_id = u.id
                 WHERE u.id =""" + currentUserId;
 
         if (supplyNumber != null && !supplyNumber.isEmpty()) {
-            sql += " AND s.supply_number LIKE '" + supplyNumber + "%'";
+            sql += " AND s.supply_number iLIKE '" + supplyNumber + "%'";
         }
 
         if (status != null && status.describeConstable().isPresent()) {
             sql += " AND s.status = '" + status + "'";
         }
 
-        sql += " ORDER BY s.id ";
+        sql += " ORDER BY s.created_at DESC ";
 
         int offset = (page - 1) * pageSize;
         sql += " LIMIT " + pageSize + " OFFSET " + offset;

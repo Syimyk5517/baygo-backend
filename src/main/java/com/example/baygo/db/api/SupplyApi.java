@@ -6,6 +6,7 @@ import com.example.baygo.db.service.SupplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 public class SupplyApi {
     private final SupplyService service;
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
     @GetMapping
     List<SuppliesResponse> getAllSuppliesOfSeller
