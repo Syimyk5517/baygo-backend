@@ -7,5 +7,5 @@ import com.example.baygo.db.model.enums.SupplyStatus;
 import java.util.List;
 
 public interface SupplyCustomRepository {
-    PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize);
+    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize);
 }

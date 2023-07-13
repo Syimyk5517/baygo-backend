@@ -22,7 +22,7 @@ public class SupplyServiceImpl implements SupplyService {
     private final SupplyCustomRepository customRepository;
 
     @Override
-    public PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize) {
+    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize) {
         Long currentUserId = jwtService.getAuthenticate().getId();
         return customRepository.getAllSuppliesOfSeller(currentUserId,supplyNumber,status,page,pageSize);
     }

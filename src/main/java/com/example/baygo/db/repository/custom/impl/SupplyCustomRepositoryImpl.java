@@ -17,7 +17,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize) {
+    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize) {
 
         String sql = """
                 SELECT s.id , s.supply_number, s.supply_type, s.created_at, s.quantity_of_products, s.accepted_products,
@@ -37,6 +37,10 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
 
         sql += " ORDER BY s.created_at DESC ";
 
+        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
+        int count = jdbcTemplate.queryForObject(countSql, Integer.class);
+        int totalCount = (int) Math.ceil((double) count / pageSize);
+
         int offset = (page - 1) * pageSize;
         sql += " LIMIT " + pageSize + " OFFSET " + offset;
 
@@ -55,11 +59,10 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         .user(rs.getString("phone_number"))
                         .status(SupplyStatus.valueOf(rs.getString("status")))
                         .build());
-        return PaginationResponse.<List<SuppliesResponse>>builder()
-                .elements(Collections.singletonList(suppliesResponses))
+        return PaginationResponse.<SuppliesResponse>builder()
+                .elements(suppliesResponses)
                 .page(page)
-                .pageSize(pageSize)
+                .pageSize(totalCount)
                 .build();
-
     }
 }

@@ -23,7 +23,7 @@ public class SupplyApi {
     @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
     @GetMapping
-    PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller
+    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller
             (@RequestParam(required = false) String supplyNumber,
              @RequestParam(required = false) SupplyStatus status,
              @RequestParam(required = false, defaultValue = "1") int page,
