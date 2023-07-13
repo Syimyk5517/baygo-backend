@@ -1,10 +1,7 @@
 package com.example.baygo.db.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -16,6 +13,7 @@ import static jakarta.persistence.CascadeType.ALL;
 @Table(name = "sellers")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_gen")
@@ -28,7 +26,7 @@ public class Seller {
     private String ITN;
     private String BIC;
     private String aboutStore;
-    private String vendorCodeOfSeller;
+    private String vendorNumber;
 
     @OneToOne(mappedBy = "seller", cascade = ALL)
     @JoinColumn(name = "chat_id")
@@ -37,8 +35,7 @@ public class Seller {
     @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;
 
-    @OneToMany(cascade = ALL)
-    @JoinColumn(name = "seller_id")
+    @OneToMany(mappedBy = "seller",cascade = ALL)
     private List<Product> products;
 
     @OneToOne(cascade = ALL)
