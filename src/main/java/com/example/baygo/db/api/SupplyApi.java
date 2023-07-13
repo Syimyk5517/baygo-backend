@@ -20,7 +20,7 @@ import java.util.List;
 public class SupplyApi {
     private final SupplyService service;
 
-//    @PreAuthorize("hasAuthority('SELLER')")
+    @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
     @GetMapping
     PaginationResponse<List<SuppliesResponse>> getAllSuppliesOfSeller
