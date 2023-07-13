@@ -1,7 +1,6 @@
 package com.example.baygo.db.model;
 
 import com.example.baygo.db.model.enums.SupplyStatus;
-import com.example.baygo.db.model.enums.SupplyType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +24,7 @@ public class Supply {
     @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1)
     private Long id;
     private String supplyNumber;
-    @Enumerated(EnumType.STRING)
-    private SupplyType supplyType;
+    private String supplyType;
     private LocalDate createdAt;
     private int quantityOfProducts;
     private int acceptedProducts;
