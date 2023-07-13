@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -38,7 +37,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         sql += " ORDER BY s.created_at DESC ";
 
         String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
-        int count = jdbcTemplate.queryForObject(countSql, Integer.class);
+            int count = jdbcTemplate.queryForObject(countSql, Integer.class);
         int totalCount = (int) Math.ceil((double) count / pageSize);
 
         int offset = (page - 1) * pageSize;
