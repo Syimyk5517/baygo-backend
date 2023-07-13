@@ -27,6 +27,7 @@ public class SubProduct {
     @ElementCollection
     private List<String> images;
     private BigDecimal price;
+    private String vendorNumberOfSeller;;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;

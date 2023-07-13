@@ -9,7 +9,7 @@ public record ColorResponse(
 ) {
     public static List<ColorResponse> getColors() {
         List<ColorResponse> colors = new ArrayList<>();
-        colors.add(new ColorResponse("#FFFFFF", "белый"));
+        colors.add(new ColorResponse("#FFFFFF", "Белый"));
         colors.add(new ColorResponse("#FFBEBE", "Теплый розовый"));
         colors.add(new ColorResponse("#FFEBBE", "Светло-персиковый"));
         colors.add(new ColorResponse("#FFD37F", "Золотисто-персиковый"));

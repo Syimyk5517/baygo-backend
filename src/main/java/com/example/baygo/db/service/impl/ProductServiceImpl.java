@@ -25,7 +25,6 @@ import java.util.UUID;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
-    private final BrandRepository brandRepository;
     private final SubProductRepository subProductRepository;
     private final SizeRepository sizeRepository;
     private final ProductRepository productRepository;
@@ -38,22 +37,17 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Подкатегория с идентификатором: " + request.subCategoryId() + " не найдена!");
         });
 
-        Brand brand = brandRepository.findById(request.brandId())
-                .orElseThrow(() -> {
-                    throw new NotFoundException("Бренд с идентификатором: " + request.brandId() + " не найден!");
-                });
-
         Product product = new Product();
         product.setManufacturer(request.manufacturer());
-        product.setDescription(request.description());
+        product.setBrand(request.brand());
         product.setName(request.name());
+        product.setDescription(request.description());
         product.setDateOfCreate(LocalDate.now());
         product.setArticul(UUID.randomUUID().toString().substring(0, 8));
         product.setStyle(request.style());
         product.setSeason(request.season());
         product.setComposition(request.composition());
         product.setSubCategory(subCategory);
-        product.setBrand(brand);
         product.setSeller(getAuthenticate());
 
         for (SubProductRequest subProduct : request.subProducts()) {
@@ -62,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
             subProduct1.setColor(subProduct.color());
             subProduct1.setImages(subProduct.images());
             subProduct1.setPrice(subProduct.price());
+            subProduct1.setVendorNumberOfSeller(subProduct.vendorNumberOfSeller());
             subProduct1.setProduct(product);
             subProductRepository.save(subProduct1);
 
