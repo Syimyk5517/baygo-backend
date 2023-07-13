@@ -24,7 +24,7 @@ public class Supply {
     @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1)
     private Long id;
     private String supplyNumber;
-    private String  supplyType;
+    private String supplyType;
     private LocalDate createdAt;
     private int quantityOfProducts;
     private int acceptedProducts;
