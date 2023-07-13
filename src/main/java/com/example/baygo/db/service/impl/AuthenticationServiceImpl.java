@@ -103,7 +103,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(Role.SELLER)
                 .seller(seller)
                 .build();
-        seller.setUser(user);
         userRepository.save(user);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
         String token = jwtService.generateToken(user);
