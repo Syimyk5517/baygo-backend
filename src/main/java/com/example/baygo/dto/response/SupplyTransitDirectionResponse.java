@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class SupplyTransitDirectionResponse {
     private Long warehouseId;
-    private int transitWareHouse;
+    private String transitWareHouse;
     private String location;
     private BigDecimal supplyCost;
 }

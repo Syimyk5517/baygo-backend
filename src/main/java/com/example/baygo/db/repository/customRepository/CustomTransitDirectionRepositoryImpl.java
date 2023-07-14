@@ -28,7 +28,7 @@ public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirect
         return jdbcTemplate.query(transitDirectionQuery, (resultSet, i)->
                 new SupplyTransitDirectionResponse(
                         resultSet.getLong("warehouseId"),
-                        resultSet.getInt("transit_wareHouse"),
+                        resultSet.getString("transit_wareHouse"),
                         resultSet.getString("location"),
                         resultSet.getBigDecimal("supply_cost")),location);
     }
