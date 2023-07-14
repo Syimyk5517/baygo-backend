@@ -1,8 +1,3 @@
-INSERT INTO appeals(id, title, divide, detailed_appeal, buyer_id)
-VALUES (1, 'Жалоба', 'Жалоба', 'Жалоба на качество услуг', 1),
-       (2, 'Запрос', 'Запрос', 'Запрос на получение информации', 2);
-
-
 INSERT INTO banners(id, image)
 VALUES (1,
         'https://img.freepik.com/free-vector/fashion-banner-design-with-shirt-bag-camera-case_83728-1865.jpg?w=2000'),
@@ -15,15 +10,111 @@ VALUES (1,
        (5,
         'https://marketplace.canva.com/EAFVHstxnwk/1/0/1600w/canva-beige-aesthetic-exclusive-fashion-wear-collection-clothing-banner-BZb4KkCdNP0.jpg');
 
+INSERT INTO users (id, email, first_name, last_name, password, phone_number, role)
+VALUES (1, 'buyer@gmail.com',
+        'Каныкей', 'Аскарбекова',
+        '$2a$12$XrJw9vXMuR0ati9/e4cq1e/0DRFK31.14bfsryyP3O/AydOZ2/hcG',
+        '+996702666357', 'BUYER'),
+       (2, 'admin@gmail.com',
+        'Nuriza', 'Muratova',
+        '$2a$12$xpnEsZCno3hC/flsQ8b3AOhyooQ7PHVtrpN9YWob5tpy47jNhS5uS',
+        '+996990128880', 'ADMIN'),
+       (3, 'seller@gmail.com',
+        'Jiydegul', 'Jalilova',
+        '$2a$12$ggPOFn4K3GLQPQrPU8dxNuRUvv/BXplU/oHUCQVT3DL63h0W9ESgS',
+        '+996550232345', 'SELLER');
+
+INSERT INTO sellers(id, bic, itn, about_store, address, name_of_store, photo, store_logo, vendor_number, user_id)
+VALUES (1, 'DEUTDEFF', '765-43-2109',
+        'Fashion Haven - ваш источник стильной и модной одежды',
+        'ТЦ ГУМ, город Бишкек',
+        'Fashion Haven',
+        'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
+        'VND12345', 1),
+       (2, 'UBSWCHZH80A', '987-65-4321',
+        'Trendy Threads - магазин для тех, кто следит за модой',
+        'ТЦ ЦУМ, город Ош',
+        'Trendy Threads',
+        'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwhRFf7FljIdmi9O3IJF7w438B_ljoSVtmyA&usqp=CAU',
+        'SPLR789', 2),
+       (3, 'KASITHBK', '444-44-4444',
+        'Classic Elegance - магазин, где классика встречает элегантность',
+        'ТЦ Asia Mall, город Бишкек',
+        'Classic Elegance',
+        'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSALIXFTV7zON37JghAVcdd6f_a1b-o9atknA&usqp=CAU',
+        'PVDR7890', 3),
+       (4, 'RZSBIT21010', '456-78-9012',
+        'Sporty Vibes - магазин для любителей спортивного стиля',
+        'ТЦ ГУМ, город Бишкек',
+        'Sporty Vibes',
+        'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
+        'G123VND', 1),
+       (5, 'ABNANL2A', '765-43-2109',
+        'Kids Fashion World - магазин для маленьких модников и модниц',
+        'ТЦ ГУМ, город Бишкек',
+        'Kids Fashion World',
+        'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSayXzEWDRnX_uUTYElbSJzzqXW_CslUUnKmw&usqp=CAU',
+        'SUPP98765', 3);
+
+INSERT INTO chats(id, time, seller_id)
+VALUES (1,
+        '2023-07-13 11:48:20',1),
+       (2,
+        '2023-05-13 23:20:12',2),
+       (3,
+        '2022-04-13 09:30:45',3),
+       (4,
+        '2023-01-13 12:48:30',4),
+       (5,
+        '2023-06-13 03:12:09',2);
+
+INSERT INTO messages(id, message, time, chat_id)
+VALUES (1,
+        'Здравствуйте! У меня вопрос по товару.', '2023-07-11 12:45:25', 1),
+       (2,
+        'Есть ли у вас скидки при заказе от 50 штук?', '2023-07-14 00:30:30', 2),
+       (3,
+        'Подскажите,какая стоимость рассылки в вашем сервисе?', '2023-06-28 07:50:45', 3);
+
+INSERT INTO orders(id, date_of_order, date_of_received, order_number, payment_type, status, total_price, with_delivery)
+VALUES (1, '2022-12-30', '2023-01-23', '111',
+        'ONLINE_BY_CARD', 'DELIVERED', 2000, TRUE),
+       (2, '2023-12-21', '2023-10-05', '222',
+        'OFFLINE_BY_CARD', 'DELIVERED', 4560, TRUE),
+       (3, '2023-02-11', '2023-08-05', '333',
+        'OFFLINE_BY_CASH', 'DELIVERED', 1999, FALSE),
+       (4, '2023-06-15', '2023-04-12', '444',
+        'OFFLINE_BY_CASH', 'DELIVERED', 870, FALSE),
+       (5, '2023-02-11', '2023-08-05', '555',
+        'ONLINE_BY_CARD', 'DELIVERED', 3690, TRUE);
 
 INSERT INTO buyers(id, date_of_birth, message_id, order_id, user_id, address, gender)
-VALUES (1, '2003-03-18', 1, 1, 1, 'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10',
-        'FEMALE'),
-       (2, '1999-09-09', 1, 2, 2, 'Область Ош,город Ноокат,улица Г.Айтиева 112,подъезд 5, кв 67', 'MALE'),
-       (3, '2000-11-30', 3, 3, 3, 'Область Талас,город Талас,улица Чыныке бий 54,подъезд 11,кв 76 ', 'FEMALE'),
-       (4, '1990-10-23', 4, 4, 4, 'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE'),
-       (5, '2002-12-12', 5, 5, 5, 'Область Чуй,город Бишкек,улица Садырбаева 1/5,подъезд 1, кв 5', 'MALE');
+VALUES (1,
+        '2003-03-18', 1, 1, 1,
+        'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10', 'FEMALE'),
+       (2,
+        '1999-09-09', 1, 2, 2,
+        'Область Ош,город Ноокат,улица Г.Айтиева 112,подъезд 5, кв 67', 'MALE'),
+       (3,
+        '2000-11-30', 3, 3, 3,
+        'Область Талас,город Талас,улица Чыныке бий 54,подъезд 11,кв 76 ', 'FEMALE'),
+       (4,
+        '1990-10-23', 1, 4, 1,
+        'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE'),
+       (5,
+        '2002-12-12', 2, 5, 2,
+        'Область Чуй,город Бишкек,улица Садырбаева 1/5,подъезд 1, кв 5', 'MALE');
 
+INSERT INTO appeals(id, title, divide, detailed_appeal, buyer_id)
+VALUES (1,
+        'Жалоба', 'Жалоба', 'Жалоба на качество услуг', 1),
+       (2,
+        'Запрос', 'Запрос', 'Запрос на получение информации', 2);
 
 INSERT INTO categories(id, name)
 VALUES (1,
@@ -71,247 +162,195 @@ VALUES (1, 1, 'Вся одежда'),
        (35, 3, 'Одежда для девочек'),
        (36, 3, 'Одежда для мальчиков');
 
-INSERT INTO chats(id, time, seller_id)
-VALUES (1, '2023-07-13 11:48:20'),
-       (2, '2023-05-13 23:20:12'),
-       (3, '2022-04-13 09:30:45'),
-       (4, '2023-01-13 12:48:30'),
-       (5, '2023-06-13 03:12:09');
-
 INSERT INTO discounts(id, date_of_finish, date_of_start, percent)
-VALUES (1, '2023-07-01', '2023-07-12', 70),
-       (2, '2023-06-23', '2023-09-29', 50),
-       (3, '2023-07-02', '2023-07-25', 25),
-       (4, '2023-06-01', '2023-08-17', 60),
-       (5, '2023-05-23', '2023-11-12', 15);
+VALUES (1,
+        '2023-07-01', '2023-07-12', 70),
+       (2,
+        '2023-06-23', '2023-09-29', 50),
+       (3,
+        '2023-07-02', '2023-07-25', 25),
+       (4,
+        '2023-06-01', '2023-08-17', 60),
+       (5,
+        '2023-05-23', '2023-11-12', 15);
 
-INSERT INTO warehouses(id,name,location)
-VALUES (1,'БайGo','Бишкек'),
-       (2,'Асман','Талас'),
-       (3,'Аю Гранд','Чуй'),
-       (4,'Амазон','Ош'),
-       (5,'Караван','Баткен');
-
-INSERT INTO users (id,email,first_name,last_name,password,phone_number,role)
-VALUES (1,'buyer@gmail.com',
-        'Каныкей','Аскарбекова',
-        '$2a$12$XrJw9vXMuR0ati9/e4cq1e/0DRFK31.14bfsryyP3O/AydOZ2/hcG',
-        '+996702666357','BUYER'),
-       (2,'admin@gmail.com',
-        'Nuriza','Muratova',
-        '$2a$12$xpnEsZCno3hC/flsQ8b3AOhyooQ7PHVtrpN9YWob5tpy47jNhS5uS',
-        '+996990128880','ADMIN'),
-       (3,'seller@gmail.com',
-        'Jiydegul','Jalilova',
-        '$2a$12$ggPOFn4K3GLQPQrPU8dxNuRUvv/BXplU/oHUCQVT3DL63h0W9ESgS',
-        '+996550232345','SELLER');
-
-INSERT INTO buyers_baskets(buyer_id,sub_products_size_id)
-VALUES (1,2),
-       (2,3),
-       (3,1),
-       (4,1),
-       (5,4);
-
-INSERT INTO buyers_favorites(buyer_id,sub_products_id)
-VALUES(1,1),
-      (2,2),
-      (3,3),
-      (4,3),
-      (5,1);
-
-INSERT INTO buyers_last_views(buyer_id,sub_products_id)
-VALUES (1,1),
-       (2,2),
-       (3,3),
-       (4,4),
-       (5,5);
-
-INSERT INTO chats_buyers(chat_id,buyers_id)
-VALUES (1,4),
-       (2,3),
-       (3,5),
-       (4,4),
-       (5,2);
-
-INSERT INTO customers(id,first_name,last_name,
-                      address,city,country,email,
-                      phone_number,postal_code)
-VALUES (1,'Курстан','Эркинбаев',
-        'Ош','Ош','Кыргызстан',
-        'kurstan@gmail.com',
-        '+996555990123','723000'),
-       (2,'Нурадил','Жолдошов',
-        'Талас','Талас','Кыргызстан',
-        'nuradil@gmail.com',
-        '+996703425039','723000'),
-       (3,'Сыймык','Жумабек уулу',
-        'Кара Суу','Ош','Кыргызстан',
-        'syimyk@gmail.com',
-        '+996990124556','723040'),
-       (4,'Алтынбек','Шакиров',
-        'Токтогул','Жалал Абад','Кыргызстан',
-        'altynbek@gmail.com',
-        '+996222345678','724000'),
-       (5,'Адил','Айтбаев',
-        'Бишкек','Бишкек','Кыргызстан',
-        'adil@gmail.com',
-        '+996990129090','720000');
-
-
-INSERT INTO mailing_list_subscribers (id,email,is_sale, is_discount ,is_new)
-VALUES(1,'saltanat@gmail.com',TRUE,FALSE,TRUE),
-      (2,'eliza@gmail.com',FALSE,FALSE,TRUE),
-      (3,'user@gmail.com',TRUE,TRUE,TRUE),
-      (4,'nuriza@gmail.com',FALSE,FALSE,FALSE),
-      (5,'kanykei@gmail.com',TRUE,FALSE,FALSE);
-
-INSERT INTO mailing_lists (id,name,image,description,date_of_start,date_of_finish)
-VALUES (1,'Скидка','https://www.unisender.com/wp-content/uploads/2021/04/sms-rassylka.png',
-        'Сезонные скидки на лучшие товары','2023-06-29','2023-07-29'),
-       (2,'Распродажа','https://53news.ru/wp-content/uploads/2022/05/emailmarketing-min-1024x593-1.jpg',
-        'Большая распродажа: скидки до 50%','2023-05-12','2023-07-12'),
-       (3,'Новые товары','https://cdn.esputnik.com/photos/shares/EmailExamples/8%20march%20RU%20(8).jpg',
-        'Трендовые новинки: узнайте о наших последних товарах','2023-06-29','2023-07-30');
-
-INSERT INTO messages(id,message,time,chat_id)
-VALUES (1,'Здравствуйте! У меня вопрос по товару.','2023-07-11 12:45:25',1),
-       (2,'Есть ли у вас скидки при заказе от 50 штук?','2023-07-14 00:30:30',2),
-       (3,'Подскажите,какая стоимость рассылки в вашем сервисе?','2023-06-28 07:50:45',3);
-
-INSERT INTO orders(id,date_of_order,date_of_received,
-                   order_number,payment_type,status,
-                   total_price,with_delivery)
-VALUES (1,'2022-12-30','2023-01-23','111',
-        'ONLINE_BY_CARD','DELIVERED',2000,TRUE),
-       (2,'2023-12-21','2023-10-05','222',
-        'OFFLINE_BY_CARD','DELIVERED',4560,TRUE),
-       (3,'2023-02-11','2023-08-05','333',
-        'OFFLINE_BY_CASH','DELIVERED',1999,FALSE),
-       (4,'2023-06-15','2023-04-12','444',
-        'OFFLINE_BY_CASH','DELIVERED',870,FALSE),
-       (5,'2023-02-11','2023-08-05','555',
-        'ONLINE_BY_CARD','DELIVERED',3690,TRUE);
-
-INSERT INTO orders_sub_products_size(order_id,product_count,sub_products_size_id)
-VALUES (1,100,2),
-       (2,240,1),
-       (3,699,3),
-       (4,34907,2),
-       (5,45932,1);
-
-INSERT INTO products(id,articul,brand,composition,
-                     date_of_change,date_of_create,
-                     description,is_draft,manufacturer,
-                     name,rating,season,style,discount_id,
-                     seller_id,sub_category_id)
-VALUES (1,'SKU12345','ZARA','Шерсть/Кашемир','2023-03-03','2023-01-23',
+INSERT INTO products(id, articul, brand, composition,
+                     date_of_change, date_of_create,
+                     description, is_draft, manufacturer,
+                     name, rating, season, style, discount_id,
+                     seller_id, sub_category_id)
+VALUES (1, 'SKU12345', 'ZARA', 'Шерсть/Кашемир', '2023-03-03', '2023-01-23',
         'Приталенное платье с V-образным вырезом и длинными рукавами',
-        FALSE,'БайGo','Платье',9.8,'Летний','Вечерний',1,1,1),
-       (2,'CODE789','Calvin Klein','Хлопок/Полиэстер/Эластан',
-        '2022-12-03','2023-05-29',
+        FALSE, 'БайGo', 'Платье', 9.8, 'Летний', 'Вечерний', 1, 1, 1),
+       (2, 'CODE789', 'Calvin Klein', 'Хлопок/Полиэстер/Эластан',
+        '2022-12-03', '2023-05-29',
         'Стильные шорты с высокой посадкой и широким поясом',
-        TRUE,'БайGo','Шорты',9.8,'Летний','Классический стиль',2,2,20),
-       (3,'ART123','Gucci','Полиэстер/Вискоза/Эластан','2023-03-03','2023-01-23',
+        TRUE, 'БайGo', 'Шорты', 9.8, 'Летний', 'Классический стиль', 2, 2, 20),
+       (3, 'ART123', 'Gucci', 'Полиэстер/Вискоза/Эластан', '2023-03-03', '2023-01-23',
         'Удобный свитшот с капюшоном и карманом-кенгуру',
-        FALSE,'БайGo','Свитшот',9.8,'Зимний','Спортивный',3,3,7),
-       (4,'T-9876','Adidas','Акрил/Нейлон','2023-03-03','2022-01-23',
+        FALSE, 'БайGo', 'Свитшот', 9.8, 'Зимний', 'Спортивный', 3, 3, 7),
+       (4, 'T-9876', 'Adidas', 'Акрил/Нейлон', '2023-03-03', '2022-01-23',
         'Классическая рубашка с воротником и длинными рукавами',
-        TRUE,'БайGo','Рубашка',9.8,'Осенний','Бизнес-стиль',4,4,12),
-       (5,'123ABC','H&M','100% Хлопок','2023-03-03','2022-12-30',
+        TRUE, 'БайGo', 'Рубашка', 9.8, 'Осенний', 'Бизнес-стиль', 4, 4, 12),
+       (5, '123ABC', 'H&M', '100% Хлопок', '2023-03-03', '2022-12-30',
         'Стильная футболка с круглым вырезом и короткими рукавами.',
-        FALSE,'БайGo','Футболка',3.3,'Летний','Уличный стиль',5,5,25);
+        FALSE, 'БайGo', 'Футболка', 3.3, 'Летний', 'Уличный стиль', 5, 5, 25);
 
-INSERT INTO review_images(review_id,images)
-VALUES (1,'https://ya-modnaya.ru/_pu/2/42477906.jpg'),
-       (2,'https://ya-modnaya.ru/_pu/2/42477906.jpg'),
-       (3,'https://ya-modnaya.ru/_pu/2/42477906.jpg');
+INSERT INTO sub_products(id, color, color_hex_code, price, product_id)
+VALUES (1,
+        'Черный', '#000000', 2000, 3),
+       (2,
+        'Красный', '#FF0000', 5900, 1),
+       (3,
+        'Фиолетовый', '#800080', 3999, 2),
+       (4,
+        'Розовый', '#FFC0CB', 10500, 5),
+       (5,
+        'Желтый', '#FFFF00', 6666, 4);
 
-INSERT INTO reviews(id,amount_of_like,answer,
-                    date_and_time,grade,text,buyer_id,product_id)
-VALUES (1,50,'В наличии есть размер М?','2023-07-13 12:00:00',5,
+INSERT INTO sub_product_images(sub_product_id, images)
+VALUES (1,
+        'https://nuself.ru/s3/public/sa/5y/sak5yjqiplta1qyxmmjhg4iysd5h6wf8piovhf5i.jpeg?width=850?width=224'),
+       (2,
+        'https://ladylike.ua/f/imagecache/product_list/womens-clothing/2023/plate_chernoe_v_rozovye_vetochki_0.jpg'),
+       (3,
+        'https://ae01.alicdn.com/kf/HTB1mlnnMNTpK1RjSZFMq6zG_VXaZ/Kiddie.jpg_220x220.jpg'),
+       (4,
+        'https://ladylike.ua/f/imagecache/product_list/img_1482.jpg'),
+       (5,
+        'https://ladylike.ua/f/imagecache/product_list/womens-clothing/2023/bryuki_letnie_bezhevye_pryamye_0.jpg');
+
+INSERT INTO sizes(id, barcode, quantity, size, sub_product_id)
+VALUES (1,
+        59014, 1000, 'M', 1),
+       (2,
+        1234, 2340, 'S', 2),
+       (3,
+        1233, 999, 'L', 3),
+       (4,
+        1223, 7000, 'XL', 4),
+       (5,
+        3894, 200, 'XS', 5);
+
+INSERT INTO buyers_baskets(buyer_id, sub_products_size_id)
+VALUES (1, 2),
+       (2, 3),
+       (3, 1),
+       (4, 1),
+       (5, 4);
+
+INSERT INTO buyers_favorites(buyer_id, sub_products_id)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3),
+       (4, 3),
+       (5, 1);
+
+INSERT INTO buyers_last_views(buyer_id, sub_products_id)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3),
+       (4, 4),
+       (5, 5);
+
+INSERT INTO chats_buyers(chat_id, buyers_id)
+VALUES (1, 4),
+       (2, 3),
+       (3, 5),
+       (4, 4),
+       (5, 2);
+
+INSERT INTO warehouses(id, name, location)
+VALUES (1, 'БайGo', 'Бишкек'),
+       (2, 'Асман', 'Талас'),
+       (3, 'Аю Гранд', 'Чуй'),
+       (4, 'Амазон', 'Ош'),
+       (5, 'Караван', 'Баткен');
+
+INSERT INTO customers(id, first_name, last_name,
+                      address, city, country, email,
+                      phone_number, postal_code)
+VALUES (1, 'Курстан', 'Эркинбаев',
+        'Ош', 'Ош', 'Кыргызстан',
+        'kurstan@gmail.com',
+        '+996555990123', '723000'),
+       (2, 'Нурадил', 'Жолдошов',
+        'Талас', 'Талас', 'Кыргызстан',
+        'nuradil@gmail.com',
+        '+996703425039', '723000'),
+       (3, 'Сыймык', 'Жумабек уулу',
+        'Кара Суу', 'Ош', 'Кыргызстан',
+        'syimyk@gmail.com',
+        '+996990124556', '723040'),
+       (4, 'Алтынбек', 'Шакиров',
+        'Токтогул', 'Жалал Абад', 'Кыргызстан',
+        'altynbek@gmail.com',
+        '+996222345678', '724000'),
+       (5, 'Адил', 'Айтбаев',
+        'Бишкек', 'Бишкек', 'Кыргызстан',
+        'adil@gmail.com',
+        '+996990129090', '720000');
+
+INSERT INTO mailing_list_subscribers (id, email, is_sale, is_discount, is_new)
+VALUES (1,
+        'saltanat@gmail.com', TRUE, FALSE, TRUE),
+       (2,
+        'eliza@gmail.com', FALSE, FALSE, TRUE),
+       (3,
+        'user@gmail.com', TRUE, TRUE, TRUE),
+       (4,
+        'nuriza@gmail.com', FALSE, FALSE, FALSE),
+       (5,
+        'kanykei@gmail.com', TRUE, FALSE, FALSE);
+
+INSERT INTO mailing_lists (id, name, image, description, date_of_start, date_of_finish)
+VALUES (1,
+        'Скидка', 'https://www.unisender.com/wp-content/uploads/2021/04/sms-rassylka.png',
+        'Сезонные скидки на лучшие товары', '2023-06-29', '2023-07-29'),
+       (2,
+        'Распродажа', 'https://53news.ru/wp-content/uploads/2022/05/emailmarketing-min-1024x593-1.jpg',
+        'Большая распродажа: скидки до 50%', '2023-05-12', '2023-07-12'),
+       (3,
+        'Новые товары', 'https://cdn.esputnik.com/photos/shares/EmailExamples/8%20march%20RU%20(8).jpg',
+        'Трендовые новинки: узнайте о наших последних товарах', '2023-06-29', '2023-07-30');
+
+INSERT INTO orders_sub_products_size(order_id, product_count, sub_products_size_id)
+VALUES (1, 100, 2),
+       (2, 240, 1),
+       (3, 699, 3),
+       (4, 349, 2),
+       (5, 4593, 1);
+
+INSERT INTO reviews(id, amount_of_like, answer, date_and_time, grade, text, buyer_id, product_id)
+VALUES (1, 50, 'В наличии есть размер М?', '2023-07-13 12:00:00', 5,
         'Красивое платье доступно к продаже, доставка действует по всему Кыргызстану',
-        1,1),
-       (2,120,'В наличии есть размер М?','2023-07-13 12:00:00',10,
+        1, 1),
+       (2, 120, 'В наличии есть размер М?', '2023-07-13 12:00:00', 10,
         'Базовые майки любого сезона',
-        4,2),
-       (3,1000,'Можно цену?','2023-07-13 12:00:00',4,
+        4, 2),
+       (3, 1000, 'Можно цену?', '2023-07-13 12:00:00', 4,
         'Образ в наличии',
-        5,4);
-INSERT INTO sellers(id,bic,itn,about_store,
-                    address,name_of_store,photo,store_logo,
-                    vendor_number,user_id)
-VALUES(1,'DEUTDEFF','765-43-2109',
-       'Fashion Haven - ваш источник стильной и модной одежды',
-       'ТЦ ГУМ, город Бишкек',
-       'Fashion Haven',
-       'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
-       'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
-       'VND12345',1),
-      (2,'UBSWCHZH80A','987-65-4321',
-       'Trendy Threads - магазин для тех, кто следит за модой',
-       'ТЦ ЦУМ, город Ош',
-       'Trendy Threads',
-       'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
-       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwhRFf7FljIdmi9O3IJF7w438B_ljoSVtmyA&usqp=CAU',
-       'SPLR789',2),
-      (3,'KASITHBK','444-44-4444',
-       'Classic Elegance - магазин, где классика встречает элегантность',
-       'ТЦ Asia Mall, город Бишкек',
-       'Classic Elegance',
-       'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
-       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSALIXFTV7zON37JghAVcdd6f_a1b-o9atknA&usqp=CAU',
-       'PVDR7890',3),
-      (4,'RZSBIT21010','456-78-9012',
-       'Sporty Vibes - магазин для любителей спортивного стиля',
-       'ТЦ ГУМ, город Бишкек',
-       'Sporty Vibes',
-       'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
-       'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
-       'G123VND',1),
-      (5,'ABNANL2A','765-43-2109',
-       'Kids Fashion World - магазин для маленьких модников и модниц',
-       'ТЦ ГУМ, город Бишкек',
-       'Kids Fashion World',
-       'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
-       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSayXzEWDRnX_uUTYElbSJzzqXW_CslUUnKmw&usqp=CAU',
-       'SUPP98765',3);
+        5, 4);
 
-INSERT INTO sizes(id,barcode,quantity,size,sub_product_id)
-VALUES(1,5901234567890,1000,'M',1),
-      (2,1234567890123,2340,'S',2),
-      (3,1234567890123,999,'L',3),
-      (4,1234782693823,7000,'XL',4),
-      (5,3894067890123,200,'XS',5);
+INSERT INTO review_images(review_id, images)
+VALUES (1, 'https://ya-modnaya.ru/_pu/2/42477906.jpg'),
+       (2, 'https://ya-modnaya.ru/_pu/2/42477906.jpg'),
+       (3, 'https://ya-modnaya.ru/_pu/2/42477906.jpg');
 
-INSERT INTO sub_product_images(sub_product_id,images)
-VALUES (1,'https://nuself.ru/s3/public/sa/5y/sak5yjqiplta1qyxmmjhg4iysd5h6wf8piovhf5i.jpeg?width=850?width=224'),
-       (2,'https://ladylike.ua/f/imagecache/product_list/womens-clothing/2023/plate_chernoe_v_rozovye_vetochki_0.jpg'),
-       (3,'https://ae01.alicdn.com/kf/HTB1mlnnMNTpK1RjSZFMq6zG_VXaZ/Kiddie.jpg_220x220.jpg'),
-       (4,'https://ladylike.ua/f/imagecache/product_list/img_1482.jpg'),
-       (5,'https://ladylike.ua/f/imagecache/product_list/womens-clothing/2023/bryuki_letnie_bezhevye_pryamye_0.jpg');
-
-INSERT INTO sub_products(id,color,color_hex_code,price,product_id)
-VALUES (1,'Черный','#000000',2000,3),
-       (1,'Красный','#FF0000',5900,33),
-       (1,'Фиолетовый','#800080',3999,14),
-       (1,'Розовый','#FFC0CB',10500,27),
-       (1,'Желтый','#FFFF00',6666,9);
-
-INSERT INTO supplies(id,accepted_products,actual_date,
-                     commission,created_at,planned_date,
-                     quantity_of_products,status,supply_cost,
-                     supply_number,supply_type,seller_id,warehouse_id)
-VALUES(1,200,'2023-07-07',300,'2023-07-13','2023-05-28',100000,
-       'DELIVERED',100,'SUP2021001','Курьерская служба',1,1),
-      (2,450,'2023-01-25',300,'2023-07-13','2023-05-28',60400,
-       'DELIVERED',500,'INV-2021-005','Личная передача',2,2),
-      (1,100,'2022-07-12',270,'2023-01-22','2023-05-28',23500,
-       'DELIVERED',1000,'PO-202108-001','Доставка',3,3),
-      (1,699,'2023-07-07',690,'2023-07-13','2023-04-28',467000,
-       'DELIVERED',200,'SUP2021001','Самовывоз',4,4),
-      (1,580,'2023-07-07',1000,'2023-05-13','2023-05-21',20000,
-       'DELIVERED',740,'INV-2021-005','Почтовая доставка',5,5);
+INSERT INTO supplies(id, accepted_products, actual_date,
+                     commission, created_at, planned_date,
+                     quantity_of_products, status, supply_cost,
+                     supply_number, supply_type, seller_id, warehouse_id)
+VALUES (1, 200, '2023-07-07', 300, '2023-07-13', '2023-05-28', 10000,
+        'DELIVERED', 100, 'SUP2021001', 'Курьерская служба', 1, 1),
+       (2, 450, '2023-01-25', 300, '2023-07-13', '2023-05-28', 60400,
+        'DELIVERED', 500, 'INV-2021-005', 'Личная передача', 2, 2),
+       (3, 100, '2022-07-12', 270, '2023-01-22', '2023-05-28', 23500,
+        'DELIVERED', 1000, 'PO-202108-001', 'Доставка', 3, 3),
+       (4, 699, '2023-07-07', 690, '2023-07-13', '2023-04-28', 46700,
+        'DELIVERED', 200, 'SUP2021001', 'Самовывоз', 4, 4),
+       (5, 580, '2023-07-07', 1000, '2023-05-13', '2023-05-21', 2000,
+        'DELIVERED', 740, 'INV-2021-005', 'Почтовая доставка', 5, 5);
 
 
 

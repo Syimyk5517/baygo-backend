@@ -20,7 +20,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chat_gen")
-    @SequenceGenerator(name = "chat_gen", sequenceName = "chat_seq", allocationSize = 1)
+    @SequenceGenerator(name = "chat_gen", sequenceName = "chat_seq", allocationSize = 1, initialValue = 6)
     private Long id;
     private LocalDateTime time;
 
