@@ -17,7 +17,7 @@ public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirect
 
         String transitDirectionQuery= """
                 SELECT
-                    w.id AS id,
+                    w.id AS warehouseId,
                     w.transit_warehouse AS transit_warehouse,
                     w.location AS location,
                     s.supply_cost AS supply_cost
