@@ -23,7 +23,6 @@ public class Category {
     private Long id;
     private String name;
 
-    @OneToMany(cascade = ALL)
-    @JoinColumn(name = "category_id")
+    @OneToMany(mappedBy = "category", cascade = ALL)
     private List<SubCategory> subCategories;
 }

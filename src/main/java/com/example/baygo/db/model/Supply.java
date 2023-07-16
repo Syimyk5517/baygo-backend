@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -42,4 +43,7 @@ public class Supply {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
+
+    @OneToMany(mappedBy = "supply", cascade = ALL)
+    private List<SupplyProduct> supplyProduct;
 }

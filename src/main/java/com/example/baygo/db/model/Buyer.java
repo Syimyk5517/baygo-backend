@@ -30,9 +30,6 @@ public class Buyer {
     @OneToMany(mappedBy = "buyer", cascade = ALL)
     private List<Appeal> appeals;
 
-    @ManyToMany(mappedBy = "buyers", cascade = {PERSIST, MERGE, REFRESH, DETACH})
-    private List<Chat> chats;
-
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "buyers_favorites",
             joinColumns = @JoinColumn(name = "buyer_id"),
@@ -51,9 +48,8 @@ public class Buyer {
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> lastViews;
 
-    @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @OneToMany(mappedBy = "buyer",cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    private List<Order> orders;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")

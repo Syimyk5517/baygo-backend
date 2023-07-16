@@ -24,6 +24,23 @@ VALUES (1, 'buyer@gmail.com',
         '$2a$12$ggPOFn4K3GLQPQrPU8dxNuRUvv/BXplU/oHUCQVT3DL63h0W9ESgS',
         '+996550232345', 'SELLER');
 
+INSERT INTO buyers(id, date_of_birth, user_id, address, gender)
+VALUES (1,
+        '2003-03-18', 1,
+        'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10', 'FEMALE'),
+       (2,
+        '1999-09-09', 2,
+        'Область Ош,город Ноокат,улица Г.Айтиева 112,подъезд 5, кв 67', 'MALE'),
+       (3,
+        '2000-11-30', 3,
+        'Область Талас,город Талас,улица Чыныке бий 54,подъезд 11,кв 76 ', 'FEMALE'),
+       (4,
+        '1990-10-23', 1,
+        'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE'),
+       (5,
+        '2002-12-12', 2,
+        'Область Чуй,город Бишкек,улица Садырбаева 1/5,подъезд 1, кв 5', 'MALE');
+
 INSERT INTO sellers(id, bic, itn, about_store, address, name_of_store, photo, store_logo, vendor_number, user_id)
 VALUES (1, 'DEUTDEFF', '765-43-2109',
         'Fashion Haven - ваш источник стильной и модной одежды',
@@ -61,54 +78,42 @@ VALUES (1, 'DEUTDEFF', '765-43-2109',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSayXzEWDRnX_uUTYElbSJzzqXW_CslUUnKmw&usqp=CAU',
         'SUPP98765', 3);
 
-INSERT INTO chats(id, time, seller_id)
-VALUES (1,
-        '2023-07-13 11:48:20',1),
-       (2,
-        '2023-05-13 23:20:12',2),
-       (3,
-        '2022-04-13 09:30:45',3),
-       (4,
-        '2023-01-13 12:48:30',4),
-       (5,
-        '2023-06-13 03:12:09',2);
+INSERT INTO customers(id, first_name, last_name,
+                      address, city, country, email,
+                      phone_number, postal_code)
+VALUES (1, 'Курстан', 'Эркинбаев',
+        'Ош', 'Ош', 'Кыргызстан',
+        'kurstan@gmail.com',
+        '+996555990123', '723000'),
+       (2, 'Нурадил', 'Жолдошов',
+        'Талас', 'Талас', 'Кыргызстан',
+        'nuradil@gmail.com',
+        '+996703425039', '723000'),
+       (3, 'Сыймык', 'Жумабек уулу',
+        'Кара Суу', 'Ош', 'Кыргызстан',
+        'syimyk@gmail.com',
+        '+996990124556', '723040'),
+       (4, 'Алтынбек', 'Шакиров',
+        'Токтогул', 'Жалал Абад', 'Кыргызстан',
+        'altynbek@gmail.com',
+        '+996222345678', '724000'),
+       (5, 'Адил', 'Айтбаев',
+        'Бишкек', 'Бишкек', 'Кыргызстан',
+        'adil@gmail.com',
+        '+996990129090', '720000');
 
-INSERT INTO messages(id, message, time, chat_id)
-VALUES (1,
-        'Здравствуйте! У меня вопрос по товару.', '2023-07-11 12:45:25', 1),
-       (2,
-        'Есть ли у вас скидки при заказе от 50 штук?', '2023-07-14 00:30:30', 2),
-       (3,
-        'Подскажите,какая стоимость рассылки в вашем сервисе?', '2023-06-28 07:50:45', 3);
-
-INSERT INTO orders(id, date_of_order, date_of_received, order_number, payment_type, status, total_price, with_delivery)
+INSERT INTO orders(id, date_of_order, date_of_received, order_number, payment_type, status, total_price, with_delivery,
+                   buyer_id, customer_id)
 VALUES (1, '2022-12-30', '2023-01-23', '111',
-        'ONLINE_BY_CARD', 'DELIVERED', 2000, TRUE),
+        'ONLINE_BY_CARD', 'DELIVERED', 2000, TRUE, 1, 1),
        (2, '2023-12-21', '2023-10-05', '222',
-        'OFFLINE_BY_CARD', 'DELIVERED', 4560, TRUE),
+        'OFFLINE_BY_CARD', 'DELIVERED', 4560, TRUE, 2, 2),
        (3, '2023-02-11', '2023-08-05', '333',
-        'OFFLINE_BY_CASH', 'DELIVERED', 1999, FALSE),
+        'OFFLINE_BY_CASH', 'DELIVERED', 1999, FALSE, 3, 3),
        (4, '2023-06-15', '2023-04-12', '444',
-        'OFFLINE_BY_CASH', 'DELIVERED', 870, FALSE),
+        'OFFLINE_BY_CASH', 'DELIVERED', 870, FALSE, 4, 4),
        (5, '2023-02-11', '2023-08-05', '555',
-        'ONLINE_BY_CARD', 'DELIVERED', 3690, TRUE);
-
-INSERT INTO buyers(id, date_of_birth, message_id, order_id, user_id, address, gender)
-VALUES (1,
-        '2003-03-18', 1, 1, 1,
-        'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10', 'FEMALE'),
-       (2,
-        '1999-09-09', 1, 2, 2,
-        'Область Ош,город Ноокат,улица Г.Айтиева 112,подъезд 5, кв 67', 'MALE'),
-       (3,
-        '2000-11-30', 3, 3, 3,
-        'Область Талас,город Талас,улица Чыныке бий 54,подъезд 11,кв 76 ', 'FEMALE'),
-       (4,
-        '1990-10-23', 1, 4, 1,
-        'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE'),
-       (5,
-        '2002-12-12', 2, 5, 2,
-        'Область Чуй,город Бишкек,улица Садырбаева 1/5,подъезд 1, кв 5', 'MALE');
+        'ONLINE_BY_CARD', 'DELIVERED', 3690, TRUE, 5, 5);
 
 INSERT INTO appeals(id, title, divide, detailed_appeal, buyer_id)
 VALUES (1,
@@ -177,36 +182,36 @@ VALUES (1,
 INSERT INTO products(id, articul, brand, composition,
                      date_of_change, date_of_create,
                      description, is_draft, manufacturer,
-                     name, rating, season, style, discount_id,
+                     name, rating, season, style,
                      seller_id, sub_category_id)
 VALUES (1, 'SKU12345', 'ZARA', 'Шерсть/Кашемир', '2023-03-03', '2023-01-23',
         'Приталенное платье с V-образным вырезом и длинными рукавами',
-        FALSE, 'БайGo', 'Платье', 9.8, 'Летний', 'Вечерний', 1, 1, 1),
+        FALSE, 'БайGo', 'Платье', 9.8, 'Летний', 'Вечерний', 1, 1),
        (2, 'CODE789', 'Calvin Klein', 'Хлопок/Полиэстер/Эластан',
         '2022-12-03', '2023-05-29',
         'Стильные шорты с высокой посадкой и широким поясом',
-        TRUE, 'БайGo', 'Шорты', 9.8, 'Летний', 'Классический стиль', 2, 2, 20),
+        TRUE, 'БайGo', 'Шорты', 9.8, 'Летний', 'Классический стиль', 2, 20),
        (3, 'ART123', 'Gucci', 'Полиэстер/Вискоза/Эластан', '2023-03-03', '2023-01-23',
         'Удобный свитшот с капюшоном и карманом-кенгуру',
-        FALSE, 'БайGo', 'Свитшот', 9.8, 'Зимний', 'Спортивный', 3, 3, 7),
+        FALSE, 'БайGo', 'Свитшот', 9.8, 'Зимний', 'Спортивный', 3, 7),
        (4, 'T-9876', 'Adidas', 'Акрил/Нейлон', '2023-03-03', '2022-01-23',
         'Классическая рубашка с воротником и длинными рукавами',
-        TRUE, 'БайGo', 'Рубашка', 9.8, 'Осенний', 'Бизнес-стиль', 4, 4, 12),
+        TRUE, 'БайGo', 'Рубашка', 9.8, 'Осенний', 'Бизнес-стиль', 4, 12),
        (5, '123ABC', 'H&M', '100% Хлопок', '2023-03-03', '2022-12-30',
         'Стильная футболка с круглым вырезом и короткими рукавами.',
-        FALSE, 'БайGo', 'Футболка', 3.3, 'Летний', 'Уличный стиль', 5, 5, 25);
+        FALSE, 'БайGo', 'Футболка', 3.3, 'Летний', 'Уличный стиль', 5, 25);
 
-INSERT INTO sub_products(id, color, color_hex_code, price, product_id)
+INSERT INTO sub_products(id, color, color_hex_code, price, product_id, discount_id)
 VALUES (1,
-        'Черный', '#000000', 2000, 3),
+        'Черный', '#000000', 2000, 3, 1),
        (2,
-        'Красный', '#FF0000', 5900, 1),
+        'Красный', '#FF0000', 5900, 1, 2),
        (3,
-        'Фиолетовый', '#800080', 3999, 2),
+        'Фиолетовый', '#800080', 3999, 2, 3),
        (4,
-        'Розовый', '#FFC0CB', 10500, 5),
+        'Розовый', '#FFC0CB', 10500, 5, 4),
        (5,
-        'Желтый', '#FFFF00', 6666, 4);
+        'Желтый', '#FFFF00', 6666, 4, 5);
 
 INSERT INTO sub_product_images(sub_product_id, images)
 VALUES (1,
@@ -253,12 +258,6 @@ VALUES (1, 1),
        (4, 4),
        (5, 5);
 
-INSERT INTO chats_buyers(chat_id, buyers_id)
-VALUES (1, 4),
-       (2, 3),
-       (3, 5),
-       (4, 4),
-       (5, 2);
 
 INSERT INTO warehouses(id, name, location)
 VALUES (1, 'БайGo', 'Бишкек'),
@@ -267,29 +266,6 @@ VALUES (1, 'БайGo', 'Бишкек'),
        (4, 'Амазон', 'Ош'),
        (5, 'Караван', 'Баткен');
 
-INSERT INTO customers(id, first_name, last_name,
-                      address, city, country, email,
-                      phone_number, postal_code)
-VALUES (1, 'Курстан', 'Эркинбаев',
-        'Ош', 'Ош', 'Кыргызстан',
-        'kurstan@gmail.com',
-        '+996555990123', '723000'),
-       (2, 'Нурадил', 'Жолдошов',
-        'Талас', 'Талас', 'Кыргызстан',
-        'nuradil@gmail.com',
-        '+996703425039', '723000'),
-       (3, 'Сыймык', 'Жумабек уулу',
-        'Кара Суу', 'Ош', 'Кыргызстан',
-        'syimyk@gmail.com',
-        '+996990124556', '723040'),
-       (4, 'Алтынбек', 'Шакиров',
-        'Токтогул', 'Жалал Абад', 'Кыргызстан',
-        'altynbek@gmail.com',
-        '+996222345678', '724000'),
-       (5, 'Адил', 'Айтбаев',
-        'Бишкек', 'Бишкек', 'Кыргызстан',
-        'adil@gmail.com',
-        '+996990129090', '720000');
 
 INSERT INTO mailing_list_subscribers (id, email, is_sale, is_discount, is_new)
 VALUES (1,
@@ -351,6 +327,13 @@ VALUES (1, 200, '2023-07-07', 300, '2023-07-13', '2023-05-28', 10000,
         'DELIVERED', 200, 'SUP2021001', 'Самовывоз', 4, 4),
        (5, 580, '2023-07-07', 1000, '2023-05-13', '2023-05-21', 2000,
         'DELIVERED', 740, 'INV-2021-005', 'Почтовая доставка', 5, 5);
+
+INSERT INTO supply_products(id, quantity, size_id, supply_id)
+VALUES (1, 100, 1, 1),
+       (2, 490, 2, 2),
+       (3, 999, 3, 3),
+       (4, 1209, 4, 4),
+       (5, 16830, 5, 5);
 
 
 

@@ -28,10 +28,6 @@ public class Seller {
     private String aboutStore;
     private String vendorNumber;
 
-    @OneToOne(mappedBy = "seller", cascade = ALL)
-    @JoinColumn(name = "chat_id")
-    private Chat chat;
-
     @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;
 
