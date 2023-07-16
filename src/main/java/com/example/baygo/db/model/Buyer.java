@@ -20,7 +20,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Buyer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "buyer_gen")
-    @SequenceGenerator(name = "buyer_gen", sequenceName = "bayer_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "buyer_gen", sequenceName = "bayer_seq", allocationSize = 1, initialValue = 3)
     private Long id;
     private LocalDate dateOfBirth;
     @Enumerated(EnumType.STRING)

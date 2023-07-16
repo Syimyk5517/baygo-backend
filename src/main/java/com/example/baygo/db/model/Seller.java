@@ -17,7 +17,7 @@ import static jakarta.persistence.CascadeType.ALL;
 public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_gen")
-    @SequenceGenerator(name = "seller_gen", sequenceName = "seller_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "seller_gen", sequenceName = "seller_seq", allocationSize = 1, initialValue = 4)
     private Long id;
     private String photo;
     private String address;
