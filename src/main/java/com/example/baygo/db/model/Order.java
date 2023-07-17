@@ -26,7 +26,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_gen")
-    @SequenceGenerator(name = "order_gen", sequenceName = "order_seq", allocationSize = 1)
+    @SequenceGenerator(name = "order_gen", sequenceName = "order_seq", allocationSize = 1, initialValue = 6)
     private Long id;
     private LocalDate dateOfOrder;
     private LocalDate dateOfReceived;
@@ -38,8 +38,9 @@ public class Order {
     private PaymentType paymentType;
     private String orderNumber;
 
-    @OneToMany(mappedBy = "order", cascade = {REFRESH, DETACH, MERGE, PERSIST})
-    private List<Buyer> buyers;
+    @ManyToOne(cascade = {REFRESH, DETACH, MERGE, PERSIST})
+    @JoinColumn(name = "buyer_id")
+    private Buyer buyer;
 
     @ElementCollection
     @JoinTable(name = "orders_sub_products_size",
@@ -47,4 +48,6 @@ public class Order {
     @MapKeyJoinColumn(name = "sub_products_size_id")
     @Cascade({CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     private Map<Size, Integer> productCount;
+    @OneToOne(cascade = ALL)
+    private Customer customer;
 }
