@@ -9,8 +9,6 @@ import com.example.baygo.db.responses.SimpleResponse;
 import java.util.Date;
 
 public interface CustomOrderRepository {
-    PaginationResponse<OrderResponse> getAll(int page, int size, String keyWord, Status status,Long sellerId);
-    SimpleResponse deleteById(Long orderId ,Long sellerId);
-
-    AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameofTime,boolean commission);
+    PaginationResponse<OrderResponse> getAll(int page, int size, String keyword, Status status,Long sellerId);
+    AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameofTime,boolean isCommission);
 }

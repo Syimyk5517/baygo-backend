@@ -22,9 +22,9 @@ public class OrderApi {
     @GetMapping("/search")
     PaginationResponse<OrderResponse> getAllOrders(@RequestParam(defaultValue = "1") int page,
                                                    @RequestParam(defaultValue = "6") int size,
-                                                   @RequestParam(required = false) String keyWord,
+                                                   @RequestParam(required = false) String keyword,
                                                    @RequestParam(required = false) Status status) {
-        return orderService.getAll(page, size, keyWord, status);
+        return orderService.getAll(page, size, keyword, status);
     }
 
     @DeleteMapping("/orderId")
@@ -33,7 +33,7 @@ public class OrderApi {
     }
 
     @GetMapping("/analysis")
-    AnalysisResponse weeklyAnalysisOrder(@RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate, @RequestParam(required = false) Long warehouseId,@RequestParam(required = false) String nameOfTime,@RequestParam(required = false) boolean commission) {
-        return orderService.getWeeklyAnalisys(startDate, endDate, warehouseId,nameOfTime,commission);
+    AnalysisResponse weeklyAnalysisOrder(@RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate, @RequestParam(required = false) Long warehouseId,@RequestParam(required = false) String nameOfTime,@RequestParam(required = false) boolean isCommission) {
+        return orderService.getWeeklyAnalisys(startDate, endDate, warehouseId,nameOfTime,isCommission);
     }
 }
