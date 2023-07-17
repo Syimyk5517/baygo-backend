@@ -15,7 +15,7 @@ import lombok.Setter;
 public class MailingListSubscriber {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mailing_list_subscriber_gen")
-    @SequenceGenerator(name = "mailing_list_subscriber_gen", sequenceName = "mailing_list_subscriber_seq", allocationSize = 1)
+    @SequenceGenerator(name = "mailing_list_subscriber_gen", sequenceName = "mailing_list_subscriber_seq", allocationSize = 1, initialValue = 6)
     private Long id;
     private String email;
     private boolean isSale;
