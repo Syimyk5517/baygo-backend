@@ -5,6 +5,7 @@ import com.example.baygo.db.dto.response.SupplyResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Supply;
 import com.example.baygo.db.repository.SupplyRepository;
+import com.example.baygo.db.repository.customRepository.SupplyCustomRepository;
 import com.example.baygo.db.service.SupplyService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @Transactional
 public class SupplyServiceImpl implements SupplyService {
     private final SupplyRepository repository;
+    private final SupplyCustomRepository customRepository;
 
     @Override
     public SupplyResponse getSupplyById(Long id) {
