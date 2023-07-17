@@ -18,7 +18,7 @@ public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirect
         String transitDirectionQuery= """
                 SELECT
                     w.id AS warehouseId,
-                    w.transit_warehouse AS transit_warehouse,
+                    w.name AS name,
                     w.location AS location,
                     s.supply_cost AS supply_cost
                 FROM warehouses w
@@ -28,7 +28,7 @@ public class CustomTransitDirectionRepositoryImpl implements CustomTransitDirect
         return jdbcTemplate.query(transitDirectionQuery, (resultSet, i)->
                 new SupplyTransitDirectionResponse(
                         resultSet.getLong("warehouseId"),
-                        resultSet.getString("transit_wareHouse"),
+                        resultSet.getString("name"),
                         resultSet.getString("location"),
                         resultSet.getBigDecimal("supply_cost")),location);
     }

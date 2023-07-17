@@ -19,5 +19,5 @@ public class Warehouse {
     private Long id;
     private String name;
     private String location;
-    private String transitWarehouse;
+
 }
