@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public record ProductResponseForSeller (
      Long productId,
-     String mainImage,
+     String image,
      String vendorNumber,
      String productArticle,
      String product,

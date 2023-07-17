@@ -17,7 +17,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Page<ProductResponseForSeller> getAllProductOfSeller(Pageable pageable) {
+    public Page<ProductResponseForSeller> getAllProductOfSeller(Pageable pageable, long sellerId) {
         String countSql = """
         select count(*)
         from sub_products sp
@@ -25,7 +25,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                  join sizes s on sp.id = s.sub_product_id
                  join sub_product_images spi on sp.id = spi.sub_product_id
                  join sellers sel on pr.seller_id = sel.id
-        """;
+        where sel.id = 
+        """ + sellerId;
         int total = jdbcTemplate.queryForObject(countSql, Integer.class);
 
         String sql = """
@@ -46,12 +47,11 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                  join sizes s on sp.id = s.sub_product_id
                  join sub_product_images spi on sp.id = spi.sub_product_id
                  join sellers sel on pr.seller_id = sel.id
+        where sel.id = ?
         limit ? offset ?
         """;
 
-        int limit = pageable.getPageSize();
-        int offset = (int) pageable.getOffset();
-        List<ProductResponseForSeller> response = jdbcTemplate.query(sql, new Object[]{limit, offset}, (rs, i) -> new ProductResponseForSeller(
+        List<ProductResponseForSeller> response = jdbcTemplate.query(sql, new Object[]{sellerId,pageable.getPageSize(),pageable.getOffset()}, (rs, i) -> new ProductResponseForSeller(
                 rs.getLong("sub_product_id"),
                 rs.getString("sub_product_photo"),
                 rs.getString("vendor_number"),
@@ -69,7 +69,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     }
 
     @Override
-    public Page<ProductResponseForSeller> getAllWithFilter(Pageable pageable) {
+    public Page<ProductResponseForSeller> getAllWithFilter(Pageable pageable, long sellerId) {
         String countSql = """
         select count(*)
         from sub_products sp
@@ -77,7 +77,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                  left join sizes s on sp.id = s.sub_product_id
                  left join sub_product_images spi on sp.id = spi.sub_product_id
                  join sellers sel on pr.seller_id = sel.id
-        """;
+        where sel.id =
+        """ + sellerId;
         int total = jdbcTemplate.queryForObject(countSql, Integer.class);
 
         String sql = """
@@ -98,13 +99,14 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                  join sizes s on sp.id = s.sub_product_id
                  join sub_product_images spi on sp.id = spi.sub_product_id
                  join sellers sel on pr.seller_id = sel.id
+        where sel.id = ?
         order by pr.date_of_change desc
         limit ? offset ?
         """;
 
         int limit = pageable.getPageSize();
         int offset = (int) pageable.getOffset();
-        List<ProductResponseForSeller> response = jdbcTemplate.query(sql, new Object[]{limit, offset}, (rs, i) -> new ProductResponseForSeller(
+        List<ProductResponseForSeller> response = jdbcTemplate.query(sql, new Object[]{sellerId,limit, offset}, (rs, i) -> new ProductResponseForSeller(
                 rs.getLong("sub_product_id"),
                 rs.getString("sub_product_photo"),
                 rs.getString("vendor_number"),

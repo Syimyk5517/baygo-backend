@@ -35,13 +35,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseForSeller> findAll(int page, int size) {
-        Page<ProductResponseForSeller> pageProduct = customProductRepository.getAllProductOfSeller(PageRequest.of(page, size));
+        long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        Page<ProductResponseForSeller> pageProduct = customProductRepository.getAllProductOfSeller(PageRequest.of(page, size),sellerId);
         return pageProduct.getContent();
     }
 
     @Override
     public List<ProductResponseForSeller> findAllWithFilter(int page, int size) {
-        Page<ProductResponseForSeller> pageProducts = customProductRepository.getAllWithFilter(PageRequest.of(page, size));
+        long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        Page<ProductResponseForSeller> pageProducts = customProductRepository.getAllWithFilter(PageRequest.of(page, size),sellerId);
         return pageProducts.getContent();
     }
 
