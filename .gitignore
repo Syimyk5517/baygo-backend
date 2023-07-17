@@ -33,6 +33,7 @@ src/main/resources/application-nuriza.properties
 src/main/resources/application-kutman.properties
 src/main/resources/application-golden.properties
 src/main/resources/application-saltanat.properties
+src/main/resources/application-kanykei.properties
 
 ### VS Code ###
 .vscode/

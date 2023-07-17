@@ -21,7 +21,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_gen")
-    @SequenceGenerator(name = "review_gen", sequenceName = "review_seq", allocationSize = 1)
+    @SequenceGenerator(name = "review_gen", sequenceName = "review_seq", allocationSize = 1, initialValue = 4)
     private Long id;
     private String text;
     private int grade;
