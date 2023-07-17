@@ -19,11 +19,10 @@ import static jakarta.persistence.CascadeType.ALL;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_gen")
-    @SequenceGenerator(name = "category_gen", sequenceName = "category_seq", allocationSize = 1)
+    @SequenceGenerator(name = "category_gen", sequenceName = "category_seq", allocationSize = 1, initialValue = 4)
     private Long id;
     private String name;
 
-    @OneToMany(cascade = ALL)
-    @JoinColumn(name = "category_id")
+    @OneToMany(mappedBy = "category", cascade = ALL)
     private List<SubCategory> subCategories;
 }
