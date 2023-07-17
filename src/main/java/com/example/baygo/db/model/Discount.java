@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "discount_gen")
-    @SequenceGenerator(name = "discount_gen", sequenceName = "discount_seq", allocationSize = 1)
+    @SequenceGenerator(name = "discount_gen", sequenceName = "discount_seq", allocationSize = 1, initialValue = 6)
     private Long id;
     private int percent;
     private LocalDate dateOfStart;
