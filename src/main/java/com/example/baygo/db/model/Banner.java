@@ -15,7 +15,7 @@ import lombok.Setter;
 public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "banner_gen")
-    @SequenceGenerator(name = "banner_gen", sequenceName = "banner_seq", allocationSize = 1)
+    @SequenceGenerator(name = "banner_gen", sequenceName = "banner_seq", allocationSize = 1, initialValue = 6)
     private Long id;
     private String image;
 }
