@@ -1,5 +1,6 @@
 package com.example.baygo.db.dto.request;
 
+import com.example.baygo.db.model.Seller;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

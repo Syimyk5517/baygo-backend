@@ -21,15 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class SellerProfileApi {
     private final SellerService service;
     @Operation(summary = "Update seller profile", method = "This is create seller profile method")
-    @PreAuthorize("hasAuthority('SELLER, ADMIN')")
     @PutMapping
-    public SimpleResponse createSellerProfile(Long userId, SellerProfileRequest request){
-       return service.sellerProfile(userId,request);
+    public SimpleResponse createSellerProfile(SellerProfileRequest request){
+       return service.sellerProfile(request);
     }
     @Operation(summary = "Update seller store profile", method = "This is create seller profile method")
-    @PreAuthorize("hasAuthority('SELLER, ADMIN')")
-    @PutMapping
-    public SimpleResponse updateSellerStoreProfile(Long sellerId, SellerStoreInfoRequest request){
-        return service.sellerStoreInfo(sellerId,request);
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public SimpleResponse updateSellerStoreProfile(SellerStoreInfoRequest request){
+        return service.sellerStoreInfo(request);
     }
 }
