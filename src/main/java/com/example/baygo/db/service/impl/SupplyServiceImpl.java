@@ -1,5 +1,6 @@
 package com.example.baygo.db.service.impl;
 
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.SupplyResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -11,8 +12,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,21 +30,19 @@ public class SupplyServiceImpl implements SupplyService {
                 .warehouseName(supply.getWarehouse().getName())
                 .supplyType(supply.getSupplyType())
                 .sellerPhoneNumber(supply.getSeller().getUser().getPhoneNumber())
-                .supplyCost(supply.getSupplyCost())
-                .preliminaryCostOfAcceptance(supply.getSupplyCost())//
+                .supplyCost(supply.getSupplyCost().intValue() == 0 ? "Бесплатно" : supply.getSupplyCost().toString())
+                .preliminaryCostOfAcceptance(supply.getSupplyCost())//Предварительная стоимость приемки
                 .dateOfCreation(supply.getCreatedAt())
-                .dateOfChange(supply.getCreatedAt())//
+                .dateOfChange(supply.getCreatedAt())//Дата изменения
                 .plannedDate(supply.getPlannedDate())
                 .actualDate(supply.getActualDate())
                 .quantityProductsPcs(supply.getQuantityOfProducts())
                 .acceptedPieces(supply.getAcceptedProducts())
-        .build();
+                .build();
     }
 
-
     @Override
-    public List<SupplyProductResponse> searchSupplyProducts(String keyWord,int page,int size) {
-
-        return null;
+    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(String keyWord, int page, int size) {
+        return customRepository.searchSupplyProducts(keyWord, page, size);
     }
 }

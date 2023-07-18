@@ -12,7 +12,7 @@ public record SupplyResponse(
         String warehouseName,
         String supplyType,
         String sellerPhoneNumber,
-        BigDecimal supplyCost,
+        String supplyCost,
         BigDecimal preliminaryCostOfAcceptance,
         LocalDate dateOfCreation,
         LocalDate dateOfChange,
