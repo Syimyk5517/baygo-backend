@@ -22,6 +22,7 @@ public class SellerProfileApi {
     private final SellerService service;
     @Operation(summary = "Update seller profile", method = "This is create seller profile method")
     @PutMapping
+    @PreAuthorize("hasAuthority('SELLER')")
     public SimpleResponse createSellerProfile(SellerProfileRequest request){
        return service.sellerProfile(request);
     }

@@ -4,11 +4,8 @@ import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.SellerProfileRequest;
 import com.example.baygo.db.dto.request.SellerStoreInfoRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
-import com.example.baygo.db.repository.SellerRepository;
-import com.example.baygo.db.repository.UserRepository;
 import com.example.baygo.db.service.SellerService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +17,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class SellerServiceImpl implements SellerService {
-    private final UserRepository userRepository;
-    private final SellerRepository sellerRepository;
     private final JwtService jwtService;
 
     @Transactional
