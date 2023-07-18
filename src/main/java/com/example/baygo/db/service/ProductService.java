@@ -10,7 +10,6 @@ public interface ProductService {
    SimpleResponse saveProduct(ProductRequest request);
    int getBarcode();
 
-    List<ProductResponseForSeller> findAll(int page, int size);
+    List<ProductResponseForSeller> findAll(int page, int size, boolean isFiltered);
 
-    List<ProductResponseForSeller> findAllWithFilter(int page, int size);
 }

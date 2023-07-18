@@ -47,15 +47,8 @@ public class ProductSellerApi {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('SELLER')")
     public List<ProductResponseForSeller> getAllProductForSeller(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "11") int size){
-        return productService.findAll(page,size);
-    }
-
-    @Operation(summary = "Get all product with filter", description = "This method gets all products filtered")
-    @GetMapping("/all-filter")
-    @PreAuthorize("hasAuthority('SELLER')")
-    public List<ProductResponseForSeller> getAllProductForSellerWithFilter(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "11") int size){
-        return productService.findAllWithFilter(page,size);
+                                                                 @RequestParam(defaultValue = "11") int size,
+                                                                 @RequestParam(defaultValue = "false") boolean isFiltered){
+        return productService.findAll(page,size,isFiltered);
     }
 }

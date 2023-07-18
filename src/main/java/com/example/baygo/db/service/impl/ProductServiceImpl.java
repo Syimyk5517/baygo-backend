@@ -34,17 +34,15 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
 
     @Override
-    public List<ProductResponseForSeller> findAll(int page, int size) {
+    public List<ProductResponseForSeller> findAll(int page, int size, boolean isFiltered) {
         long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        if (isFiltered){
+            Page<ProductResponseForSeller> pageProducts = customProductRepository.getAllWithFilter(PageRequest.of(page, size),sellerId);
+            return pageProducts.getContent();
+        }else {
         Page<ProductResponseForSeller> pageProduct = customProductRepository.getAllProductOfSeller(PageRequest.of(page, size),sellerId);
         return pageProduct.getContent();
-    }
-
-    @Override
-    public List<ProductResponseForSeller> findAllWithFilter(int page, int size) {
-        long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<ProductResponseForSeller> pageProducts = customProductRepository.getAllWithFilter(PageRequest.of(page, size),sellerId);
-        return pageProducts.getContent();
+        }
     }
 
     @Override
