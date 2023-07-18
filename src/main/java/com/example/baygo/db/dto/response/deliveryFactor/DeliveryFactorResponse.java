@@ -1,7 +1,6 @@
 package com.example.baygo.db.dto.response.deliveryFactor;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

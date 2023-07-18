@@ -1,4 +1,4 @@
-package com.example.baygo.db.repository.custum;
+package com.example.baygo.db.custom;
 
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryTypeResponse;
@@ -6,43 +6,45 @@ import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
 import com.example.baygo.db.model.enums.DeliveryType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @RequiredArgsConstructor
-public class DeliveryFactorImpl implements DeliveryFactor {
+@Repository
+public class CustomDeliveryFactorImpl implements CustomDeliveryFactor {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
         int offset = (page - 1) * size;
         String searchKeyword = "%" + keyword + "%";
-
         String deliveryFactorSql = """
-                SELECT w.id AS warehouse_id,
-                       w.warehouse_name AS warehouse_name            
-                FROM warehouses w 
-                WHERE w.warehouse_name ILIKE ?
-                LIMIT ? OFFSET ?
+                SELECT w.id AS w_id,
+                       w.name AS w_name                
+                FROM warehouses w
                 """;
+        if (keyword != null) {
+            deliveryFactorSql += "WHERE w.name ILIKE ? ";
+        }
+        deliveryFactorSql += "LIMIT ? OFFSET ?";
 
         return jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
             DeliveryFactorResponse deliveryFactorResponse = new DeliveryFactorResponse();
-            deliveryFactorResponse.setWarehouseId(resultSet.getLong("warehouse_id"));
-            deliveryFactorResponse.setWarehouseName(resultSet.getString("warehouse_name"));
+            deliveryFactorResponse.setWarehouseId(resultSet.getLong("w_id"));
+            deliveryFactorResponse.setWarehouseName(resultSet.getString("w_name"));
 
             String deliveryTypesSql = """
-                    SELECT DISTINCT s.supply_type AS supply_type
+                    SELECT DISTINCT s.delivery_type AS delivery_type
                     FROM supplies s
                     WHERE s.warehouse_id = ?
                     """;
 
             List<DeliveryTypeResponse> deliveryTypeResponses = jdbcTemplate.query(deliveryTypesSql, (innermostResultSet, d) -> {
                 DeliveryTypeResponse deliveryTypeResponse = new DeliveryTypeResponse();
-                deliveryTypeResponse.setDeliveryType(DeliveryType.valueOf(innermostResultSet.getString("supply_type")));
+                deliveryTypeResponse.setDeliveryType(DeliveryType.valueOf(innermostResultSet.getString("delivery_type")));
 
                 if (date == null) {
                     LocalDate currentDate = LocalDate.now();
@@ -50,7 +52,7 @@ public class DeliveryFactorImpl implements DeliveryFactor {
                         LocalDate futureDate = currentDate.plusDays(i);
                         WarehouseCostResponse warehouseCostResponse = warehouseCost(
                                 deliveryFactorResponse.getWarehouseId(), deliveryTypeResponse.getDeliveryType(), futureDate);
-                        deliveryTypeResponse.setWarehouseCostResponses(List.of(warehouseCostResponse));
+                        deliveryTypeResponse.addWarehouseCost(warehouseCostResponse);
                     }
                 } else {
                     WarehouseCostResponse warehouseCostResponse = warehouseCost(
@@ -63,19 +65,27 @@ public class DeliveryFactorImpl implements DeliveryFactor {
 
             deliveryFactorResponse.setDeliveryTypeResponses(deliveryTypeResponses);
             return deliveryFactorResponse;
-        }, searchKeyword, size, offset);
+        }, (keyword != null) ? new Object[]{searchKeyword, size, offset} : new Object[]{size, offset});
 
     }
 
     private WarehouseCostResponse warehouseCost(Long warehouseId, DeliveryType deliveryType, LocalDate date) {
-        String sql = "SELECT COUNT(*) FROM supplies s WHERE s.warehouse_id = ? AND s.supply_type = ? AND s.created_at = ?";
-        int supplyCount = jdbcTemplate.queryForObject(sql, Integer.class, warehouseId, deliveryType.name(), date);
+        String sql = """
+                    SELECT s.planned_date AS planned_date
+                    FROM supplies s
+                    WHERE s.warehouse_id = ? AND s.delivery_type = ? AND s.planned_date = ?
+                """;
 
+        List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {
+            WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+            warehouseCostResponse.setDate(innermostResult.getDate("planned_date").toLocalDate());
+            return warehouseCostResponse;
+        }, warehouseId, deliveryType.name(), date);
         WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
         warehouseCostResponse.setDate(date);
-        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(supplyCount / 10 * 2000L));
-        warehouseCostResponse.setPlat(supplyCount < 11 ? "Бесплатно" : "x" + supplyCount / 10);
-
+        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
+        warehouseCostResponse.setPlat(warehouseCostResponses.size() < 11 ? "Free" : "x" + warehouseCostResponses.size() / 10);
         return warehouseCostResponse;
+
     }
 }

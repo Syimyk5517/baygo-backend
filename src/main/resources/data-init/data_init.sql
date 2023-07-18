@@ -295,17 +295,17 @@ VALUES (1, 'https://ya-modnaya.ru/_pu/2/42477906.jpg'),
 INSERT INTO supplies(id, accepted_products, actual_date,
                      commission, created_at, planned_date,
                      quantity_of_products, status, supply_cost,
-                     supply_number, supply_type, seller_id, warehouse_id)
+                     supply_number, delivery_type, seller_id, warehouse_id)
 VALUES (1, 200, '2023-07-07', 300, '2023-07-13', '2023-05-28', 10000,
-        'DELIVERED', 100, 'SUP2021001', 'Курьерская служба', 1, 1),
+        'DELIVERED', 100, 'SUP2021001', 'КОРАБА', 1, 1),
        (2, 450, '2023-01-25', 300, '2023-07-13', '2023-05-28', 60400,
-        'DELIVERED', 500, 'INV-2021-005', 'Личная передача', 2, 2),
+        'DELIVERED', 500, 'INV-2021-005', 'МОНОПАЛЛЕТЫ', 2, 2),
        (3, 100, '2022-07-12', 270, '2023-01-22', '2023-05-28', 23500,
-        'DELIVERED', 1000, 'PO-202108-001', 'Доставка', 3, 3),
+        'DELIVERED', 1000, 'PO-202108-001', 'СУПЕРСЕЙФ', 3, 3),
        (4, 699, '2023-07-07', 690, '2023-07-13', '2023-04-28', 46700,
-        'DELIVERED', 200, 'SUP2021001', 'Самовывоз', 1, 4),
+        'DELIVERED', 200, 'SUP2021001', 'КОРОБА', 1, 4),
        (5, 580, '2023-07-07', 1000, '2023-05-13', '2023-05-21', 2000,
-        'DELIVERED', 740, 'INV-2021-005', 'Почтовая доставка', 3, 5);
+        'DELIVERED', 740, 'INV-2021-005', 'КОРОБА', 3, 5);
 
 INSERT INTO supply_products(id, quantity, size_id, supply_id)
 VALUES (1, 100, 1, 1),
