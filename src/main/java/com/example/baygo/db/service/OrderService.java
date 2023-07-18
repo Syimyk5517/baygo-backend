@@ -15,5 +15,5 @@ public interface OrderService {
     SimpleResponse deleteById(Long orderId);
 
 
-    AnalysisResponse getWeeklyAnalisys(Date startDate, Date endDate, Long warehouseId, String nameOfTime,boolean commission);
+    AnalysisResponse getWeeklyAnalisys(Date startDate, Date endDate, Long warehouseId, String nameOfTime);
 }
