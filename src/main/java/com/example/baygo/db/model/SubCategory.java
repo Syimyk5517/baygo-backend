@@ -18,7 +18,7 @@ import static jakarta.persistence.CascadeType.DETACH;
 public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_category_gen")
-    @SequenceGenerator(name = "sub_category_gen", sequenceName = "sub_category_seq", allocationSize = 1, initialValue = 38)
+    @SequenceGenerator(name = "sub_category_gen", sequenceName = "sub_category_seq", allocationSize = 1, initialValue = 37)
     private Long id;
     private String name;
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
