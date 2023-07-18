@@ -21,7 +21,7 @@ import static jakarta.persistence.CascadeType.DETACH;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_gen")
-    @SequenceGenerator(name = "product_gen", sequenceName = "product_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "product_gen", sequenceName = "product_seq", allocationSize = 1, initialValue = 16)
     private Long id;
     private String name;
     private String manufacturer;
