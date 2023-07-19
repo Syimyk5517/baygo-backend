@@ -36,6 +36,7 @@ src/main/resources/application-saltanat.properties
 src/main/resources/application-nurik.properties
 src/main/resources/application-kanykei.properties
 src/main/resources/application-adil's.properties
+src/main/resources/application-jiide.properties
 
 ### VS Code ###
 .vscode/
