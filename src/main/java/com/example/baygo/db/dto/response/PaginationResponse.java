@@ -15,3 +15,8 @@ public record PaginationResponse <T>(
         int totalPagesLow
 ) {
 }
+public record PaginationResponse<T> (
+        List<T> elements,
+        int page,
+        int pageSize
+){}
