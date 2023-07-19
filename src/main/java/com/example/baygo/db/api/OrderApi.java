@@ -28,13 +28,6 @@ public class OrderApi {
     PaginationResponse<OrderResponse> getAllOrders(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int size, @RequestParam(required = false) String keyword, @RequestParam(required = false) Status status) {
         return orderService.getAll(page, size, keyword, status);
     }
-
-    @Operation(summary = "Delete orders", description = "This method will delete the orders")
-    @DeleteMapping("/orderId")
-    SimpleResponse deleteOrder(@RequestParam Long orderId) {
-        return orderService.deleteById(orderId);
-    }
-
     @Operation(summary = "Get weekly analysis", description = "This method will get week analysis and filter ")
     @GetMapping("/analysis")
     AnalysisResponse weeklyAnalysisOrder(@RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate, @RequestParam(required = false) Long warehouseId, @RequestParam(required = false) String nameOfTime) {

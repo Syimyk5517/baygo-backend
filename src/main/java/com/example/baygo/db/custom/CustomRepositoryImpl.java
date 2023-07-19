@@ -11,8 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,67 +24,49 @@ public class CustomRepositoryImpl implements CustomOrderRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Override
     public PaginationResponse<OrderResponse> getAll(int page, int size, String keyword, Status status, Long sellerId) {
-        int offset = (page - 1) * size;
-        String query = """
-                SELECT o.id as orderId, s.barcode, u.first_name, sp.price, p.name as product_name, o.date_of_order, o.status
-                FROM orders o
-                         JOIN orders_sub_products_size osps ON o.id = osps.order_id
-                         JOIN sub_products sp ON osps.sub_products_size_id = sp.id
-                         JOIN products p ON sp.product_id = p.id
-                         JOIN sizes s ON sp.id = s.sub_product_id
-                         JOIN buyers b ON o.buyer_id = b.id
-                         JOIN users u ON b.user_id = u.id
-                WHERE p.seller_id = :sellerId
+        String baseQuery = """
+                   SELECT o.id as orderId, s.barcode, u.first_name, sp.price, p.name as product_name, o.date_of_order, o.status
+                   FROM orders o join orders_sizes os on o.id = os.order_id join sizes s on s.id = os.size_id
+                       join sub_products sp on sp.id = s.sub_product_id join products p on p.id = sp.product_id
+                            JOIN buyers b ON o.buyer_id = b.id
+                            JOIN users u ON b.user_id = u.id
+                   WHERE p.seller_id = :sellerId
                 """;
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("sellerId", sellerId);
 
         if (keyword != null && !keyword.isEmpty()) {
-            query += "AND (p.name iLIKE :keyword OR u.first_name iLIKE :keyword) ";
+            baseQuery += " AND (p.name ILIKE :keyword OR u.first_name ILIKE :keyword)";
             params.addValue("keyword", "%" + keyword + "%");
         }
 
         if (status != null) {
-            query += "AND o.status = :status ";
+            baseQuery += " AND o.status = :status";
             params.addValue("status", status.name());
         }
 
-        query += """
-                ORDER BY o.date_of_order DESC
-                LIMIT :size OFFSET :offset
-                """;
+        String countQuery = "SELECT COUNT(*) FROM (" + baseQuery + ") AS count_query";
+        String query = baseQuery + " ORDER BY o.date_of_order DESC LIMIT :size OFFSET :offset";
 
+        int offset = (page - 1) * size;
         params.addValue("size", size);
         params.addValue("offset", offset);
 
         List<OrderResponse> orderResponses = namedParameterJdbcTemplate.query(
                 query,
                 params,
-                (rs, rowNum) -> mapToOrderResponse(rs)
+                (rs, rowNum) -> new OrderResponse(
+                        rs.getLong("orderId"),
+                        rs.getInt("barcode"),
+                        rs.getString("first_name"),
+                        rs.getBigDecimal("price"),
+                        rs.getString("product_name"),
+                        rs.getObject("date_of_order", LocalDate.class),
+                        Status.valueOf(rs.getString("status"))
+                )
         );
-
-        String countQuery = """
-                SELECT COUNT(o.id)
-                FROM orders o
-                         JOIN orders_sub_products_size osps ON o.id = osps.order_id
-                         JOIN sub_products sp ON osps.sub_products_size_id = sp.id
-                         JOIN products p ON sp.product_id = p.id
-                         JOIN sizes s ON sp.id = s.sub_product_id
-                         JOIN buyers b ON o.buyer_id = b.id
-                         JOIN users u ON b.user_id = u.id
-                WHERE p.seller_id = :sellerId
-                """;
-
-        if (keyword != null && !keyword.isEmpty()) {
-            countQuery += "AND (p.name iLIKE :keyword OR u.first_name iLIKE :keyword) ";
-        }
-
-        if (status != null) {
-            countQuery += "AND o.status = :status ";
-        }
 
         int totalCount = namedParameterJdbcTemplate.queryForObject(
                 countQuery,
@@ -94,22 +74,18 @@ public class CustomRepositoryImpl implements CustomOrderRepository {
                 Integer.class
         );
 
-        return new PaginationResponse<>(orderResponses, page, size, totalCount);
+        int totalPage = (int) Math.ceil((double) totalCount / size);
+
+        PaginationResponse<OrderResponse> paginationResponse = new PaginationResponse<>(
+                orderResponses,
+                page,
+                size,
+                totalCount
+        );
+
+        return paginationResponse;
     }
-
-    private OrderResponse mapToOrderResponse(ResultSet rs) throws SQLException {
-        Long orderId = rs.getLong("orderId");
-        int barcode = rs.getInt("barcode");
-        String firstName = rs.getString("first_name");
-        BigDecimal productPrice = rs.getBigDecimal("price");
-        String productName = rs.getString("product_name");
-        LocalDate orderDate = rs.getDate("date_of_order").toLocalDate();
-        Status status = Status.valueOf(rs.getString("status"));
-
-        return new OrderResponse(orderId, barcode, firstName, productPrice, productName, orderDate, status);
-    }
-
-    @Override
+  @Override
     public AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameofTime, Long sellerId) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT ");

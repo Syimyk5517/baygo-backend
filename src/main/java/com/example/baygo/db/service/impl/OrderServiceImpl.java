@@ -4,6 +4,7 @@ import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.custom.CustomOrderRepository;
 import com.example.baygo.db.exceptions.BadCredentialException;
 import com.example.baygo.db.exceptions.NotFoundException;
+import com.example.baygo.db.model.Order;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.Status;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -33,43 +35,6 @@ public class OrderServiceImpl implements OrderService {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
         return customOrderRepository.getAll(page, size, keyWord, status, seller.getId());
-    }
-
-    @Override
-    public SimpleResponse deleteById(Long orderId) {
-        User user = jwtService.getAuthenticate();
-        if (user == null) {
-            return SimpleResponse.builder()
-                    .message("Authentication required")
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .build();
-        }
-
-        Seller seller = user.getSeller();
-        if (seller == null) {
-            return SimpleResponse.builder()
-                    .message("Seller not found")
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-        }
-
-        try {
-            orderRepository.deleteById(orderId);
-            return SimpleResponse.builder()
-                    .message(String.format("Order %s deleted successfully", orderId))
-                    .status(HttpStatus.OK)
-                    .build();
-        } catch (NotFoundException e) {
-            return SimpleResponse.builder()
-                    .message(String.format("Order with ID %s not found", orderId))
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-        } catch (BadCredentialException e) {
-            return SimpleResponse.builder()
-                    .message("Failed to delete order")
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
-        }
     }
 
     @Override
