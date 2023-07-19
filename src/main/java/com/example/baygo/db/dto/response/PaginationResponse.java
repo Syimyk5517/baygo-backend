@@ -5,10 +5,9 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record PaginationResponse<T>(
-        int currentPage,
-        int totalPage,
-        int quantityOfProducts,
-        List<T> elements
-) {
-}
+public record PaginationResponse<T> (
+        List<T> elements,
+        int page,
+        int quantityOfElements,
+        int totalPages
+){}
