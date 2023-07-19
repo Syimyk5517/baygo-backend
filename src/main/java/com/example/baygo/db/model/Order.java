@@ -26,7 +26,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_gen")
-    @SequenceGenerator(name = "order_gen", sequenceName = "order_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "order_gen", sequenceName = "order_seq", allocationSize = 1, initialValue = 16)
     private Long id;
     private LocalDate dateOfOrder;
     private LocalDate dateOfReceived;
@@ -43,11 +43,12 @@ public class Order {
     private Buyer buyer;
 
     @ElementCollection
-    @JoinTable(name = "orders_sub_products_size",
+    @JoinTable(name = "orders_sizes",
             joinColumns = @JoinColumn(name = "order_id"))
-    @MapKeyJoinColumn(name = "sub_products_size_id")
+    @MapKeyJoinColumn(name = "size_id")
     @Cascade({CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     private Map<Size, Integer> productCount;
+
     @OneToOne(cascade = ALL)
     private Customer customer;
 }

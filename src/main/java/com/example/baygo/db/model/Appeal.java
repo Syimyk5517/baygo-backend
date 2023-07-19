@@ -17,7 +17,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Appeal {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appeal_gen")
-    @SequenceGenerator(name = "appeal_gen", sequenceName = "appeal_seq", allocationSize = 1, initialValue = 4)
+    @SequenceGenerator(name = "appeal_gen", sequenceName = "appeal_seq", allocationSize = 1, initialValue = 3)
     private Long id;
     private String title;
     private String divide;
