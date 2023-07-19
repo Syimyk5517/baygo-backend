@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface SupplyService {
-    List<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize);
+    List<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
 
 }
