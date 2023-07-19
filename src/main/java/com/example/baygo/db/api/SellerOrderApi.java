@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/sellers/orders")
 @RequiredArgsConstructor
 @Tag(name = "Orders api", description = "API for managing order organizations")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('SELLER')")
-public class OrderApi {
+public class SellerOrderApi {
     private final OrderService orderService;
 
     @Operation(summary = "Get all orders", description = "This method get all orders with search and filter with status")
-    @GetMapping("/search")
+    @GetMapping("/get_all_orders")
     PaginationResponse<OrderResponse> getAllOrders(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int size, @RequestParam(required = false) String keyword, @RequestParam(required = false) Status status) {
         return orderService.getAll(page, size, keyword, status);
     }
