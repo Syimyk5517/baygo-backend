@@ -1,7 +1,7 @@
 package com.example.baygo.db.service.impl;
 
 import com.example.baygo.db.config.jwt.JwtService;
-import com.example.baygo.db.custom.CustomOrderRepository;
+import com.example.baygo.db.repository.custom.CustomOrderRepository;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.Status;

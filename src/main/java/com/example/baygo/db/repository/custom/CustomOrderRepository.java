@@ -1,4 +1,4 @@
-package com.example.baygo.db.custom;
+package com.example.baygo.db.repository.custom;
 
 import com.example.baygo.db.model.enums.Status;
 import com.example.baygo.db.responses.AnalysisResponse;

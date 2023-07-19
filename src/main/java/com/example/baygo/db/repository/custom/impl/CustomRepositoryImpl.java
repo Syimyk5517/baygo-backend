@@ -1,6 +1,7 @@
-package com.example.baygo.db.custom;
+package com.example.baygo.db.repository.custom.impl;
 
 import com.example.baygo.db.model.enums.Status;
+import com.example.baygo.db.repository.custom.CustomOrderRepository;
 import com.example.baygo.db.responses.AnalysisResponse;
 import com.example.baygo.db.responses.OrderResponse;
 import com.example.baygo.db.responses.PaginationResponse;
@@ -27,10 +28,13 @@ public class CustomRepositoryImpl implements CustomOrderRepository {
     public PaginationResponse<OrderResponse> getAll(int page, int size, String keyword, Status status, Long sellerId) {
         String baseQuery = """
                    SELECT o.id as orderId, s.barcode, u.first_name, sp.price, p.name as product_name, o.date_of_order, o.status
-                   FROM orders o join orders_sizes os on o.id = os.order_id join sizes s on s.id = os.size_id
-                       join sub_products sp on sp.id = s.sub_product_id join products p on p.id = sp.product_id
-                            JOIN buyers b ON o.buyer_id = b.id
-                            JOIN users u ON b.user_id = u.id
+                   FROM orders o 
+                   join orders_sizes os on o.id = os.order_id 
+                   join sizes s on s.id = os.size_id
+                   join sub_products sp on sp.id = s.sub_product_id 
+                   join products p on p.id = sp.product_id
+                   join buyers b ON o.buyer_id = b.id
+                   join users u ON b.user_id = u.id
                    WHERE p.seller_id = :sellerId
                 """;
 
