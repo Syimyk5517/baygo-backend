@@ -4,7 +4,6 @@ import com.example.baygo.db.model.enums.Status;
 import com.example.baygo.db.responses.AnalysisResponse;
 import com.example.baygo.db.responses.OrderResponse;
 import com.example.baygo.db.responses.PaginationResponse;
-import com.example.baygo.db.responses.SimpleResponse;
 import com.example.baygo.db.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
