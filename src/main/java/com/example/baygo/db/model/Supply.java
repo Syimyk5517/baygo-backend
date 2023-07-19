@@ -29,7 +29,7 @@ public class Supply {
     private LocalDate createdAt;
     private int quantityOfProducts;
     private int acceptedProducts;
-    private int commission;
+    private BigDecimal commission;
     private BigDecimal supplyCost;
     private LocalDate plannedDate;
     private LocalDate actualDate;

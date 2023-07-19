@@ -752,7 +752,7 @@ VALUES (1,
         'Новые товары', 'https://cdn.esputnik.com/photos/shares/EmailExamples/8%20march%20RU%20(8).jpg',
         'Трендовые новинки: узнайте о наших последних товарах', '2023-06-29', '2023-07-30');
 
-INSERT INTO orders_sub_products_size(order_id, product_count, sub_products_size_id)
+INSERT INTO orders_sizes(order_id, product_count, size_id)
 VALUES (1, 100, 1),
        (2, 240, 2),
        (3, 699, 3),
