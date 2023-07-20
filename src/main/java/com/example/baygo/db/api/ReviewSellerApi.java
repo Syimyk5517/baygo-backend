@@ -1,6 +1,6 @@
 package com.example.baygo.db.api;
 
-import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.PaginationReviewResponse;
 import com.example.baygo.db.dto.response.ReviewResponse;
 import com.example.baygo.db.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,8 +20,8 @@ public class ReviewSellerApi {
 
     @GetMapping
     @Operation(summary = "Get All Review", description = "This method getAll Review ,search,pagination")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public PaginationResponse<ReviewResponse> getAllReview(
+    @PreAuthorize("hasAuthority('SELLER')")
+    public PaginationReviewResponse<ReviewResponse> getAllReview(
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false ,defaultValue = "1") int page,
             @RequestParam(required = false ,defaultValue = "4") int pageSize){
