@@ -2,9 +2,9 @@ package com.example.baygo.db.api;
 
 
 import com.example.baygo.db.dto.request.*;
-import com.example.baygo.db.dto.request.auth.AuthenticateRequest;
-import com.example.baygo.db.dto.request.auth.ForgotPasswordRequest;
-import com.example.baygo.db.dto.request.auth.ResetPasswordRequest;
+import com.example.baygo.db.dto.request.AuthenticateRequest;
+import com.example.baygo.db.dto.request.ForgotPasswordRequest;
+import com.example.baygo.db.dto.request.ResetPasswordRequest;
 import com.example.baygo.db.dto.response.AuthenticationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.service.AuthenticationService;
@@ -43,7 +43,6 @@ public class AuthenticationApi {
         return authenticationService.authenticate(request);
     }
 
-    @PermitAll
     @Operation(summary = "Forgot password", description = "This method sends message to email for reset password.")
     @PostMapping("/forgot-password")
     public ResponseEntity<SimpleResponse> processForgotPasswordForm(@RequestBody @Valid ForgotPasswordRequest request) throws MessageDescriptorFormatException {
@@ -51,7 +50,6 @@ public class AuthenticationApi {
                 forgotPassword(request.email()));
     }
 
-    @PermitAll
     @Operation(summary = "Reset password", description = "This method changes the old password to new password.")
     @PostMapping("/reset-password")
     public ResponseEntity<SimpleResponse> resetPassword(@RequestParam String token, @RequestBody @Valid ResetPasswordRequest request) {

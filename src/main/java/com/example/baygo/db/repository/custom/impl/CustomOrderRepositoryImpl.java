@@ -1,10 +1,10 @@
 package com.example.baygo.db.repository.custom.impl;
 
+import com.example.baygo.db.dto.response.AnalysisResponse;
+import com.example.baygo.db.dto.response.OrderResponse;
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.model.enums.Status;
 import com.example.baygo.db.repository.custom.CustomOrderRepository;
-import com.example.baygo.db.responses.AnalysisResponse;
-import com.example.baygo.db.responses.OrderResponse;
-import com.example.baygo.db.responses.PaginationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Repository
-public class CustomRepositoryImpl implements CustomOrderRepository {
+public class CustomOrderRepositoryImpl implements CustomOrderRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -52,8 +52,15 @@ public class CustomRepositoryImpl implements CustomOrderRepository {
         }
 
         String countQuery = "SELECT COUNT(*) FROM (" + baseQuery + ") AS count_query";
-        String query = baseQuery + " ORDER BY o.date_of_order DESC LIMIT :size OFFSET :offset";
 
+        int totalCount = namedParameterJdbcTemplate.queryForObject(
+                countQuery,
+                params,
+                Integer.class
+        );
+        int totalPage = (int) Math.ceil((double) totalCount / size);
+
+        String query = baseQuery + " ORDER BY o.date_of_order DESC LIMIT :size OFFSET :offset";
         int offset = (page - 1) * size;
         params.addValue("size", size);
         params.addValue("offset", offset);
@@ -72,24 +79,14 @@ public class CustomRepositoryImpl implements CustomOrderRepository {
                 )
         );
 
-        int totalCount = namedParameterJdbcTemplate.queryForObject(
-                countQuery,
-                params,
-                Integer.class
-        );
-
-        int totalPage = (int) Math.ceil((double) totalCount / size);
-
-        PaginationResponse<OrderResponse> paginationResponse = new PaginationResponse<>(
-                orderResponses,
-                page,
-                size,
-                totalCount
-        );
-
-        return paginationResponse;
+        return PaginationResponse.<OrderResponse>builder()
+                .elements(orderResponses)
+                .currentPage(page)
+                .totalPages(totalPage)
+                .build();
     }
-  @Override
+
+    @Override
     public AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameofTime, Long sellerId) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT ");

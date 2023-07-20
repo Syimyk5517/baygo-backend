@@ -1,7 +1,7 @@
 package com.example.baygo.db.service.impl;
 
 import com.example.baygo.db.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.auth.AuthenticateRequest;
+import com.example.baygo.db.dto.request.AuthenticateRequest;
 import com.example.baygo.db.dto.request.BuyerRegisterRequest;
 import com.example.baygo.db.dto.request.SellerRegisterRequest;
 import com.example.baygo.db.dto.response.AuthenticationResponse;

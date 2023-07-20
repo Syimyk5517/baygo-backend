@@ -17,7 +17,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public PaginationReviewResponse<ReviewResponse> getAllReviews(String keyword, int page, int size) {
-        Long userId = jwtService.getAuthenticate().getId();
-        return customReviewRepository.getAllReviews(userId,keyword,page,size);
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customReviewRepository.getAllReviews(sellerId, keyword, page, size);
     }
 }

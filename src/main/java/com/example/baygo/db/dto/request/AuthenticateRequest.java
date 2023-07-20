@@ -1,4 +1,4 @@
-package com.example.baygo.db.dto.request.auth;
+package com.example.baygo.db.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
