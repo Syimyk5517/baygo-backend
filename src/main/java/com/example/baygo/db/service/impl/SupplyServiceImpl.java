@@ -53,7 +53,7 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
     @Override
-    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(String keyWord, int page, int size) {
-        return customRepository.searchSupplyProducts(keyWord, page, size);
+    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id,String keyWord, int page, int size) {
+        return customRepository.searchSupplyProducts(id,keyWord, page, size);
     }
 }

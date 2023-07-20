@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class SupplyProductResponse {
     String photo;
-    String barcode;
+    int barcode;
     int quantity;
     String productName;
     String sellerVendorCode;

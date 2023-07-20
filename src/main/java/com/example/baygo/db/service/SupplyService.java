@@ -12,6 +12,6 @@ public interface SupplyService {
 
     SupplyResponse getSupplyById(Long id);
 
-    PaginationResponse<SupplyProductResponse> searchSupplyProducts(String keyWord, int page, int size);
+    PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id,String keyWord, int page, int size);
 
 }

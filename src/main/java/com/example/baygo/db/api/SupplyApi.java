@@ -9,6 +9,7 @@ import com.example.baygo.db.service.SupplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,16 +33,16 @@ public class SupplyApi {
     }
 
     @Operation(summary = "Get All and search supplies products!!", description = "This method get all and search supplies")
-    @GetMapping("/search/get_all_")
+    @GetMapping("/{id}/supply_products")
     @PreAuthorize("hasAuthority('SELLER')")
-    public PaginationResponse<SupplyProductResponse> getAllAndSearch(@RequestParam(required = false) String keyWorld, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "8") int size) {
-        return supplyService.searchSupplyProducts(keyWorld, page, size);
+    public PaginationResponse<SupplyProductResponse> getAllAndSearch(@PathVariable Long id, @RequestParam(required = false) String keyWorld, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "8") int size) {
+        return service.searchSupplyProducts(id, keyWorld, page, size);
     }
 
     @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
-    @GetMapping("/get_supply_by/{id}")
+    @GetMapping("/get_by_id/{id}")
     @PreAuthorize("hasAuthority('SELLER')")
     public SupplyResponse getById(@PathVariable Long id) {
-        return supplyService.getSupplyById(id);
+        return service.getSupplyById(id);
     }
 }
