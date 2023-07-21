@@ -7,8 +7,12 @@ import com.example.baygo.db.dto.request.SubProductRequest;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.*;
-import com.example.baygo.db.repository.*;
+import com.example.baygo.db.model.Product;
+import com.example.baygo.db.model.Size;
+import com.example.baygo.db.model.SubCategory;
+import com.example.baygo.db.model.SubProduct;
+import com.example.baygo.db.repository.SizeRepository;
+import com.example.baygo.db.repository.SubCategoryRepository;
 import com.example.baygo.db.repository.custom.CustomProductRepository;
 import com.example.baygo.db.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -34,15 +38,10 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
 
     @Override
-    public List<ProductResponseForSeller> findAll(int page, int size, boolean isFiltered) {
+    public List<ProductResponseForSeller> findAll(int page, int size, String status, String keyWord) {
         long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        if (isFiltered){
-            Page<ProductResponseForSeller> pageProducts = customProductRepository.getAllWithFilter(PageRequest.of(page, size),sellerId);
-            return pageProducts.getContent();
-        }else {
-        Page<ProductResponseForSeller> pageProduct = customProductRepository.getAllProductOfSeller(PageRequest.of(page, size),sellerId);
-        return pageProduct.getContent();
-        }
+        Page<ProductResponseForSeller> pageProducts = customProductRepository.getAll(PageRequest.of(page, size), sellerId, status, keyWord);
+        return pageProducts.getContent();
     }
 
     @Override

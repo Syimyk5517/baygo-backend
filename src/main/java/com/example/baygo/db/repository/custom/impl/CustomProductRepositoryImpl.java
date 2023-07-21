@@ -18,127 +18,90 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Page<ProductResponseForSeller> getAllProductOfSeller(Pageable pageable, long sellerId) {
+    public Page<ProductResponseForSeller> getAll(Pageable pageable, long sellerId, String status, String keyWord) {
         String sql = """
-    with count_cte as (
-        select count(*) as total
-        from sub_products sp
-                 join products pr on sp.product_id = pr.id
-                 join sizes s on sp.id = s.sub_product_id
-                 join sub_product_images spi on sp.id = spi.sub_product_id
-                 join sellers sel on pr.seller_id = sel.id
-        where sel.id = ?
-    )
-    select pr.id as product_id,
-           sp.id as sub_product_id,
-           s.id as size_id,
-           spi.images as sub_product_photo,
-           sel.vendor_number as vendor_number,
-           pr.articul as product_articul,
-           pr.name as product_name,
-           pr.brand as product_brand,
-           pr.rating as product_rating,
-           pr.date_of_change as product_date_of_change,
-           sp.color as sub_product_color,
-           s.size as sub_product_size,
-           s.barcode as sub_product_barcode,
-           s.quantity as sub_product_quantity,
-           (select total from count_cte) as total_count
-    from sub_products sp
-             join products pr on sp.product_id = pr.id
-             join sizes s on sp.id = s.sub_product_id
-             join sub_product_images spi on sp.id = spi.sub_product_id
-             join sellers sel on pr.seller_id = sel.id
-    where sel.id = ?
-    limit ? offset ?
-    """;
+                with count_cte as (
+                    select count(*) as total
+                    from sub_products sp
+                             join products pr on sp.product_id = pr.id
+                             left join sizes s on sp.id = s.sub_product_id
+                             left join sub_product_images spi on sp.id = spi.sub_product_id
+                             join sellers sel on pr.seller_id = sel.id
+                    where sel.id = ?
+                )
+                select pr.id as product_id,
+                       sp.id as sub_product_id,
+                       s.id as size_id,
+                       spi.images as sub_product_photo,
+                       sel.vendor_number as vendor_number,
+                       pr.articul as product_articul,
+                       pr.name as product_name,
+                       pr.brand as product_brand,
+                       pr.rating as product_rating,
+                       pr.date_of_change as product_date_of_change,
+                       sp.color as sub_product_color,
+                       s.size as sub_product_size,
+                       s.barcode as sub_product_barcode,
+                       s.quantity as sub_product_quantity,
+                       (select total from count_cte) as total_count
+                from sub_products sp
+                         join products pr on sp.product_id = pr.id
+                         join sizes s on sp.id = s.sub_product_id
+                         join sub_product_images spi on sp.id = spi.sub_product_id
+                         join sellers sel on pr.seller_id = sel.id
+                         %s
+                where sel.id = ? %s
+                order by pr.date_of_change desc
+                """;
 
-        List<ProductResponseForSeller> response = new ArrayList<>();
-        final int[] total = {0};
-        jdbcTemplate.query(sql, new Object[]{sellerId, sellerId, pageable.getPageSize(), pageable.getOffset()}, (rs) -> {
-            response.add(new ProductResponseForSeller(
-                    rs.getLong("product_id"),
-                    rs.getLong("sub_product_id"),
-                    rs.getLong("size_id"),
-                    rs.getString("sub_product_photo"),
-                    rs.getString("vendor_number"),
-                    rs.getString("product_articul"),
-                    rs.getString("product_name"),
-                    rs.getString("product_brand"),
-                    rs.getDouble("product_rating"),
-                    rs.getDate("product_date_of_change").toLocalDate(),
-                    rs.getString("sub_product_color"),
-                    rs.getString("sub_product_size"),
-                    rs.getInt("sub_product_barcode"),
-                    rs.getInt("sub_product_quantity")));
-            total[0] = rs.getInt("total_count");
-        });
+        String sqlStatus = switch (status) {
+            case "в избранном" -> "join buyers_sub_products bsp on sp.id = bsp.sub_products_id";
+            case "в корзине" -> "join buyers_sub_products_size bsps on s.id = bsps.sub_products_size_id";
+            default -> "";
+        };
 
-        return new PageImpl<>(response, pageable, total[0]);
+        List<Object> params = new ArrayList<>();
+        params.add(sellerId);
+        params.add(sellerId);
+
+        String keywordCondition = "and(1=1)";
+        if (keyWord != null && !keyWord.isEmpty()) {
+            params.add("%" + keyWord + "%");
+            params.add("%" + keyWord + "%");
+            params.add("%" + keyWord + "%");
+
+            keywordCondition = """
+                    and (
+                    pr.name iLIKE ? OR pr.articul iLIKE ? OR pr.brand iLIKE ?
+                    )
+                    """;
+        }
+
+        sql = String.format(sql, sqlStatus, keywordCondition);
+
+        int total = jdbcTemplate.queryForObject("select count(*) from (" + sql + ") as count_query", Integer.class, params.toArray());
+
+        sql = sql + " limit ? offset ?";
+        params.add(pageable.getPageSize());
+        params.add(pageable.getOffset());
+
+        List<ProductResponseForSeller> response = jdbcTemplate.query(sql, params.toArray(), (rs, rowNum) -> new ProductResponseForSeller(
+                rs.getLong("product_id"),
+                rs.getLong("sub_product_id"),
+                rs.getLong("size_id"),
+                rs.getString("sub_product_photo"),
+                rs.getString("vendor_number"),
+                rs.getString("product_articul"),
+                rs.getString("product_name"),
+                rs.getString("product_brand"),
+                rs.getDouble("product_rating"),
+                rs.getDate("product_date_of_change").toLocalDate(),
+                rs.getString("sub_product_color"),
+                rs.getString("sub_product_size"),
+                rs.getInt("sub_product_barcode"),
+                rs.getInt("sub_product_quantity")));
+
+        return new PageImpl<>(response, pageable, total);
     }
-
-
-
-    @Override
-    public Page<ProductResponseForSeller> getAllWithFilter(Pageable pageable, long sellerId) {
-        String sql = """
-    with count_cte as (
-        select count(*) as total
-        from sub_products sp
-                 join products pr on sp.product_id = pr.id
-                 left join sizes s on sp.id = s.sub_product_id
-                 left join sub_product_images spi on sp.id = spi.sub_product_id
-                 join sellers sel on pr.seller_id = sel.id
-        where sel.id = ?
-    )
-    select pr.id as product_id,
-           sp.id as sub_product_id,
-           s.id as size_id,
-           spi.images as sub_product_photo,
-           sel.vendor_number as vendor_number,
-           pr.articul as product_articul,
-           pr.name as product_name,
-           pr.brand as product_brand,
-           pr.rating as product_rating,
-           pr.date_of_change as product_date_of_change,
-           sp.color as sub_product_color,
-           s.size as sub_product_size,
-           s.barcode as sub_product_barcode,
-           s.quantity as sub_product_quantity,
-           (select total from count_cte) as total_count
-    from sub_products sp
-             join products pr on sp.product_id = pr.id
-             left join sizes s on sp.id = s.sub_product_id
-             left join sub_product_images spi on sp.id = spi.sub_product_id
-             join sellers sel on pr.seller_id = sel.id
-    where sel.id = ?
-    order by pr.date_of_change desc
-    limit ? offset ?
-    """;
-
-        List<ProductResponseForSeller> response = new ArrayList<>();
-        final int[] total = {0};
-        jdbcTemplate.query(sql, new Object[]{sellerId, sellerId, pageable.getPageSize(), pageable.getOffset()}, (rs) -> {
-            response.add(new ProductResponseForSeller(
-                    rs.getLong("product_id"),
-                    rs.getLong("sub_product_id"),
-                    rs.getLong("size_id"),
-                    rs.getString("sub_product_photo"),
-                    rs.getString("vendor_number"),
-                    rs.getString("product_articul"),
-                    rs.getString("product_name"),
-                    rs.getString("product_brand"),
-                    rs.getDouble("product_rating"),
-                    rs.getDate("product_date_of_change").toLocalDate(),
-                    rs.getString("sub_product_color"),
-                    rs.getString("sub_product_size"),
-                    rs.getInt("sub_product_barcode"),
-                    rs.getInt("sub_product_quantity")));
-            total[0] = rs.getInt("total_count");
-        });
-
-        return new PageImpl<>(response, pageable, total[0]);
-    }
-
 
 }

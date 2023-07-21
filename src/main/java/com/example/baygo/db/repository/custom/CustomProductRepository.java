@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomProductRepository {
-    Page<ProductResponseForSeller> getAllProductOfSeller(Pageable pageable, long sellerId);
-
-    Page<ProductResponseForSeller> getAllWithFilter(Pageable pageable, long sellerId);
+    Page<ProductResponseForSeller> getAll(Pageable pageable, long sellerId, String status, String keyWord);
 }

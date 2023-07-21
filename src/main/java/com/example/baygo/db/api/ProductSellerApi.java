@@ -48,7 +48,9 @@ public class ProductSellerApi {
     @PreAuthorize("hasAuthority('SELLER')")
     public List<ProductResponseForSeller> getAllProductForSeller(@RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "11") int size,
-                                                                 @RequestParam(defaultValue = "false") boolean isFiltered){
-        return productService.findAll(page,size,isFiltered);
+                                                                 @RequestParam(defaultValue = "") String status,
+                                                                 @RequestParam(defaultValue = "") String keyWord
+                                                                 ){
+        return productService.findAll(page,size,status,keyWord);
     }
 }
