@@ -23,9 +23,9 @@ import java.util.List;
 public class SupplyApi {
     private final SupplyService service;
 
-    @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
     @GetMapping
+    @PreAuthorize("hasAuthority('SELLER')")
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller
             (@RequestParam(required = false) String supplyNumber,
              @RequestParam(required = false) SupplyStatus status,

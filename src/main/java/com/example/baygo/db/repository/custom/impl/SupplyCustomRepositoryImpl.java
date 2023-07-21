@@ -67,8 +67,8 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         .build());
         return PaginationResponse.<SuppliesResponse>builder()
                 .elements(suppliesResponses)
-                .page(page)
-                .pageSize(totalCount)
+                .currentPage(page)
+                .totalPages(totalCount)
                 .build();
     }
 
