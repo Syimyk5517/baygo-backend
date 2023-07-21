@@ -22,14 +22,14 @@ import static jakarta.persistence.CascadeType.*;
 public class Supply {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_gen")
-    @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1, initialValue = 11)
     private Long id;
     private String supplyNumber;
     private String supplyType;
     private LocalDate createdAt;
     private int quantityOfProducts;
     private int acceptedProducts;
-    private int commission;
+    private BigDecimal commission;
     private BigDecimal supplyCost;
     private LocalDate plannedDate;
     private LocalDate actualDate;
