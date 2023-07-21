@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class SupplyServiceImpl implements SupplyService {
         return customRepository.getAllSuppliesOfSeller(currentUserId,supplyNumber,status,page,pageSize);
     }
     @Override
-    public List<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+    public PaginationResponse<DeliveryFactorResponse>  findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
         return customRepository.findAllDeliveryFactor(keyword,date,size,page);
     }
 }

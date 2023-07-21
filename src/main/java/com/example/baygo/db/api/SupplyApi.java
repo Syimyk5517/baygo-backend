@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 
 @RestController
@@ -37,10 +36,11 @@ public class SupplyApi {
     @GetMapping("/coefficients/acceptance")
     @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Delivery factor", description = "this method returns the acceptance coefficients")
-    public List<DeliveryFactorResponse> deliveryFactorResponses(
+    public PaginationResponse<DeliveryFactorResponse>  deliveryFactorResponses(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) LocalDate date,
-            @RequestParam int size, @RequestParam int page) {
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "1") int page) {
         return service.findAllDeliveryFactor(keyword, date, size, page);
     }
 }

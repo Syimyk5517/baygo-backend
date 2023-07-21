@@ -42,10 +42,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
 
         sql += " ORDER BY s.created_at DESC ";
 
-        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
-        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
-        int count = countResult != null ? countResult : 0;
-        int totalCount = (int) Math.ceil((double) count / pageSize);
+        int totalCount = totalCount(sql, pageSize);
 
         int offset = (page - 1) * pageSize;
         sql += " LIMIT " + pageSize + " OFFSET " + offset;
@@ -73,20 +70,21 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     }
 
     @Override
-    public List<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
         int offset = (page - 1) * size;
-        String searchKeyword = "%" + keyword + "%";
         String deliveryFactorSql = """
                 SELECT w.id AS w_id,
                        w.name AS w_name                
                 FROM warehouses w
                 """;
         if (keyword != null) {
-            deliveryFactorSql += "WHERE w.name iLIKE ? ";
+            deliveryFactorSql += "WHERE w.name iLIKE '%" + keyword + "%'";
         }
-        deliveryFactorSql += "LIMIT ? OFFSET ?";
+        deliveryFactorSql += "LIMIT " + size + " OFFSET " + offset;
 
-        return jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
+        int totalCount = totalCount(deliveryFactorSql, size);
+
+        List<DeliveryFactorResponse> deliveryFactorResponses = jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
             DeliveryFactorResponse deliveryFactorResponse = new DeliveryFactorResponse();
             deliveryFactorResponse.setWarehouseId(resultSet.getLong("w_id"));
             deliveryFactorResponse.setWarehouseName(resultSet.getString("w_name"));
@@ -120,8 +118,12 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
 
             deliveryFactorResponse.setDeliveryTypeResponses(deliveryTypeResponses);
             return deliveryFactorResponse;
-        }, (keyword != null) ? new Object[]{searchKeyword, size, offset} : new Object[]{size, offset});
-
+        });
+        return PaginationResponse.<DeliveryFactorResponse>builder()
+                .elements(deliveryFactorResponses)
+                .currentPage(page)
+                .totalPages(totalCount)
+                .build();
     }
 
     private WarehouseCostResponse warehouseCost(Long warehouseId, DeliveryType deliveryType, LocalDate date) {
@@ -143,4 +145,12 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         return warehouseCostResponse;
 
     }
+
+    private int totalCount(String sql, int size) {
+        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
+        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
+        int count = countResult != null ? countResult : 0;
+        return (int) Math.ceil((double) count / size);
+    }
 }
+
