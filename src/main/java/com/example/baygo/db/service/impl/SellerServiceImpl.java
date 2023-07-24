@@ -21,7 +21,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional
     @Override
-    public SimpleResponse sellerProfile(SellerProfileRequest request) {
+    public SimpleResponse updateSellerProfile(SellerProfileRequest request) {
         User user = jwtService.getAuthenticate();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -37,7 +37,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional
     @Override
-    public SimpleResponse sellerStoreInfo(SellerStoreInfoRequest request) {
+    public SimpleResponse updateSellerStoreInfo(SellerStoreInfoRequest request) {
         Seller seller = jwtService.getAuthenticate().getSeller();
         seller.setPhoto(request.getPhoto());
         seller.setNameOfStore(request.getNameOfStore());

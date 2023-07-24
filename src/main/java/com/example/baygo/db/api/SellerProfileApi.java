@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/seller/profile")
@@ -20,16 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class SellerProfileApi {
     private final SellerService service;
-    @Operation(summary = "Update seller profile", method = "This is create seller profile method")
+    @Operation(summary = "Update seller profile", description = "This is update seller profile method")
     @PutMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public SimpleResponse createSellerProfile(SellerProfileRequest request){
-       return service.sellerProfile(request);
+    public SimpleResponse updateSellerProfile(@RequestBody SellerProfileRequest request){
+       return service.updateSellerProfile((request));
     }
-    @Operation(summary = "Update seller store profile", method = "This is create seller profile method")
+    @Operation(summary = "Update seller store profile", description = "This is update seller store profile method")
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('SELLER')")
-    public SimpleResponse updateSellerStoreProfile(SellerStoreInfoRequest request){
-        return service.sellerStoreInfo(request);
+    public SimpleResponse updateSellerStoreProfile(@RequestBody SellerStoreInfoRequest request){
+        return service.updateSellerStoreInfo(request);
     }
 }

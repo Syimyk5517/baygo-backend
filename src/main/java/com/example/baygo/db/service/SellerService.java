@@ -5,8 +5,8 @@ import com.example.baygo.db.dto.request.SellerStoreInfoRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 
 public interface SellerService {
-    SimpleResponse sellerProfile(SellerProfileRequest request);
-    SimpleResponse sellerStoreInfo(SellerStoreInfoRequest request);
+    SimpleResponse updateSellerProfile(SellerProfileRequest request);
+    SimpleResponse updateSellerStoreInfo(SellerStoreInfoRequest request);
 
 }
 
