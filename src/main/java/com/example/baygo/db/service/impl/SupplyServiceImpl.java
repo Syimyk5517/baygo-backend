@@ -7,6 +7,7 @@ import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.SupplyResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Supply;
+import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.SupplyRepository;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +57,10 @@ public class SupplyServiceImpl implements SupplyService {
     @Override
     public PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id,String keyWord, int page, int size) {
         return customRepository.searchSupplyProducts(id,keyWord, page, size);
+    }
+
+    @Override
+    public PaginationResponse<DeliveryFactorResponse>  findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+        return customRepository.findAllDeliveryFactor(keyword,date,size,page);
     }
 }

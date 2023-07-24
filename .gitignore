@@ -33,8 +33,12 @@ src/main/resources/application-nuriza.properties
 src/main/resources/application-kutman.properties
 src/main/resources/application-golden.properties
 src/main/resources/application-saltanat.properties
+src/main/resources/application-azimbek.properties
 src/main/resources/application-nurik.properties
 src/main/resources/application-kanykei.properties
+src/main/resources/application-adil's.properties
+src/main/resources/application-jiide.properties
+src/main/resources/application-kurstan.yml
 
 ### VS Code ###
 .vscode/
