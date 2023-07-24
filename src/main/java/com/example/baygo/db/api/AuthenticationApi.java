@@ -57,7 +57,7 @@ public class AuthenticationApi {
     }
 
     @Operation(summary = "Google", description = "This method validates the request and authenticates a user with google.")
-    @GetMapping("/google")
+    @PostMapping("/google")
     public AuthenticationResponse google(@RequestParam String tokenId) throws FirebaseAuthException {
         return authenticationService.authWithGoogle(tokenId);
     }
