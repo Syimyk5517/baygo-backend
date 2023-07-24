@@ -23,10 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author altynbek
- * @created at 11.07.2023 11:11
- */
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
