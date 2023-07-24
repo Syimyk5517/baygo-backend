@@ -65,7 +65,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         .build());
         return PaginationResponse.<SuppliesResponse>builder()
                 .elements(suppliesResponses)
-                .currentPage(page)
+                .cuurentPage(page)
                 .totalPages(totalCount)
                 .build();
     }
@@ -125,12 +125,11 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         );
         return PaginationResponse
                 .<SupplyProductResponse>builder()
-                .elements(query1)
                 .currentPage(page)
                 .totalPages(totalPage)
+                .elements(query1)
                 .build();
     }
-
 
     @Override
     public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
