@@ -80,9 +80,10 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         if (keyword != null) {
             deliveryFactorSql += "WHERE w.name iLIKE '%" + keyword + "%'";
         }
-        deliveryFactorSql += "LIMIT " + size + " OFFSET " + offset;
 
         int totalCount = totalCount(deliveryFactorSql, size);
+
+        deliveryFactorSql += "LIMIT " + size + " OFFSET " + offset;
 
         List<DeliveryFactorResponse> deliveryFactorResponses = jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
             DeliveryFactorResponse deliveryFactorResponse = new DeliveryFactorResponse();
@@ -110,7 +111,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                 } else {
                     WarehouseCostResponse warehouseCostResponse = warehouseCost(
                             deliveryFactorResponse.getWarehouseId(), deliveryTypeResponse.getDeliveryType(), date);
-                    deliveryTypeResponse.setWarehouseCostResponses(List.of(warehouseCostResponse));
+                    deliveryTypeResponse.addWarehouseCost(warehouseCostResponse);
                 }
 
                 return deliveryTypeResponse;
@@ -141,7 +142,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
         warehouseCostResponse.setDate(date);
         warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
-        warehouseCostResponse.setPlat(warehouseCostResponses.size() < 11 ? "Free" : "x" + warehouseCostResponses.size() / 10);
+        warehouseCostResponse.setGoodsPayment(warehouseCostResponses.size() < 11 ? "Бесплатный" : "x" + warehouseCostResponses.size() / 10);
         return warehouseCostResponse;
 
     }

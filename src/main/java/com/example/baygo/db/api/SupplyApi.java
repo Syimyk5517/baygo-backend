@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 
 @RestController
-@RequestMapping("/api/supply")
+@RequestMapping("/api/supplies")
 @RequiredArgsConstructor
 @Tag(name = "Supply API")
 @CrossOrigin(origins = "*", maxAge = 3600)

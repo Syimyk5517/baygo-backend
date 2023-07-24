@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 public class WarehouseCostResponse{
        private LocalDate date;
-       private String plat;
+       private String goodsPayment;
        private BigDecimal warehouseCost;
 
 

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DeliveryTypeResponse {
     private DeliveryType deliveryType;
-    private List<WarehouseCostResponse> warehouseCostResponses = new ArrayList<>();
+    private List<WarehouseCostResponse> warehouseCostResponses;
     public void addWarehouseCost(WarehouseCostResponse warehouseCostResponse) {
         warehouseCostResponses.add(warehouseCostResponse);
     }
