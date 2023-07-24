@@ -6,7 +6,7 @@ import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryTypeResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
-import com.example.baygo.db.model.enums.DeliveryType;
+import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import lombok.RequiredArgsConstructor;
@@ -160,7 +160,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
 
             List<DeliveryTypeResponse> deliveryTypeResponses = jdbcTemplate.query(deliveryTypesSql, (innermostResultSet, d) -> {
                 DeliveryTypeResponse deliveryTypeResponse = new DeliveryTypeResponse();
-                deliveryTypeResponse.setDeliveryType(DeliveryType.valueOf(innermostResultSet.getString("delivery_type")));
+                deliveryTypeResponse.setDeliveryType(SupplyType.valueOf(innermostResultSet.getString("delivery_type")));
 
                 if (date == null) {
                     LocalDate currentDate = LocalDate.now();
@@ -189,7 +189,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                 .build();
     }
 
-    private WarehouseCostResponse warehouseCost(Long warehouseId, DeliveryType deliveryType, LocalDate date) {
+    private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {
         String sql = """
                     SELECT s.planned_date AS planned_date
                     FROM supplies s

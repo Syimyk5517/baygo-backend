@@ -5,9 +5,9 @@ import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.SupplyResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Supply;
-import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.SupplyRepository;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
@@ -31,7 +31,7 @@ public class SupplyServiceImpl implements SupplyService {
     @Override
     public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize) {
         Long currentUserId = jwtService.getAuthenticate().getId();
-        return customRepository.getAllSuppliesOfSeller(currentUserId,supplyNumber,status,page,pageSize);
+        return customRepository.getAllSuppliesOfSeller(currentUserId, supplyNumber, status, page, pageSize);
     }
 
     @Override
@@ -41,12 +41,12 @@ public class SupplyServiceImpl implements SupplyService {
                 .supplyId(supply.getId())
                 .supplyNumber(supply.getSupplyNumber())
                 .warehouseName(supply.getWarehouse().getName())
-                .supplyType(supply.getSupplyType())
+                .supplyType(supply.getSupplyType().name())
                 .sellerPhoneNumber(supply.getSeller().getUser().getPhoneNumber())
                 .supplyCost(supply.getSupplyCost().intValue() == 0 ? "Бесплатно" : supply.getSupplyCost().toString())
-                .preliminaryCostOfAcceptance(supply.getSupplyCost())//Предварительная стоимость приемки
+                .preliminaryCostOfAcceptance(supply.getSupplyCost())
                 .dateOfCreation(supply.getCreatedAt())
-                .dateOfChange(supply.getCreatedAt())//Дата изменения
+                .dateOfChange(supply.getChangedAt())
                 .plannedDate(supply.getPlannedDate())
                 .actualDate(supply.getActualDate())
                 .quantityProductsPcs(supply.getQuantityOfProducts())
@@ -55,12 +55,12 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
     @Override
-    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id,String keyWord, int page, int size) {
-        return customRepository.searchSupplyProducts(id,keyWord, page, size);
+    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id, String keyWord, int page, int size) {
+        return customRepository.searchSupplyProducts(id, keyWord, page, size);
     }
 
     @Override
-    public PaginationResponse<DeliveryFactorResponse>  findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
-        return customRepository.findAllDeliveryFactor(keyword,date,size,page);
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+        return customRepository.findAllDeliveryFactor(keyword, date, size, page);
     }
 }
