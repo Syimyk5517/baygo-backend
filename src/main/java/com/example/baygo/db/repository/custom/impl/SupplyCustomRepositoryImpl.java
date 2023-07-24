@@ -3,12 +3,18 @@ package com.example.baygo.db.repository.custom.impl;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.DeliveryTypeResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
+import com.example.baygo.db.model.enums.DeliveryType;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -37,10 +43,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
 
         sql += " ORDER BY s.created_at DESC ";
 
-        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
-        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
-        int count = countResult != null ? countResult : 0;
-        int totalCount = (int) Math.ceil((double) count / pageSize);
+        int totalCount = totalCount(sql, pageSize);
 
         int offset = (page - 1) * pageSize;
         sql += " LIMIT " + pageSize + " OFFSET " + offset;
@@ -62,7 +65,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         .build());
         return PaginationResponse.<SuppliesResponse>builder()
                 .elements(suppliesResponses)
-                .page(page)
+                .currentPage(page)
                 .totalPages(totalCount)
                 .build();
     }
@@ -122,10 +125,95 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         );
         return PaginationResponse
                 .<SupplyProductResponse>builder()
-                .page(page)
-                .totalPages(totalPage)
-                .quantityOfElements(count)
                 .elements(query1)
+                .currentPage(page)
+                .totalPages(totalPage)
                 .build();
+    }
+
+
+    @Override
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+        int offset = (page - 1) * size;
+        String deliveryFactorSql = """
+                SELECT w.id AS w_id,
+                       w.name AS w_name                
+                FROM warehouses w
+                """;
+        if (keyword != null) {
+            deliveryFactorSql += "WHERE w.name iLIKE '%" + keyword + "%'";
+        }
+
+        int totalCount = totalCount(deliveryFactorSql, size);
+
+        deliveryFactorSql += "LIMIT " + size + " OFFSET " + offset;
+
+        List<DeliveryFactorResponse> deliveryFactorResponses = jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
+            DeliveryFactorResponse deliveryFactorResponse = new DeliveryFactorResponse();
+            deliveryFactorResponse.setWarehouseId(resultSet.getLong("w_id"));
+            deliveryFactorResponse.setWarehouseName(resultSet.getString("w_name"));
+
+            String deliveryTypesSql = """
+                    SELECT DISTINCT s.delivery_type AS delivery_type
+                    FROM supplies s
+                    WHERE s.warehouse_id = ?
+                    """;
+
+            List<DeliveryTypeResponse> deliveryTypeResponses = jdbcTemplate.query(deliveryTypesSql, (innermostResultSet, d) -> {
+                DeliveryTypeResponse deliveryTypeResponse = new DeliveryTypeResponse();
+                deliveryTypeResponse.setDeliveryType(DeliveryType.valueOf(innermostResultSet.getString("delivery_type")));
+
+                if (date == null) {
+                    LocalDate currentDate = LocalDate.now();
+                    for (int i = 0; i <= 6; i++) {
+                        LocalDate futureDate = currentDate.plusDays(i);
+                        WarehouseCostResponse warehouseCostResponse = warehouseCost(
+                                deliveryFactorResponse.getWarehouseId(), deliveryTypeResponse.getDeliveryType(), futureDate);
+                        deliveryTypeResponse.addWarehouseCost(warehouseCostResponse);
+                    }
+                } else {
+                    WarehouseCostResponse warehouseCostResponse = warehouseCost(
+                            deliveryFactorResponse.getWarehouseId(), deliveryTypeResponse.getDeliveryType(), date);
+                    deliveryTypeResponse.addWarehouseCost(warehouseCostResponse);
+                }
+
+                return deliveryTypeResponse;
+            }, deliveryFactorResponse.getWarehouseId());
+
+            deliveryFactorResponse.setDeliveryTypeResponses(deliveryTypeResponses);
+            return deliveryFactorResponse;
+        });
+        return PaginationResponse.<DeliveryFactorResponse>builder()
+                .elements(deliveryFactorResponses)
+                .currentPage(page)
+                .totalPages(totalCount)
+                .build();
+    }
+
+    private WarehouseCostResponse warehouseCost(Long warehouseId, DeliveryType deliveryType, LocalDate date) {
+        String sql = """
+                    SELECT s.planned_date AS planned_date
+                    FROM supplies s
+                    WHERE s.warehouse_id = ? AND s.delivery_type = ? AND s.planned_date = ?
+                """;
+
+        List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {
+            WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+            warehouseCostResponse.setDate(innermostResult.getDate("planned_date").toLocalDate());
+            return warehouseCostResponse;
+        }, warehouseId, deliveryType.name(), date);
+        WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+        warehouseCostResponse.setDate(date);
+        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
+        warehouseCostResponse.setGoodsPayment(warehouseCostResponses.size() < 11 ? "Бесплатный" : "x" + warehouseCostResponses.size() / 10);
+        return warehouseCostResponse;
+
+    }
+
+    private int totalCount(String sql, int size) {
+        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
+        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
+        int count = countResult != null ? countResult : 0;
+        return (int) Math.ceil((double) count / size);
     }
 }

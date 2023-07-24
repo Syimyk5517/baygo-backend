@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String phoneNumber;
+    private String resetPasswordToken;
     @Enumerated(EnumType.STRING)
     private Role role;
 
