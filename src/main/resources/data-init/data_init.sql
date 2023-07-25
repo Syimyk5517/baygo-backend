@@ -10,41 +10,41 @@ VALUES (1,
        (5,
         'https://marketplace.canva.com/EAFVHstxnwk/1/0/1600w/canva-beige-aesthetic-exclusive-fashion-wear-collection-clothing-banner-BZb4KkCdNP0.jpg');
 
-INSERT INTO users (id, email, first_name, last_name, password, phone_number, role)
+INSERT INTO users (id, email, full_name, password, phone_number, role)
 VALUES
 --     пароль:Buyer123
 (1, 'buyer@gmail.com',
- 'Kanykei', 'Askarbekova',
+ 'Kanykei Askarbekova',
  '$2a$12$oU/NczE1jY6mFXp5hAvlCutEGhtEMs6EP3G5m/l9vpFc8TlTam3DS',
  '+996702666357', 'BUYER'),
 
 --     пароль:Buyer00
 (2, 'bb@gmail.com',
- 'Saltanat', 'Nematilla kyzy',
+ 'Saltanat Nematilla kyzy',
  '$2a$12$OvPx7qpK9cO9JE6oTPfWBeQH/6WKZZub4oP76S7aX./CgSgpGUasK',
  '+996702666357', 'BUYER'),
 
 --  пароль:Admin123
 (3, 'admin@gmail.com',
- 'Nuriza', 'Muratova',
+ 'Nuriza Muratova',
  '$2a$12$L67vHDQc6nq8XP.HfuIbBeK6f29ah2PpiEBSyjjBXifW4dFP8kDye',
  '+996990128880', 'ADMIN'),
 
 -- пароль:Seller123
 (4, 'seller@gmail.com',
- 'Jiydegul', 'Jalilova',
+ 'Jiydegul Jalilova',
  '$2a$12$Q77myfBp/yyrW143tis01eZrSYL3CKhN9JxMBllslZNm56gyO14/i',
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller00
 (5, 'ss@gmail.com',
- 'Aiperi ', 'Toktosunova',
+ 'Aiperi Toktosunova',
  '$2a$12$NLvlWRZ0v4utE/cX2bbKtevG8T8sSHGubfQ2wrMABEeY1UNl0ngbW',
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller88
 (6, 'eliza@gmail.com',
- 'Eliza', 'Ashyralieva',
+ 'Eliza Ashyralieva',
  '$2a$12$IZQGU1pFgWxX5M1LHJVrI.0FeYWfw3j.DxWRjVjARLRViDFObuHF.',
  '+996550232345', 'SELLER');
 
