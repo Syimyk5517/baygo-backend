@@ -35,15 +35,15 @@ public class SupplyApi {
         return service.getAllSuppliesOfSeller(supplyNumber, status, page, pageSize);
     }
 
-    @Operation(summary = "Get All and search supplies products!!", description = "This method get all and search supplies")
-    @GetMapping("/{id}/supply_products")
+    @Operation(summary = "Get all supply products", description = "This method to get all and search supply products")
+    @GetMapping("/{supplyId}/supply_products")
     @PreAuthorize("hasAuthority('SELLER')")
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(
-            @PathVariable Long id,
+            @PathVariable Long supplyId,
             @RequestParam(required = false) String keyWorld,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        return service.searchSupplyProducts(id, keyWorld, page, size);
+        return service.getSupplyProducts(supplyId, keyWorld, page, size);
     }
 
     @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
@@ -55,7 +55,7 @@ public class SupplyApi {
 
     @GetMapping("/coefficients/acceptance")
     @PreAuthorize("hasAuthority('SELLER')")
-    @Operation(summary = "Delivery factor", description = "this method returns the acceptance coefficients")
+    @Operation(summary = "Delivery factor", description = "This method returns the acceptance coefficients")
     public PaginationResponse<DeliveryFactorResponse>  deliveryFactorResponses(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) LocalDate date,

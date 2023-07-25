@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public interface SupplyCustomRepository {
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize);
 
-    PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id,String keyWord, int page, int size);
+    PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size);
 
     PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
 }

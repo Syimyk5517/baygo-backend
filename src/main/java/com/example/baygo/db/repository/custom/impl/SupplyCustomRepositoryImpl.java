@@ -11,6 +11,8 @@ import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize) {
@@ -65,47 +68,55 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         .build());
         return PaginationResponse.<SuppliesResponse>builder()
                 .elements(suppliesResponses)
-                .cuurentPage(page)
+                .currentPage(page)
                 .totalPages(totalCount)
                 .build();
     }
 
     @Override
-    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id, String keyWord, int page, int size) {
+    public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size) {
         String query = """
-                select (
-                        select 
-                               spi2.images 
-                        from sub_product_images spi2 
-                        where spi2.sub_product_id=sp.id )                   as image,
-                                       s.barcode                            as barcode,
-                                       s.quantity                           as quantity,
-                                       p.name                               as name,
-                                       s2.vendor_number                     as vendor_number,
-                                       p.brand                              as brand_name,
-                                       s.size                               as sizes,
-                                       sp.color                             as color
-                                 from sub_products sp
-                                         join sub_product_images spi on sp.id = spi.sub_product_id
-                                         join sizes s on sp.id = s.sub_product_id
-                                         join products p on p.id = sp.product_id
-                                         join sellers s2 on p.seller_id = s2.id
-                                         join supplies s3 on p.seller_id = s3.seller_id
-                                 where s3.id = ?
-                                   or p.brand iLIKE ?
-                                   or p.name iLIKE ?
-                                   or sp.color iLIKE ?
-                                """;
+                select
+                     (select spi.images
+                     from sub_product_images spi
+                     where spi.sub_product_id = sp.id
+                     limit 1)                           as image,
+                     s.barcode                          as barcode,
+                     splp.quantity                      as quantity,
+                     p.name                             as name,
+                     sel.vendor_number                  as vendor_number,
+                     p.brand                            as brand_name,
+                     s.size                             as sizes,
+                     sp.color                           as color
+                from supplies spl
+                     join supply_products splp on spl.id = splp.supply_id
+                     join sizes s on splp.size_id = s.id
+                     join sub_products sp on s.sub_product_id = sp.id
+                     join products p on p.id = sp.product_id
+                     join sellers sel on spl.seller_id = sel.id
+                where sel.id = :sellerId and spl.id = :supplyId
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("sellerId", sellerId);
+        params.addValue("supplyId", supplyId);
+        if (keyWord != null && !keyWord.isEmpty()) {
+            query += " AND (s.barcode iLIKE :keyWord OR p.brand iLIKE :keyWord OR p.name iLIKE :keyWord OR sp.color iLIKE :keyWord)";
+            params.addValue("keyWord", "%" + keyWord + "%");
+        }
+
         String countSql = "SELECT COUNT(*) FROM (" + query + ") AS count_query";
-        Integer count = jdbcTemplate.query(countSql, (resultSet, i) -> resultSet.getInt("count"),
-                id,
-                "%" + keyWord + "%",
-                "%" + keyWord + "%",
-                "%" + keyWord + "%").stream().findFirst().orElseThrow();
+        int count = namedParameterJdbcTemplate.query(countSql, params,(resultSet, i) ->
+                        resultSet.getInt("count")
+             ).stream().findFirst().orElseThrow();
+
         int totalPage = (int) Math.ceil((double) count / size);
         int offset = (page - 1) * size;
-        query = query + " LIMIT ? OFFSET ?";
-        List<SupplyProductResponse> query1 = jdbcTemplate.query(query, (resultSet, i) ->
+        query += " LIMIT :limit OFFSET :offset";
+        params.addValue("limit", size);
+        params.addValue("offset", offset);
+
+        List<SupplyProductResponse> supplyProductResponses = namedParameterJdbcTemplate.query(query, params, (resultSet, i) ->
                         new SupplyProductResponse(
                                 resultSet.getString("image"),
                                 resultSet.getInt("barcode"),
@@ -114,20 +125,12 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                                 resultSet.getString("vendor_number"),
                                 resultSet.getString("brand_name"),
                                 resultSet.getString("sizes"),
-                                resultSet.getString("color")),
-                id,
-                "%" + keyWord + "%",
-                "%" + keyWord + "%",
-                "%" + keyWord + "%"
-                ,
-                size,
-                offset
-        );
-        return PaginationResponse
-                .<SupplyProductResponse>builder()
+                                resultSet.getString("color"))
+                        );
+        return PaginationResponse.<SupplyProductResponse>builder()
+                .elements(supplyProductResponses)
                 .currentPage(page)
                 .totalPages(totalPage)
-                .elements(query1)
                 .build();
     }
 
@@ -136,7 +139,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         int offset = (page - 1) * size;
         String deliveryFactorSql = """
                 SELECT w.id AS w_id,
-                       w.name AS w_name                
+                       w.name AS w_name
                 FROM warehouses w
                 """;
         if (keyword != null) {

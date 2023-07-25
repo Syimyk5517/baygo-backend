@@ -55,8 +55,9 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
     @Override
-    public PaginationResponse<SupplyProductResponse> searchSupplyProducts(Long id, String keyWord, int page, int size) {
-        return customRepository.searchSupplyProducts(id, keyWord, page, size);
+    public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size) {
+        Long sellerId = jwtService.getAuthenticate().getId();
+        return customRepository.getSupplyProducts(sellerId, supplyId, keyWord, page, size);
     }
 
     @Override
