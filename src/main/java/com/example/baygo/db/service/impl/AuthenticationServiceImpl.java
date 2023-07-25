@@ -15,6 +15,7 @@ import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.Gender;
 import com.example.baygo.db.model.enums.Role;
+import com.example.baygo.db.repository.BuyerRepository;
 import com.example.baygo.db.repository.SellerRepository;
 import com.example.baygo.db.repository.UserRepository;
 import com.example.baygo.db.service.AuthenticationService;
@@ -46,6 +47,7 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
+    private final BuyerRepository buyerRepository;
 
     private final UserRepository userInfoRepository;
     private final UserRepository userRepository;
@@ -67,25 +69,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (split.equals(request.password())) {
             throw new BadRequestException("Создайте более надежный пароль");
         }
-        Buyer buyer = Buyer.builder()
-                .address(request
-                        .address())
-                .dateOfBirth(request
-                        .dateOfBirth())
-                .gender(Gender
-                        .valueOf(request
-                                .gender())).build();
+
+        Buyer buyer = new Buyer();
         User user = User.builder()
                 .email(request.email())
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .phoneNumber(request.phoneNumber())
+                .fullName(request.fullName())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.BUYER)
-                .buyer(buyer)
                 .build();
+        buyer.setUser(user);
 
-        userRepository.save(user);
+        buyerRepository.save(buyer);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
         String token = jwtService.generateToken(user);
 
@@ -108,8 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         User user = User.builder()
                 .email(request.email())
-                .firstName(request.firstName())
-                .lastName(request.lastName())
+                .fullName(request.firstName())
                 .phoneNumber(request.phoneNumber())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.SELLER)
@@ -213,8 +206,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!userRepository.existsByEmail(firebaseToken.getEmail())) {
             User user = User.builder()
                     .email(firebaseToken.getEmail())
-                    .firstName(firebaseToken.getName())
-                    .lastName(firebaseToken.getName())
+                    .fullName(firebaseToken.getName())
                     .password(passwordEncoder.encode(UUID.randomUUID()
                             .toString().substring(0, 6).toUpperCase()))
                     .role(Role.BUYER)
