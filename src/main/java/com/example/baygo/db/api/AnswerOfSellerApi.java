@@ -27,7 +27,7 @@ public class AnswerOfSellerApi {
         return answerOfSellerService.addAnswer(request);
     }
 
-    @Operation
+    @Operation(summary = "Get all questions!",description = "This method gets all questions!")
     @GetMapping
     @PreAuthorize("hasAuthority('SELLER')")
     public PaginationResponse<BuyerQuestionResponse> getQuestions(@RequestParam(required = false) String keyWord,

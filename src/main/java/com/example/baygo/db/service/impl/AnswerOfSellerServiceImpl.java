@@ -41,15 +41,18 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     public PaginationResponse<BuyerQuestionResponse> getAllQuestions(String keyWord, int page, int pageSize) {
         Seller seller = jwtService.getAuthenticate().getSeller();
         String sql = """
-                         select (SELECT i.images FROM sub_product_images i
+                                         select  (SELECT i.images FROM sub_product_images i
                                         join sub_products sp on sp.id = i.sub_product_id
                                         where sp.product_id = p.id LIMIT 1) as image,
-                       b.question as question, p.articul as articul, p.name as name, b.created_at as create_at
-                from buyer_questions b
-                         join products p on p.id = b.product_id
+                    p.id as product_id, u.full_name as full_name,b.photo as photo,
+                    bq.question as question, p.articul as articul, p.name as name,
+                    bq.created_at as create_at
+                from buyer_questions bq
+                         join buyers b on b.id = bq.buyer_id
+                         join users u on u.id = b.user_id
+                         join products p on p.id = bq.product_id
                          join sellers s on s.id = p.seller_id
-                where s.id = %s %s
-                                                """;
+                where s.id = %s %s             """;
         List<Object> params = new ArrayList<>();
 
         String keywordCondition = "";
@@ -66,6 +69,9 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
         sql = String.format(sql + "LIMIT %s OFFSET %s", pageSize, offset);
 
         List<BuyerQuestionResponse> questions = jdbcTemplate.query(sql, params.toArray(), (resultSet, i) -> new BuyerQuestionResponse(
+                resultSet.getLong("product_id"),
+                resultSet.getString("full_name"),
+                resultSet.getString("photo"),
                 resultSet.getString("image"),
                 resultSet.getString("question"),
                 resultSet.getString("articul"),
