@@ -23,10 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author altynbek
- * @created at 11.07.2023 11:11
- */
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -91,7 +88,7 @@ public class JwtService {
     public User getAuthenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
-        log.info("Токен взят!");
+        log.info("Successfully authenticated user - " + login);
         return userRepository.findByEmail(login).orElseThrow(() -> {
             log.error("Пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь!");
             return new NotFoundException("пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь");

@@ -17,7 +17,7 @@ import static jakarta.persistence.CascadeType.*;
 public class SupplyProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_product_gen")
-    @SequenceGenerator(name = "supply_product_gen", sequenceName = "supply_product_seq", allocationSize = 1)
+    @SequenceGenerator(name = "supply_product_gen", sequenceName = "supply_product_seq", allocationSize = 1,initialValue = 31)
     private Long id;
     private int quantity;
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
