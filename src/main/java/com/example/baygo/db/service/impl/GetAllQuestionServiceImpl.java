@@ -1,17 +1,22 @@
 package com.example.baygo.db.service.impl;
 
-import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.db.repository.BuyerQuestionRepository;
+import com.example.baygo.db.dto.response.BuyerQuestionResponse;
+import com.example.baygo.db.repository.custom.CustomQuestionRepository;
 import com.example.baygo.db.service.GetAllQuestionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
+@Service
 @RequiredArgsConstructor
 public class GetAllQuestionServiceImpl implements GetAllQuestionService {
-    private final BuyerQuestionRepository repository;
+    private final CustomQuestionRepository customQuestionRepository;
+
     @Override
-    public SimpleResponse getAllQuestions() {
-         repository.findAll();
-         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Вопросы покупателья ").build();
+    public List<BuyerQuestionResponse> getAllQuestions() {
+        return customQuestionRepository.getAllQuestions();
     }
 }
+
