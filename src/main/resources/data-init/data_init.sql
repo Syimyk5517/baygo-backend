@@ -53,17 +53,19 @@ VALUES (1, 'Kanykei Askarbekova',
 INSERT INTO sellers(id, first_name, last_name, bic, itn, about_store, address,
                     name_of_store, store_logo,
                     vendor_number, user_id)
-VALUES (1, 'Jiydegul', 'Jalilova','DEUTDEFF', '765-43-2109', 'Fashion Haven - ваш источник стильной и модной одежды',
+VALUES (1, 'Jiydegul', 'Jalilova', 'DEUTDEFF', '765-43-2109', 'Fashion Haven - ваш источник стильной и модной одежды',
         'ТЦ ГУМ, город Бишкек',
         'Fashion Haven',
         'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
         'VND12345', 4),
-       (2, 'Aiperi', 'Toktosunova','UBSWCHZH80A', '987-65-4321', 'Trendy Threads - магазин для тех, кто следит за модой',
+       (2, 'Aiperi', 'Toktosunova', 'UBSWCHZH80A', '987-65-4321',
+        'Trendy Threads - магазин для тех, кто следит за модой',
         'ТЦ ЦУМ, город Ош',
         'Trendy Threads',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwhRFf7FljIdmi9O3IJF7w438B_ljoSVtmyA&usqp=CAU',
         'SPLR789', 5),
-       (3, 'Eliza', 'Ashyralieva','KASITHBK', '444-44-4444', 'Classic Elegance - магазин, где классика встречает элегантность',
+       (3, 'Eliza', 'Ashyralieva', 'KASITHBK', '444-44-4444',
+        'Classic Elegance - магазин, где классика встречает элегантность',
         'ТЦ Asia Mall, город Бишкек', 'Classic Elegance',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSALIXFTV7zON37JghAVcdd6f_a1b-o9atknA&usqp=CAU',
         'PVDR7890', 6);
@@ -819,4 +821,26 @@ VALUES (1, 100, 1, 1),
        (15, 130, 16, 5),
        (16, 168, 17, 5),
        (17, 330, 18, 5);
+
+INSERT INTO news (id, topic, description, date)
+VALUES (1, 'Новая коллекция',
+        'Стильные аксессуары: Освежите свой образ с нашей новой коллекцией модных аксессуаров.' ||
+        ' Очки, ремни, шарфы и многое другое!', '2023-07-24'),
+       (2, 'Скидка',
+        'Специальное предложение: Весь август действует скидка 20% на все платья. Не упустите возможность обновить свой летний гардероб!',
+        '2023-07-20'),
+       (3, 'Акция',
+        'Внимание, продавцы! Мы запускаем акцию "Приведи друга"! Пригласите нового продавца на наш платформу и получите скидку 50% на комиссию за первые 3 месяца работы',
+        '2023-07-26'),
+       (4, 'Акция',
+        'Для наших самых активных продавцов! С 15 июля по 15 августа проводится акция "Бонус за выручку". Продавцы, которые достигнут определенного объема продаж, получат дополнительный бонус на свой баланс.',
+        '2023-07-25'),
+       (5, 'Коллекция',
+        'Запуск новой категории: Мы добавили новую категорию "Эксклюзивные коллекции". Приглашаем всех продавцов представить свои уникальные дизайны и стильные модели',
+        '2023-07-25');
+
+
+
+
+
 
