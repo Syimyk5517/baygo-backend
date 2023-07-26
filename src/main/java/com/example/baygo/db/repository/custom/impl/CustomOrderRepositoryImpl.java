@@ -2,6 +2,7 @@ package com.example.baygo.db.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.AnalysisResponse;
 import com.example.baygo.db.dto.response.OrderResponse;
+import com.example.baygo.db.dto.response.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.model.enums.Status;
 import com.example.baygo.db.repository.custom.CustomOrderRepository;
@@ -136,4 +137,30 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
 
         return new AnalysisResponse(amountOfPrice, commission);
     }
+
+    @Override
+    public List<OrderWareHouseResponse> getAllOrders(Long id) {
+
+        String query = """
+        SELECT w.name AS wareHouseName, 
+               COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER() AS percentage
+        FROM warehouses w
+      join supplies s on w.id = s.warehouse_id
+      JOIN supply_products sp on s.id = sp.supply_id
+      JOIN sellers s2 on s2.id = s.seller_id
+      JOIN orders_sizes os on sp.size_id = os.size_id
+      JOIN orders o on o.id = os.order_id
+        WHERE w.id = ?
+        GROUP BY w.name
+    """;
+
+        List<OrderWareHouseResponse> orderResponses = jdbcTemplate.query(query, (rs, rowNum) -> {
+            String wareHouseName = rs.getString("wareHouseName");
+            int percentage = rs.getInt("percentage");
+            return new OrderWareHouseResponse(wareHouseName, percentage);
+        }, id);
+
+        return orderResponses;
+    }
+
 }

@@ -3,6 +3,7 @@ package com.example.baygo.db.service.impl;
 import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.response.AnalysisResponse;
 import com.example.baygo.db.dto.response.OrderResponse;
+import com.example.baygo.db.dto.response.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +35,13 @@ public class OrderServiceImpl implements OrderService {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
         return customOrderRepository.getWeeklyAnalysis(startDate, endDate, warehouseId, nameOfTime, seller.getId());
+    }
+
+    @Override
+    public List<OrderWareHouseResponse> getAllOrdersByWareHouse() {
+        User user = jwtService.getAuthenticate();
+        Seller seller = user.getSeller();
+        return customOrderRepository.getAllOrders(seller.getId());
     }
 
 
