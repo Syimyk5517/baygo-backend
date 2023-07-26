@@ -4,10 +4,10 @@ import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
-import com.example.baygo.db.dto.response.deliveryFactor.DeliveryTypeResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.SupplyTypeResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
-import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -77,6 +77,9 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size) {
         String query = """
                 select
+                     p.id as product_id,
+                     sp.id as sub_product_id,
+                     s.id as size_id,
                      (select spi.images
                      from sub_product_images spi
                      where spi.sub_product_id = sp.id
@@ -101,14 +104,14 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         params.addValue("sellerId", sellerId);
         params.addValue("supplyId", supplyId);
         if (keyWord != null && !keyWord.isEmpty()) {
-            query += " AND (s.barcode iLIKE :keyWord OR p.brand iLIKE :keyWord OR p.name iLIKE :keyWord OR sp.color iLIKE :keyWord)";
+            query += " AND (cast(s.barcode as text) iLIKE :keyWord OR p.brand iLIKE :keyWord OR p.name iLIKE :keyWord OR sp.color iLIKE :keyWord)";
             params.addValue("keyWord", "%" + keyWord + "%");
         }
 
         String countSql = "SELECT COUNT(*) FROM (" + query + ") AS count_query";
-        int count = namedParameterJdbcTemplate.query(countSql, params,(resultSet, i) ->
-                        resultSet.getInt("count")
-             ).stream().findFirst().orElseThrow();
+        int count = namedParameterJdbcTemplate.query(countSql, params, (resultSet, i) ->
+                resultSet.getInt("count")
+        ).stream().findFirst().orElseThrow();
 
         int totalPage = (int) Math.ceil((double) count / size);
         int offset = (page - 1) * size;
@@ -117,16 +120,19 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         params.addValue("offset", offset);
 
         List<SupplyProductResponse> supplyProductResponses = namedParameterJdbcTemplate.query(query, params, (resultSet, i) ->
-                        new SupplyProductResponse(
-                                resultSet.getString("image"),
-                                resultSet.getInt("barcode"),
-                                resultSet.getInt("quantity"),
-                                resultSet.getString("name"),
-                                resultSet.getString("vendor_number"),
-                                resultSet.getString("brand_name"),
-                                resultSet.getString("sizes"),
-                                resultSet.getString("color"))
-                        );
+                new SupplyProductResponse(
+                        resultSet.getLong("product_id"),
+                        resultSet.getLong("sub_product_id"),
+                        resultSet.getLong("size_id"),
+                        resultSet.getString("image"),
+                        resultSet.getInt("barcode"),
+                        resultSet.getInt("quantity"),
+                        resultSet.getString("name"),
+                        resultSet.getString("vendor_number"),
+                        resultSet.getString("brand_name"),
+                        resultSet.getString("sizes"),
+                        resultSet.getString("color"))
+        );
         return PaginationResponse.<SupplyProductResponse>builder()
                 .elements(supplyProductResponses)
                 .currentPage(page)
@@ -156,30 +162,31 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
             deliveryFactorResponse.setWarehouseName(resultSet.getString("w_name"));
 
             String deliveryTypesSql = """
-                    SELECT DISTINCT s.delivery_type AS delivery_type
+                    SELECT DISTINCT s.supply_type AS supply_type
                     FROM supplies s
                     WHERE s.warehouse_id = ?
                     """;
 
-            List<DeliveryTypeResponse> deliveryTypeResponses = jdbcTemplate.query(deliveryTypesSql, (innermostResultSet, d) -> {
-                DeliveryTypeResponse deliveryTypeResponse = new DeliveryTypeResponse();
-                deliveryTypeResponse.setDeliveryType(SupplyType.valueOf(innermostResultSet.getString("delivery_type")));
+            List<SupplyTypeResponse> deliveryTypeResponses = jdbcTemplate.query(deliveryTypesSql, (innermostResultSet, d) -> {
+                SupplyTypeResponse supplyTypeResponse = new SupplyTypeResponse();
+                SupplyType supplyType = SupplyType.valueOf(innermostResultSet.getString("supply_type"));
+                supplyTypeResponse.setSupplyType(supplyType.getDisplayName());
 
                 if (date == null) {
                     LocalDate currentDate = LocalDate.now();
                     for (int i = 0; i <= 6; i++) {
                         LocalDate futureDate = currentDate.plusDays(i);
                         WarehouseCostResponse warehouseCostResponse = warehouseCost(
-                                deliveryFactorResponse.getWarehouseId(), deliveryTypeResponse.getDeliveryType(), futureDate);
-                        deliveryTypeResponse.addWarehouseCost(warehouseCostResponse);
+                                deliveryFactorResponse.getWarehouseId(), supplyType, futureDate);
+                        supplyTypeResponse.addWarehouseCost(warehouseCostResponse);
                     }
                 } else {
                     WarehouseCostResponse warehouseCostResponse = warehouseCost(
-                            deliveryFactorResponse.getWarehouseId(), deliveryTypeResponse.getDeliveryType(), date);
-                    deliveryTypeResponse.addWarehouseCost(warehouseCostResponse);
+                            deliveryFactorResponse.getWarehouseId(), supplyType, date);
+                    supplyTypeResponse.addWarehouseCost(warehouseCostResponse);
                 }
 
-                return deliveryTypeResponse;
+                return supplyTypeResponse;
             }, deliveryFactorResponse.getWarehouseId());
 
             deliveryFactorResponse.setDeliveryTypeResponses(deliveryTypeResponses);
@@ -196,7 +203,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         String sql = """
                     SELECT s.planned_date AS planned_date
                     FROM supplies s
-                    WHERE s.warehouse_id = ? AND s.delivery_type = ? AND s.planned_date = ?
+                    WHERE s.warehouse_id = ? AND s.supply_type = ? AND s.planned_date = ?
                 """;
 
         List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {

@@ -41,7 +41,7 @@ public class SupplyServiceImpl implements SupplyService {
                 .supplyId(supply.getId())
                 .supplyNumber(supply.getSupplyNumber())
                 .warehouseName(supply.getWarehouse().getName())
-                .supplyType(supply.getSupplyType().name())
+                .supplyType(supply.getSupplyType().getDisplayName())
                 .sellerPhoneNumber(supply.getSeller().getUser().getPhoneNumber())
                 .supplyCost(supply.getSupplyCost().intValue() == 0 ? "Бесплатно" : supply.getSupplyCost().toString())
                 .preliminaryCostOfAcceptance(supply.getSupplyCost())
@@ -56,7 +56,7 @@ public class SupplyServiceImpl implements SupplyService {
 
     @Override
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size) {
-        Long sellerId = jwtService.getAuthenticate().getId();
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return customRepository.getSupplyProducts(sellerId, supplyId, keyWord, page, size);
     }
 

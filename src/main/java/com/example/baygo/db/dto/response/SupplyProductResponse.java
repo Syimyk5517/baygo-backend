@@ -7,6 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class SupplyProductResponse {
+    Long productId;
+    Long subProductId;
+    Long sizeId;
     String photo;
     int barcode;
     int quantity;

@@ -1,10 +1,17 @@
 package com.example.baygo.db.model.enums;
 
 public enum SupplyType {
-    BOX("BOX"),
-    MONOPALLETS("MONOPALLETS"),
-    SUPERSAFE("SUPERSAFE");
+    BOX("Короба"),
+    MONO_PALLETS("Монопаллет"),
+    SUPER_SAFE("Суперсейф");
 
-    SupplyType(String name) {
+    private final String displayName;
+
+    SupplyType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

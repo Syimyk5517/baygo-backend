@@ -13,7 +13,6 @@ import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
-import com.example.baygo.db.model.enums.Gender;
 import com.example.baygo.db.model.enums.Role;
 import com.example.baygo.db.repository.BuyerRepository;
 import com.example.baygo.db.repository.SellerRepository;
@@ -242,7 +241,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     void init() {
         try {
             GoogleCredentials googleCredentials = GoogleCredentials
-                    .fromStream(new ClassPathResource("baygo-2b0b0-firebase-adminsdk-1qj5b-3b0b0f0b0b.json")
+                    .fromStream(new ClassPathResource("firebase/baygo-392813-firebase-adminsdk-9isz0-bc25bd675f.json")
                             .getInputStream());
             FirebaseOptions firebaseOptions = FirebaseOptions.builder()
                     .setCredentials(googleCredentials)
@@ -250,7 +249,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.info("successfully works the init method");
             FirebaseApp firebaseApp = FirebaseApp.initializeApp(firebaseOptions);
         } catch (IOException e) {
-            log.error("IOException");
+            log.error("IOException from firebase: " + e.getMessage());
         }
     }
 }
