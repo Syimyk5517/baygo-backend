@@ -1,9 +1,9 @@
 package com.example.baygo.db.api;
 
-import com.example.baygo.db.dto.response.BuyerQuestionResponse;
 import com.example.baygo.db.dto.response.GetAllReviewsResponse;
-import com.example.baygo.db.service.GetAllQuestionService;
-import com.example.baygo.db.service.GetAllReviewsService;
+import com.example.baygo.db.dto.response.GetBuyerQuestionResponse;
+import com.example.baygo.db.service.AnswerOfSellerService;
+import com.example.baygo.db.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +21,19 @@ import java.util.List;
 @Tag(name = "Seller Lending API")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class SellerLendingApi {
-    private final GetAllQuestionService getAllQuestionService;
-    private final GetAllReviewsService getAllReviewsService;
+    private final AnswerOfSellerService answerOfSellerService;
+    private final ReviewService reviewService;
+
     @Operation(summary = "Get all questions", description = "This method will get all questions of buyer")
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping
-    public List<BuyerQuestionResponse> getAllQuestions(){
-        return getAllQuestionService.getAllQuestions();
+    public List<GetBuyerQuestionResponse> getAllQuestions(){
+        return answerOfSellerService.getAllQuestions();
     }
     @Operation(summary = "Get all reviews", description = "This method will get all reviews of buyer")
     @PreAuthorize("hasAuthority('SELLER')")
-    @GetMapping("/get_all")
+    @GetMapping("/get_all_reviews")
     public List<GetAllReviewsResponse> getAllReviews(){
-        return getAllReviewsService.getAllReviews();
+        return reviewService.getAllReviews();
     }
 }

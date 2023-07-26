@@ -3,6 +3,7 @@ package com.example.baygo.db.service.impl;
 import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
+import com.example.baygo.db.dto.response.GetBuyerQuestionResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -42,5 +43,10 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     public PaginationResponse<BuyerQuestionResponse> getAllQuestions(String keyWord, int page, int pageSize) {
         Seller seller = jwtService.getAuthenticate().getSeller();
         return customAnswerOfSellerRepository.getAllQuestions(keyWord,page,pageSize, seller.getId());
+    }
+
+    @Override
+    public List<GetBuyerQuestionResponse> getAllQuestions() {
+        return customAnswerOfSellerRepository.getAllQuestionsForSeller();
     }
 }
