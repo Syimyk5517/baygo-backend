@@ -12,8 +12,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SellerStoreInfoRequest {
-    @NotBlank(message = "Фото не должен быть пустым")
-    private String photo;
     @NotBlank(message = "Имя магазина не должен быть пустым")
     private String nameOfStore;
     @NotBlank(message = "Почта не должна быть пустой")

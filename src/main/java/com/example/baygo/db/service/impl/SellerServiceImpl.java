@@ -4,6 +4,7 @@ import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.SellerProfileRequest;
 import com.example.baygo.db.dto.request.SellerStoreInfoRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.service.SellerService;
@@ -23,8 +24,8 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public SimpleResponse updateSellerProfile(SellerProfileRequest request) {
         User user = jwtService.getAuthenticate();
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        user.getSeller().setFirstName(request.getFirstName());
+        user.getSeller().setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
         user.getSeller().setAddress(request.getAddress());
@@ -39,7 +40,6 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public SimpleResponse updateSellerStoreInfo(SellerStoreInfoRequest request) {
         Seller seller = jwtService.getAuthenticate().getSeller();
-        seller.setPhoto(request.getPhoto());
         seller.setNameOfStore(request.getNameOfStore());
         seller.getUser().setEmail(request.getStoreEmail());
         seller.setAddress(request.getStoreAddress());
@@ -51,5 +51,20 @@ public class SellerServiceImpl implements SellerService {
         log.info("Информация о магазине продавца успешно обновлена");
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).
                 message("Информация о магазине продавца успешно обновлена.").build();
+    }
+
+    @Override
+    @Transactional
+    public SimpleResponse updateLogoOfStore(String newLogo) {
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        if (newLogo == null || newLogo.isEmpty()) {
+            log.error("Logo of store is null or empty");
+            throw new BadRequestException("Логотип магазина не может быть пустым");
+        }
+        seller.setStoreLogo(newLogo);
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Логотип магазина успешно обновлен")
+                .build();
     }
 }

@@ -34,6 +34,4 @@ public class OrderServiceImpl implements OrderService {
         Seller seller = user.getSeller();
         return customOrderRepository.getWeeklyAnalysis(startDate, endDate, warehouseId, nameOfTime, seller.getId());
     }
-
-
 }

@@ -22,6 +22,7 @@ public class Buyer {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "buyer_gen")
     @SequenceGenerator(name = "buyer_gen", sequenceName = "bayer_seq", allocationSize = 1, initialValue = 3)
     private Long id;
+    private String fullName;
     private LocalDate dateOfBirth;
     @Enumerated(EnumType.STRING)
     private Gender gender;

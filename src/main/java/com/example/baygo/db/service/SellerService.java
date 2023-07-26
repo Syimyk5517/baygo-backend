@@ -6,7 +6,9 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 
 public interface SellerService {
     SimpleResponse updateSellerProfile(SellerProfileRequest request);
+
     SimpleResponse updateSellerStoreInfo(SellerStoreInfoRequest request);
 
+    SimpleResponse updateLogoOfStore(String newLogo);
 }
 
