@@ -26,18 +26,19 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public SimpleResponse saveDiscount(DiscountRequest request) {
         List<SubProduct> subProducts = subProductRepository.findAllById(request.subProductsId());
+        Discount discount = new Discount();
+        discount.setDateOfFinish(request.dateOfFinish());
+        discount.setDateOfStart(LocalDateTime.now().withSecond(0).withNano(0));
+        discount.setPercent(request.percent());
+        discount.setNameOfDiscount(request.nameOfDiscount());
         for (SubProduct subProduct : subProducts) {
-            Discount discount = new Discount();
-            discount.setDateOfFinish(request.dateOfFinish());
-            discount.setDateOfStart(LocalDateTime.now().withSecond(0).withNano(0));
-            discount.setPercent(request.percent());
-            discount.setNameOfDiscount(request.nameOfDiscount());
             subProduct.setDiscount(discount);
-            discountRepository.save(discount);
         }
+        discountRepository.save(discount);
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Скидка успешно сохранена!").build();
     }
-//cron = "0 0/5 * * * ?" every 5 minute
+
+    //cron = "0 0/5 * * * ?" every 5 minute
 //cron = "0 0 0 * * ?" every day
 //cron = "0 0 * * * ?" every hour
     @Scheduled(cron = "0 0 * * * ?")
