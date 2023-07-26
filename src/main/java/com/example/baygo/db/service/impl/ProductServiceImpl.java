@@ -4,6 +4,7 @@ import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.ProductRequest;
 import com.example.baygo.db.dto.request.SizeRequest;
 import com.example.baygo.db.dto.request.SubProductRequest;
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -18,13 +19,10 @@ import com.example.baygo.db.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,13 +34,6 @@ public class ProductServiceImpl implements ProductService {
     private final SizeRepository sizeRepository;
     private final JwtService jwtService;
     private final CustomProductRepository customProductRepository;
-
-    @Override
-    public List<ProductResponseForSeller> findAll(int page, int size, String status, String keyWord) {
-        long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<ProductResponseForSeller> pageProducts = customProductRepository.getAll(PageRequest.of(page, size), sellerId, status, keyWord);
-        return pageProducts.getContent();
-    }
 
     @Override
     public SimpleResponse saveProduct(ProductRequest request) {
@@ -90,5 +81,11 @@ public class ProductServiceImpl implements ProductService {
             randomHash = randomHash.substring(0, 8);
         }
         return Math.abs(Integer.parseInt(randomHash));
+    }
+
+    @Override
+    public PaginationResponse<ProductResponseForSeller> findAll(String status, String keyWord, int page, int size) {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customProductRepository.getAll(sellerId, status, keyWord, page, size);
     }
 }

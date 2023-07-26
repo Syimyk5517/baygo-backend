@@ -1,12 +1,11 @@
 package com.example.baygo.db.repository.custom.impl;
 
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
 import com.example.baygo.db.repository.custom.CustomProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Page<ProductResponseForSeller> getAll(Pageable pageable, long sellerId, String status, String keyWord) {
+    public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, String status, String keyWord, int page, int size) {
         String sql = """
                     with count_cte as (
                         select count(*) as total
@@ -32,7 +31,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                     )
                     select pr.id as product_id,
                            sp.id as sub_product_id,
-                           spi.images as sub_product_photo,
+                           (select spi.images
+                           from sub_product_images spi
+                           where spi.sub_product_id = sp.id limit 1) as sub_product_photo,
                            sel.vendor_number as vendor_number,
                            pr.articul as product_articul,
                            pr.name as product_name,
@@ -43,7 +44,6 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
-                             join sub_product_images spi on sp.id = spi.sub_product_id
                              join sellers sel on pr.seller_id = sel.id
                              %s
                     where sel.id = ? %s
@@ -86,11 +86,14 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
         sql = String.format(sql, sqlStatus, keywordCondition);
 
-        int total = jdbcTemplate.queryForObject("select count(*) from (" + sql + ") as count_query", Integer.class, params.toArray());
+        int count = jdbcTemplate.queryForObject("select count(*) from (" + sql + ") as count_query", Integer.class, params.toArray());
+
+        int totalPage = (int) Math.ceil((double) count / size);
+        int offset = (page - 1) * size;
 
         sql = sql + " limit ? offset ?";
-        params.add(pageable.getPageSize());
-        params.add(pageable.getOffset());
+        params.add(size);
+        params.add(offset);
 
         List<ProductResponseForSeller> response = jdbcTemplate.query(sql, params.toArray(), (rs, rowNum) -> new ProductResponseForSeller(
                 rs.getLong("product_id"),
@@ -110,6 +113,10 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                         resultSet.getInt("quantity")
                 )), rs.getLong("sub_product_id"))));
 
-        return new PageImpl<>(response, pageable, total);
+        return PaginationResponse.<ProductResponseForSeller>builder()
+                .elements(response)
+                .totalPages(totalPage)
+                .currentPage(page)
+                .build();
     }
 }
