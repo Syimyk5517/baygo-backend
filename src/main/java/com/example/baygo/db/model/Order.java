@@ -43,11 +43,12 @@ public class Order {
     private Buyer buyer;
 
     @ElementCollection
-    @JoinTable(name = "orders_sub_products_size",
+    @JoinTable(name = "orders_sizes",
             joinColumns = @JoinColumn(name = "order_id"))
-    @MapKeyJoinColumn(name = "sub_products_size_id")
+    @MapKeyJoinColumn(name = "size_id")
     @Cascade({CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     private Map<Size, Integer> productCount;
+
     @OneToOne(cascade = ALL)
     private Customer customer;
 }

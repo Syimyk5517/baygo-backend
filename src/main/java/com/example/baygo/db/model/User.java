@@ -24,11 +24,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_gen")
     @SequenceGenerator(name = "user_gen", sequenceName = "user_seq", allocationSize = 1, initialValue = 7)
     private Long id;
-    private String firstName;
-    private String lastName;
     private String email;
     private String password;
     private String phoneNumber;
+    private String resetPasswordToken;
     @Enumerated(EnumType.STRING)
     private Role role;
 
