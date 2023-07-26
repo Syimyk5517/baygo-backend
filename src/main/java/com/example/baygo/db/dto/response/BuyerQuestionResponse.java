@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class BuyerQuestionResponse {
+    private Long id;
     private String productPhoto;
     private String description;
     private LocalDate createAt;

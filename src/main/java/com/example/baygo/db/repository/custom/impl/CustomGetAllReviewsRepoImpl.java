@@ -15,14 +15,18 @@ public class CustomGetAllReviewsRepoImpl implements CustomGetAllReviewsRepositor
     @Override
     public List<GetAllReviewsResponse> getAllReviews() {
         String sql = """
-                select r.id, spi.images, r.grade,r.text, r.date_and_time
+                select r.id as id,
+                       spi.images as images,
+                       r.grade as grade,
+                       r.text as text, 
+                       r.date_and_time as dateAndTime
                     from reviews r
                     join sub_products sp on r.product_id = sp.product_id
                     join sub_product_images spi on sp.id = spi.sub_product_id
                 """;
         return jdbcTemplate.query(sql, (resultSet, i)-> new GetAllReviewsResponse(
                 resultSet.getLong("id"),
-                resultSet.getString("image"),
+                resultSet.getString("images"),
                 resultSet.getInt("grade"),
                 resultSet.getString("text"),
                 resultSet.getDate("dateAndTime").toLocalDate()

@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class GetAllReviewsResponse {
     private Long id;
-    private String image;
+    private String images;
     private int grade;
     private String text;
-    private LocalDate createAt;
+    private LocalDate dateAndTime;
 }

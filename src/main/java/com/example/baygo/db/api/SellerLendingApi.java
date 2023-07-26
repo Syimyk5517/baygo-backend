@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Seller Lending API")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class GetAllQuestionAndReviews {
+public class SellerLendingApi {
     private final GetAllQuestionService getAllQuestionService;
     private final GetAllReviewsService getAllReviewsService;
     @Operation(summary = "Get all questions", description = "This method will get all questions of buyer")
