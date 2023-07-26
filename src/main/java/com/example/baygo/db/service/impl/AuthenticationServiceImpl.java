@@ -70,9 +70,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         Buyer buyer = new Buyer();
+        buyer.setFullName(request.fullName());
+
         User user = User.builder()
                 .email(request.email())
-                .fullName(request.fullName())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.BUYER)
                 .build();
@@ -101,13 +102,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         User user = User.builder()
                 .email(request.email())
-                .fullName(request.firstName())
                 .phoneNumber(request.phoneNumber())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.SELLER)
                 .build();
 
         Seller seller = Seller.builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
                 .ITN(request.ITN())
                 .address(request.address())
                 .BIC(request.BIC())
@@ -188,7 +190,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userInfoRepository.findByResetPasswordToken(token)
                 .orElseThrow(() -> {
                     log.error("Пользователь не существует");
-                    throw new NotFoundException("Пользователь не существует");});
+                    throw new NotFoundException("Пользователь не существует");
+                });
 
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setResetPasswordToken(null);
@@ -200,17 +203,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse authWithGoogle(String tokenId) throws FirebaseAuthException{
+    public AuthenticationResponse authWithGoogle(String tokenId) throws FirebaseAuthException {
         FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(tokenId);
         if (!userRepository.existsByEmail(firebaseToken.getEmail())) {
             User user = User.builder()
                     .email(firebaseToken.getEmail())
-                    .fullName(firebaseToken.getName())
                     .password(passwordEncoder.encode(UUID.randomUUID()
                             .toString().substring(0, 6).toUpperCase()))
                     .role(Role.BUYER)
                     .build();
-            userRepository.save(user);
+            Buyer buyer = Buyer.builder()
+                    .fullName(firebaseToken.getName())
+                    .user(user)
+                    .build();
+
+            buyerRepository.save(buyer);
             log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
             String jwtToken = jwtService.generateToken(user);
             return AuthenticationResponse.builder()
