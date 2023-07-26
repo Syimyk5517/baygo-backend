@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationApi {
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "Register a new user", description = "This method validates the request and creates a new user.")
+    @Operation(summary = "Register a new buyer", description = "This method validates the request and creates a new buyer.")
     @PostMapping("/sign-up/buyer")
     public AuthenticationResponse signUpBuyer(@RequestBody @Valid BuyerRegisterRequest request) {
         return authenticationService.buyerRegister(request);
@@ -57,7 +57,7 @@ public class AuthenticationApi {
     }
 
     @Operation(summary = "Google", description = "This method validates the request and authenticates a user with google.")
-    @GetMapping("/google")
+    @PostMapping("/google")
     public AuthenticationResponse google(@RequestParam String tokenId) throws FirebaseAuthException {
         return authenticationService.authWithGoogle(tokenId);
     }

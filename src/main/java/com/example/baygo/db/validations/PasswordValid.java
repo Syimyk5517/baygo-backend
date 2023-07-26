@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordValid {
-    String message() default "Пароль должен содержать не менее одной буквы, одну цифру и иметь длину не менее 8 символов!";
+    String message() default "Пароль должен содержать не менее одной буквы, одну цифру и иметь длину не менее 6 символов!";
 
     Class<?>[] groups() default {};
 

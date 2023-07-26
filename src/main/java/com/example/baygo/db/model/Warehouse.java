@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -19,4 +21,5 @@ public class Warehouse {
     private Long id;
     private String name;
     private String location;
+    BigDecimal transitCost;
 }
