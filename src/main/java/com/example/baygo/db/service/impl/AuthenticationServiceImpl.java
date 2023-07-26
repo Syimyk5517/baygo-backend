@@ -166,7 +166,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setResetPasswordToken(token);
 
         String subject = "Запрос на сброс пароля";
-        String resetPasswordLink = "http://localhost:2023/reset-password?token=" + token;
+        String resetPasswordLink = "http://localhost:3000/reset-password?token=" + token;
 
         Context context = new Context();
         context.setVariable("title", "Восстановление пароля");
