@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/sellers/news")
 @RequiredArgsConstructor
 @Tag(name = "News api")
-@CrossOrigin(origins = "*",maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class NewsApi {
     private final NewsService newsService;
 
