@@ -27,6 +27,7 @@ public class Buyer {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String address;
+    private String photo;
 
     @OneToMany(mappedBy = "buyer", cascade = ALL)
     private List<Appeal> appeals;
