@@ -14,7 +14,4 @@ public class WarehouseCostResponse{
        private LocalDate date;
        private String goodsPayment;
        private BigDecimal warehouseCost;
-
-
-
 }

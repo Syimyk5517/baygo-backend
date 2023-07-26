@@ -12,5 +12,5 @@ import java.util.List;
 public class DeliveryFactorResponse{
        private Long warehouseId;
        private String warehouseName;
-       private List<DeliveryTypeResponse> deliveryTypeResponses ;
+       private List<SupplyTypeResponse> deliveryTypeResponses ;
 }

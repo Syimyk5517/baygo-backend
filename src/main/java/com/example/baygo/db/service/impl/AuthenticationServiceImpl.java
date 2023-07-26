@@ -13,8 +13,8 @@ import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
-import com.example.baygo.db.model.enums.Gender;
 import com.example.baygo.db.model.enums.Role;
+import com.example.baygo.db.repository.BuyerRepository;
 import com.example.baygo.db.repository.SellerRepository;
 import com.example.baygo.db.repository.UserRepository;
 import com.example.baygo.db.service.AuthenticationService;
@@ -46,6 +46,7 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
+    private final BuyerRepository buyerRepository;
 
     private final UserRepository userInfoRepository;
     private final UserRepository userRepository;
@@ -67,25 +68,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (split.equals(request.password())) {
             throw new BadRequestException("Создайте более надежный пароль");
         }
-        Buyer buyer = Buyer.builder()
-                .address(request
-                        .address())
-                .dateOfBirth(request
-                        .dateOfBirth())
-                .gender(Gender
-                        .valueOf(request
-                                .gender())).build();
+
+        Buyer buyer = new Buyer();
         User user = User.builder()
                 .email(request.email())
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .phoneNumber(request.phoneNumber())
+                .fullName(request.fullName())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.BUYER)
-                .buyer(buyer)
                 .build();
+        buyer.setUser(user);
 
-        userRepository.save(user);
+        buyerRepository.save(buyer);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
         String token = jwtService.generateToken(user);
 
@@ -108,8 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         User user = User.builder()
                 .email(request.email())
-                .firstName(request.firstName())
-                .lastName(request.lastName())
+                .fullName(request.firstName())
                 .phoneNumber(request.phoneNumber())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.SELLER)
@@ -174,7 +166,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setResetPasswordToken(token);
 
         String subject = "Запрос на сброс пароля";
-        String resetPasswordLink = "http://localhost:2023/reset-password?token=" + token;
+        String resetPasswordLink = "http://localhost:3000/reset-password?token=" + token;
 
         Context context = new Context();
         context.setVariable("title", "Восстановление пароля");
@@ -213,8 +205,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!userRepository.existsByEmail(firebaseToken.getEmail())) {
             User user = User.builder()
                     .email(firebaseToken.getEmail())
-                    .firstName(firebaseToken.getName())
-                    .lastName(firebaseToken.getName())
+                    .fullName(firebaseToken.getName())
                     .password(passwordEncoder.encode(UUID.randomUUID()
                             .toString().substring(0, 6).toUpperCase()))
                     .role(Role.BUYER)
@@ -250,7 +241,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     void init() {
         try {
             GoogleCredentials googleCredentials = GoogleCredentials
-                    .fromStream(new ClassPathResource("baygo-2b0b0-firebase-adminsdk-1qj5b-3b0b0f0b0b.json")
+                    .fromStream(new ClassPathResource("firebase/baygo-392813-firebase-adminsdk-9isz0-bc25bd675f.json")
                             .getInputStream());
             FirebaseOptions firebaseOptions = FirebaseOptions.builder()
                     .setCredentials(googleCredentials)
@@ -258,7 +249,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.info("successfully works the init method");
             FirebaseApp firebaseApp = FirebaseApp.initializeApp(firebaseOptions);
         } catch (IOException e) {
-            log.error("IOException");
+            log.error("IOException from firebase: " + e.getMessage());
         }
     }
 }

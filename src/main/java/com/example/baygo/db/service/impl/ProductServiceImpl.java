@@ -4,10 +4,17 @@ import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.ProductRequest;
 import com.example.baygo.db.dto.request.SizeRequest;
 import com.example.baygo.db.dto.request.SubProductRequest;
+import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.*;
-import com.example.baygo.db.repository.*;
+import com.example.baygo.db.model.Product;
+import com.example.baygo.db.model.Size;
+import com.example.baygo.db.model.SubCategory;
+import com.example.baygo.db.model.SubProduct;
+import com.example.baygo.db.repository.SizeRepository;
+import com.example.baygo.db.repository.SubCategoryRepository;
+import com.example.baygo.db.repository.custom.CustomProductRepository;
 import com.example.baygo.db.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
     private final SizeRepository sizeRepository;
     private final JwtService jwtService;
-
+    private final CustomProductRepository customProductRepository;
 
     @Override
     public SimpleResponse saveProduct(ProductRequest request) {
@@ -74,5 +81,11 @@ public class ProductServiceImpl implements ProductService {
             randomHash = randomHash.substring(0, 8);
         }
         return Math.abs(Integer.parseInt(randomHash));
+    }
+
+    @Override
+    public PaginationResponse<ProductResponseForSeller> findAll(String status, String keyWord, int page, int size) {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customProductRepository.getAll(sellerId, status, keyWord, page, size);
     }
 }
