@@ -10,41 +10,41 @@ VALUES (1,
        (5,
         'https://marketplace.canva.com/EAFVHstxnwk/1/0/1600w/canva-beige-aesthetic-exclusive-fashion-wear-collection-clothing-banner-BZb4KkCdNP0.jpg');
 
-INSERT INTO users (id, email, first_name, last_name, password, phone_number, role)
+INSERT INTO users (id, email, full_name, password, phone_number, role)
 VALUES
 --     пароль:Buyer123
 (1, 'buyer@gmail.com',
- 'Kanykei', 'Askarbekova',
+ 'Kanykei Askarbekova',
  '$2a$12$oU/NczE1jY6mFXp5hAvlCutEGhtEMs6EP3G5m/l9vpFc8TlTam3DS',
  '+996702666357', 'BUYER'),
 
 --     пароль:Buyer00
 (2, 'bb@gmail.com',
- 'Saltanat', 'Nematilla kyzy',
+ 'Saltanat Nematilla kyzy',
  '$2a$12$OvPx7qpK9cO9JE6oTPfWBeQH/6WKZZub4oP76S7aX./CgSgpGUasK',
  '+996702666357', 'BUYER'),
 
 --  пароль:Admin123
 (3, 'admin@gmail.com',
- 'Nuriza', 'Muratova',
+ 'Nuriza Muratova',
  '$2a$12$L67vHDQc6nq8XP.HfuIbBeK6f29ah2PpiEBSyjjBXifW4dFP8kDye',
  '+996990128880', 'ADMIN'),
 
 -- пароль:Seller123
 (4, 'seller@gmail.com',
- 'Jiydegul', 'Jalilova',
+ 'Jiydegul Jalilova',
  '$2a$12$Q77myfBp/yyrW143tis01eZrSYL3CKhN9JxMBllslZNm56gyO14/i',
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller00
 (5, 'ss@gmail.com',
- 'Aiperi ', 'Toktosunova',
+ 'Aiperi Toktosunova',
  '$2a$12$NLvlWRZ0v4utE/cX2bbKtevG8T8sSHGubfQ2wrMABEeY1UNl0ngbW',
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller88
 (6, 'eliza@gmail.com',
- 'Eliza', 'Ashyralieva',
+ 'Eliza Ashyralieva',
  '$2a$12$IZQGU1pFgWxX5M1LHJVrI.0FeYWfw3j.DxWRjVjARLRViDFObuHF.',
  '+996550232345', 'SELLER');
 
@@ -798,56 +798,32 @@ INSERT INTO supplies(id, accepted_products, actual_date,
                      quantity_of_products, status, supply_cost,
                      supply_number, supply_type, seller_id, warehouse_id)
 VALUES (1, 200, '2023-07-07', 300, '2023-07-13', '2023-05-28', 10000,
-        'ACCEPTED', 100, 'SUP2021001', 'Курьерская служба', 1, 1),
+        'DELIVERED', 100, 'SUP2021001', 'MONO_PALLETS', 1, 1),
        (2, 450, '2023-01-25', 300, '2023-07-13', '2023-05-28', 60400,
-        'ACCEPTED', 500, 'INV-2021-005', 'Личная передача', 1, 1),
+        'DELIVERED', 500, 'INV-2021-005', 'MONO_PALLETS', 2, 2),
        (3, 100, '2022-07-12', 270, '2023-01-22', '2023-05-28', 23500,
-        'ACCEPTED', 1000, 'PO-202108-001', 'Доставка', 1, 1),
+        'DELIVERED', 1000, 'PO-202108-001', 'SUPER_SAFE', 3, 3),
        (4, 699, '2023-07-07', 690, '2023-07-13', '2023-04-28', 46700,
-        'ACCEPTED', 200, 'SUP2021001', 'Самовывоз', 1, 1),
+        'DELIVERED', 200, 'SUP2021001', 'BOX', 1, 4),
        (5, 580, '2023-07-07', 1000, '2023-05-13', '2023-05-21', 2000,
-        'ACCEPTED', 740, 'INV-2021-005', 'Почтовая доставка', 2, 2),
-       (6, 350, '2023-06-18', 150, '2023-07-13', '2023-06-01', 15000,
-        'ACCEPTED', 120, 'SUP2021002', 'Доставка', 2, 2),
-       (7, 250, '2023-04-29', 200, '2023-07-13', '2023-04-15', 10000,
-        'ACCEPTED', 80, 'SUP2021003', 'Самовывоз', 1, 1),
-       (8, 600, '2023-07-05', 300, '2023-07-13', '2023-06-20', 25000,
-        'ACCEPTED', 180, 'SUP2021004', 'Курьерская служба', 1, 1),
-       (9, 400, '2023-02-14', 100, '2023-07-13', '2023-02-05', 18000,
-        'ACCEPTED', 150, 'SUP2021005', 'Доставка', 1, 1),
-       (10, 800, '2023-06-28', 250, '2023-07-13', '2023-06-10', 30000,
-        'ACCEPTED', 200, 'SUP2021006', 'Почтовая доставка', 1, 1);
+        'DELIVERED', 740, 'INV-2021-005', 'BOX', 3, 5);
 
 INSERT INTO supply_products(id, quantity, size_id, supply_id)
 VALUES (1, 100, 1, 1),
-       (2, 490, 1, 1),
-       (3, 999, 3, 1),
-       (4, 1209, 1, 2),
-       (5, 16830, 5, 2),
-       (6, 50, 6, 3),
-       (7, 230, 2, 3),
-       (8, 800, 8, 4),
-       (9, 1600, 9, 4),
-       (10, 350, 2, 5),
-       (11, 700, 11, 5),
-       (12, 900, 2, 5),
-       (13, 1200, 13, 6),
-       (14, 250, 14, 6),
-       (15, 430, 15, 7),
-       (16, 560, 16, 7),
-       (17, 800, 1, 8),
-       (18, 1100, 18, 8),
-       (19, 1400, 19, 9),
-       (20, 390, 2, 9),
-       (21, 560, 1, 9),
-       (22, 980, 22, 9),
-       (23, 1200, 23, 10),
-       (24, 450, 24, 10),
-       (25, 780, 25, 10),
-       (26, 890, 26, 10),
-       (27, 1100, 27, 6),
-       (28, 1350, 28, 5),
-       (29, 1600, 3, 5),
-       (30, 420, 3, 10);
-
+       (2, 232, 3, 1),
+       (3, 22, 4, 1),
+       (4, 992, 5, 1),
+       (5, 454, 6, 1),
+       (6, 21, 7, 2),
+       (7, 321, 8, 2),
+       (8, 234, 9, 2),
+       (9, 999, 10, 3),
+       (10, 999, 11, 3),
+       (11, 999, 12, 3),
+       (12, 156, 13, 4),
+       (13, 129, 14, 4),
+       (14, 79, 15, 4),
+       (15, 130, 16, 5),
+       (16, 168, 17, 5),
+       (17, 330, 18, 5);
 

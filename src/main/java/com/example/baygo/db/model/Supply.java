@@ -1,5 +1,6 @@
 package com.example.baygo.db.model;
 
+import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,10 @@ public class Supply {
     @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1, initialValue = 11)
     private Long id;
     private String supplyNumber;
-    private String supplyType;
+    @Enumerated(EnumType.STRING)
+    private SupplyType supplyType;
     private LocalDate createdAt;
+    private LocalDate changedAt;
     private int quantityOfProducts;
     private int acceptedProducts;
     private BigDecimal commission;
@@ -47,6 +50,10 @@ public class Supply {
 
     @OneToMany(mappedBy = "supply", cascade = ALL)
     private List<SupplyProduct> supplyProduct;
+
+    @OneToOne(cascade = ALL)
+    private Supplier supplier;
+
     public void addSupplyProduct(SupplyProduct supplyProduct) {
         if (this.supplyProduct == null) {
             this.supplyProduct = new ArrayList<>();

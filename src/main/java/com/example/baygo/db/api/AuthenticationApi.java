@@ -8,9 +8,9 @@ import com.example.baygo.db.dto.request.ResetPasswordRequest;
 import com.example.baygo.db.dto.response.AuthenticationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.service.AuthenticationService;
+import com.google.firebase.auth.FirebaseAuthException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageDescriptorFormatException;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationApi {
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "Register a new user", description = "This method validates the request and creates a new user.")
+    @Operation(summary = "Register a new buyer", description = "This method validates the request and creates a new buyer.")
     @PostMapping("/sign-up/buyer")
     public AuthenticationResponse signUpBuyer(@RequestBody @Valid BuyerRegisterRequest request) {
         return authenticationService.buyerRegister(request);
@@ -54,5 +54,11 @@ public class AuthenticationApi {
     @PostMapping("/reset-password")
     public ResponseEntity<SimpleResponse> resetPassword(@RequestParam String token, @RequestBody @Valid ResetPasswordRequest request) {
         return ResponseEntity.ok(authenticationService.resetPassword(token, request.newPassword()));
+    }
+
+    @Operation(summary = "Google", description = "This method validates the request and authenticates a user with google.")
+    @PostMapping("/google")
+    public AuthenticationResponse google(@RequestParam String tokenId) throws FirebaseAuthException {
+        return authenticationService.authWithGoogle(tokenId);
     }
 }
