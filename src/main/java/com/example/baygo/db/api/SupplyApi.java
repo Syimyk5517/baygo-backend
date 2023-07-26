@@ -7,6 +7,7 @@ import com.example.baygo.db.dto.response.SupplyResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.service.SupplyService;
+import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @RestController
@@ -62,5 +64,13 @@ public class SupplyApi {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         return service.findAllDeliveryFactor(keyword, date, size, page);
+    }
+
+    @Operation(summary = "Transit direction from warehouse.",description = "This method transit direction of product of warehouse.")
+    @GetMapping("/transit_directions")
+    public List<SupplyTransitDirectionResponse> getAllTransactions(
+            @RequestParam(required = false) String transitWarehouse,
+            @RequestParam(required = false) String destinationWarehouse) {
+        return service.getAllTransitDirections(transitWarehouse, destinationWarehouse);
     }
 }

@@ -9,6 +9,7 @@ import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
+import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -224,5 +225,33 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
         Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
         int count = countResult != null ? countResult : 0;
         return (int) Math.ceil((double) count / size);
+    }
+
+    @Override
+    public List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse) {
+        String transitDirectionQuery = """
+                SELECT
+                    w.id AS warehouseId,
+                    w.name AS transit_warehouse,
+                    w.location AS destination_warehouse,
+                    w.transit_cost AS transit_cost
+                FROM warehouses w
+                """;
+        if (transitWarehouse != null && !transitWarehouse.isEmpty()
+                && destinationWarehouse != null && !destinationWarehouse.isEmpty()) {
+            transitDirectionQuery += " WHERE w.name iLIKE '%" + transitWarehouse
+                    + "%' AND w.location iLIKE '%" + destinationWarehouse + "%'";
+        } else if (transitWarehouse != null && !transitWarehouse.isEmpty()) {
+            transitDirectionQuery += " WHERE w.name iLIKE '%" + transitWarehouse + "%'";
+        } else if (destinationWarehouse != null && !destinationWarehouse.isEmpty()) {
+            transitDirectionQuery += " WHERE w.location iLIKE '%" + destinationWarehouse + "%'";
+        }
+
+        return jdbcTemplate.query(transitDirectionQuery, (resultSet, i) ->
+                new SupplyTransitDirectionResponse(
+                        resultSet.getLong("warehouseId"),
+                        resultSet.getString("transit_warehouse"),
+                        resultSet.getString("destination_warehouse"),
+                        resultSet.getBigDecimal("transit_cost")));
     }
 }
