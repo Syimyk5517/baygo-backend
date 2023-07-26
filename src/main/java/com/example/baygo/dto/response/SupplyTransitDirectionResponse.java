@@ -12,6 +12,6 @@ import java.math.BigDecimal;
 public class SupplyTransitDirectionResponse {
     private Long warehouseId;
     private String transitWareHouse;
-    private String location;
-    private BigDecimal supplyCost;
+    private String destinationWarehouse;
+    private BigDecimal transitCost;
 }

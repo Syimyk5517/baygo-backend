@@ -6,8 +6,10 @@ import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.SupplyResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface SupplyService {
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize);
@@ -17,4 +19,6 @@ public interface SupplyService {
     SupplyResponse getSupplyById(Long id);
 
     PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size);
+
+    List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
 }

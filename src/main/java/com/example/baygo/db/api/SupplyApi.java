@@ -67,8 +67,10 @@ public class SupplyApi {
     }
 
     @Operation(summary = "Transit direction from warehouse.",description = "This method transit direction of product of warehouse.")
-    @GetMapping
-    public List<SupplyTransitDirectionResponse> getAllTransactions(String location){
-        return service.getAllTransactions(location);
+    @GetMapping("/transit_directions")
+    public List<SupplyTransitDirectionResponse> getAllTransactions(
+            @RequestParam(required = false) String transitWarehouse,
+            @RequestParam(required = false) String destinationWarehouse) {
+        return service.getAllTransitDirections(transitWarehouse, destinationWarehouse);
     }
 }
