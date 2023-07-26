@@ -10,68 +10,61 @@ VALUES (1,
        (5,
         'https://marketplace.canva.com/EAFVHstxnwk/1/0/1600w/canva-beige-aesthetic-exclusive-fashion-wear-collection-clothing-banner-BZb4KkCdNP0.jpg');
 
-INSERT INTO users (id, email, full_name, password, phone_number, role)
+INSERT INTO users (id, email, password, phone_number, role)
 VALUES
 --     пароль:Buyer123
 (1, 'buyer@gmail.com',
- 'Kanykei Askarbekova',
  '$2a$12$oU/NczE1jY6mFXp5hAvlCutEGhtEMs6EP3G5m/l9vpFc8TlTam3DS',
  '+996702666357', 'BUYER'),
 
 --     пароль:Buyer00
 (2, 'bb@gmail.com',
- 'Saltanat Nematilla kyzy',
  '$2a$12$OvPx7qpK9cO9JE6oTPfWBeQH/6WKZZub4oP76S7aX./CgSgpGUasK',
  '+996702666357', 'BUYER'),
 
 --  пароль:Admin123
 (3, 'admin@gmail.com',
- 'Nuriza Muratova',
  '$2a$12$L67vHDQc6nq8XP.HfuIbBeK6f29ah2PpiEBSyjjBXifW4dFP8kDye',
  '+996990128880', 'ADMIN'),
 
 -- пароль:Seller123
 (4, 'seller@gmail.com',
- 'Jiydegul Jalilova',
  '$2a$12$Q77myfBp/yyrW143tis01eZrSYL3CKhN9JxMBllslZNm56gyO14/i',
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller00
 (5, 'ss@gmail.com',
- 'Aiperi Toktosunova',
  '$2a$12$NLvlWRZ0v4utE/cX2bbKtevG8T8sSHGubfQ2wrMABEeY1UNl0ngbW',
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller88
 (6, 'eliza@gmail.com',
- 'Eliza Ashyralieva',
  '$2a$12$IZQGU1pFgWxX5M1LHJVrI.0FeYWfw3j.DxWRjVjARLRViDFObuHF.',
  '+996550232345', 'SELLER');
 
-INSERT INTO buyers(id, date_of_birth, user_id, address, gender)
-VALUES (1,
+INSERT INTO buyers(id, full_name, date_of_birth, user_id, address, gender)
+VALUES (1, 'Kanykei Askarbekova',
         '2003-03-18', 1,
         'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10', 'FEMALE'),
-       (2,
+       (2, 'Saltanat Nematilla kyzy',
         '1990-10-23', 2,
         'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE');
 
-INSERT INTO sellers(id, bic, itn, about_store, address,
-                    name_of_store, photo, store_logo,
+INSERT INTO sellers(id, first_name, last_name, bic, itn, about_store, address,
+                    name_of_store, store_logo,
                     vendor_number, user_id)
-VALUES (1, 'DEUTDEFF', '765-43-2109', 'Fashion Haven - ваш источник стильной и модной одежды',
+VALUES (1, 'Jiydegul', 'Jalilova','DEUTDEFF', '765-43-2109', 'Fashion Haven - ваш источник стильной и модной одежды',
         'ТЦ ГУМ, город Бишкек',
-        'Fashion Haven', 'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'Fashion Haven',
         'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
         'VND12345', 4),
-       (2, 'UBSWCHZH80A', '987-65-4321', 'Trendy Threads - магазин для тех, кто следит за модой',
+       (2, 'Aiperi', 'Toktosunova','UBSWCHZH80A', '987-65-4321', 'Trendy Threads - магазин для тех, кто следит за модой',
         'ТЦ ЦУМ, город Ош',
-        'Trendy Threads', 'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
+        'Trendy Threads',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwhRFf7FljIdmi9O3IJF7w438B_ljoSVtmyA&usqp=CAU',
         'SPLR789', 5),
-       (3, 'KASITHBK', '444-44-4444', 'Classic Elegance - магазин, где классика встречает элегантность',
+       (3, 'Eliza', 'Ashyralieva','KASITHBK', '444-44-4444', 'Classic Elegance - магазин, где классика встречает элегантность',
         'ТЦ Asia Mall, город Бишкек', 'Classic Elegance',
-        'https://modnaya-krasivaya.ru/moda/2019/02/moda-vesna-leto-59.jpg',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSALIXFTV7zON37JghAVcdd6f_a1b-o9atknA&usqp=CAU',
         'PVDR7890', 6);
 
@@ -712,22 +705,22 @@ VALUES (1, 1),
        (2, 4),
        (2, 5);
 
-INSERT INTO warehouses(id, name, location)
-VALUES (1, 'БайGo', 'Бишкек'),
-       (2, 'Асман', 'Талас'),
-       (3, 'Аю Гранд', 'Чуй'),
-       (4, 'Амазон', 'Ош'),
-       (5, 'Караван', 'Баткен'),
-       (6, 'Феникс', 'Нарын'),
-       (7, 'Искра', 'Джалал-Абад'),
-       (8, 'Мега-Склад', 'Токмок'),
-       (9, 'Глобус', 'Каракол'),
-       (10, 'Альфа', 'Ыссык-Куль'),
-       (11, 'Логистикс', 'Талдыкорган'),
-       (12, 'Экспресс-Склад', 'Жезказган'),
-       (13, 'Урал-Транс', 'Актобе'),
-       (14, 'Восток-Логистика', 'Атырау'),
-       (15, 'Запад-Карго', 'Уральск');
+INSERT INTO warehouses(id, name, location, transit_cost)
+VALUES (1, 'БайGo', 'Бишкек', 1200.00),
+       (2, 'Асман', 'Талас', 2300.00),
+       (3, 'Аю Гранд', 'Чуй', 1200.00),
+       (4, 'Амазон', 'Ош', 1200.00),
+       (5, 'Караван', 'Баткен', 1200.00),
+       (6, 'Феникс', 'Нарын', 1200.00),
+       (7, 'Искра', 'Джалал-Абад', 1200.00),
+       (8, 'Мега-Склад', 'Токмок', 1200.00),
+       (9, 'Глобус', 'Каракол', 1200.00),
+       (10, 'Альфа', 'Ыссык-Куль', 1200.00),
+       (11, 'Логистикс', 'Талдыкорган', 1200.00),
+       (12, 'Экспресс-Склад', 'Жезказган', 1200.00),
+       (13, 'Урал-Транс', 'Актобе', 1200.00),
+       (14, 'Восток-Логистика', 'Атырау', 1200.00),
+       (15, 'Запад-Карго', 'Уральск', 1200.00);
 
 INSERT INTO mailing_list_subscribers (id, email, is_sale, is_discount, is_new)
 VALUES (1,

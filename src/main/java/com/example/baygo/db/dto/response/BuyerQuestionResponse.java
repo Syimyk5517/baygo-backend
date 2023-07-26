@@ -1,17 +1,18 @@
 package com.example.baygo.db.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 
 import java.time.LocalDate;
 
 @Builder
-@Data
-@AllArgsConstructor
-public class BuyerQuestionResponse {
-    private Long id;
-    private String productPhoto;
-    private String description;
-    private LocalDate createAt;
+public record BuyerQuestionResponse(
+        Long productId,
+        String buyerFullName,
+        String buyerProfileImage,
+        String productImage,
+        String question,
+        String productArticul,
+        String productName,
+        LocalDate dateOfQuestion
+) {
 }

@@ -12,12 +12,14 @@ import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.repository.SupplyRepository;
 import com.example.baygo.db.repository.custom.SupplyCustomRepository;
 import com.example.baygo.db.service.SupplyService;
+import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -63,5 +65,10 @@ public class SupplyServiceImpl implements SupplyService {
     @Override
     public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
         return customRepository.findAllDeliveryFactor(keyword, date, size, page);
+    }
+
+    @Override
+    public List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse) {
+        return customRepository.getAllTransitDirections(transitWarehouse, destinationWarehouse);
     }
 }
