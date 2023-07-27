@@ -19,7 +19,8 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_gen")
     @SequenceGenerator(name = "seller_gen", sequenceName = "seller_seq", allocationSize = 1, initialValue = 4)
     private Long id;
-    private String photo;
+    private String firstName;
+    private String lastName;
     private String address;
     private String nameOfStore;
     private String storeLogo;
