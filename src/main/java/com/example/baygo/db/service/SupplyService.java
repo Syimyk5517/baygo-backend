@@ -1,9 +1,6 @@
 package com.example.baygo.db.service;
 
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.SuppliesResponse;
-import com.example.baygo.db.dto.response.SupplyProductResponse;
-import com.example.baygo.db.dto.response.SupplyResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
@@ -21,4 +18,6 @@ public interface SupplyService {
     PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size);
 
     List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
+
+    List<SupplyLandingPage> getAllSupplyForLanding();
 }

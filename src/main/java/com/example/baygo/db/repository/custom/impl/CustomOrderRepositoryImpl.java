@@ -28,7 +28,7 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
 
     public PaginationResponse<OrderResponse> getAll(int page, int size, String keyword, Status status, Long sellerId) {
         String baseQuery = """
-                   SELECT o.id as orderId, s.barcode, u.first_name, sp.price, p.name as product_name, o.date_of_order, o.status
+                   SELECT o.id as orderId, s.barcode, b.full_name, sp.price, p.name as product_name, o.date_of_order, o.status
                    FROM orders o 
                    join orders_sizes os on o.id = os.order_id 
                    join sizes s on s.id = os.size_id
@@ -138,29 +138,37 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
         return new AnalysisResponse(amountOfPrice, commission);
     }
 
+
     @Override
     public List<OrderWareHouseResponse> getAllOrders(Long id) {
 
         String query = """
-        SELECT w.name AS wareHouseName, 
-               COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER() AS percentage
-        FROM warehouses w
-      join supplies s on w.id = s.warehouse_id
-      JOIN supply_products sp on s.id = sp.supply_id
-      JOIN sellers s2 on s2.id = s.seller_id
-      JOIN orders_sizes os on sp.size_id = os.size_id
-      JOIN orders o on o.id = os.order_id
-        WHERE w.id = ?
-        GROUP BY w.name
-    """;
-
-        List<OrderWareHouseResponse> orderResponses = jdbcTemplate.query(query, (rs, rowNum) -> {
-            String wareHouseName = rs.getString("wareHouseName");
-            int percentage = rs.getInt("percentage");
-            return new OrderWareHouseResponse(wareHouseName, percentage);
-        }, id);
-
-        return orderResponses;
+                    SELECT location,
+                           ROUND(COUNT(DISTINCT o.id) * 100.0 / total_orders.total_count, 2) AS percentage
+                    FROM warehouses w
+                    JOIN supplies s ON w.id = s.warehouse_id
+                    JOIN supply_products sp ON s.id = sp.supply_id
+                    JOIN orders_sizes os ON sp.size_id = os.size_id
+                    JOIN orders o ON o.id = os.order_id
+                    LEFT JOIN (
+                        SELECT warehouse_id, COUNT(DISTINCT o.id) AS total_count
+                        FROM supplies s
+                        JOIN supply_products sp ON s.id = sp.supply_id
+                        JOIN orders_sizes os ON sp.size_id = os.size_id
+                        JOIN orders o ON o.id = os.order_id
+                        WHERE s.seller_id = ?
+                        GROUP BY warehouse_id
+                    ) total_orders ON w.id = total_orders.warehouse_id
+                    WHERE s.seller_id = ?
+                    GROUP BY location, total_orders.total_count, o.buyer_id;
+                """;
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            String location = rs.getString("location");
+            double percentage = rs.getDouble("percentage");
+            return new OrderWareHouseResponse(location, percentage);
+        }, id, id); // Add the id parameter twice to pass it for both occurrences of the seller_id parameter
     }
-
 }
+
+
+

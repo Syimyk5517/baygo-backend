@@ -2,6 +2,7 @@ package com.example.baygo.db.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
+import com.example.baygo.db.dto.response.SupplyLandingPage;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.SupplyTypeResponse;
@@ -254,4 +255,30 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                         resultSet.getString("destination_warehouse"),
                         resultSet.getBigDecimal("transit_cost")));
     }
-}
+
+    @Override
+    public List<SupplyLandingPage> getAllSupplyForLanding(Long sellerId) {
+        String query = """
+                    SELECT s.id, s.supply_number, s.created_at, w.location AS warehouse_location,
+                          s.quantity_of_products, s.status 
+                    FROM supplies s
+                    JOIN warehouses w ON s.warehouse_id = w.id
+                    JOIN supply_products sp ON s.id = sp.supply_id
+                    WHERE s.seller_id = ?
+                    GROUP BY s.id, s.supply_number, s.created_at, w.location, s.status
+                    ORDER BY s.created_at DESC
+                            LIMIT 3
+                """;
+
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            Long supplyId = rs.getLong("id");
+            String supplyNumber = rs.getString("supply_number");
+            LocalDate createdAt = rs.getObject("created_at", LocalDate.class);
+            String warehouseLocation = rs.getString("warehouse_location");
+            int quantityOfProducts = rs.getInt("quantity_of_products");
+            SupplyStatus status = SupplyStatus.valueOf(rs.getString("status"));
+
+            return new SupplyLandingPage(supplyId, supplyNumber, createdAt, warehouseLocation, quantityOfProducts, status);
+        }, sellerId);
+    }
+    }

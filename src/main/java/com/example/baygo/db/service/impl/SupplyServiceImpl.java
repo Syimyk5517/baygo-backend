@@ -1,10 +1,7 @@
 package com.example.baygo.db.service.impl;
 
 import com.example.baygo.db.config.jwt.JwtService;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.SuppliesResponse;
-import com.example.baygo.db.dto.response.SupplyProductResponse;
-import com.example.baygo.db.dto.response.SupplyResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Supply;
@@ -70,5 +67,11 @@ public class SupplyServiceImpl implements SupplyService {
     @Override
     public List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse) {
         return customRepository.getAllTransitDirections(transitWarehouse, destinationWarehouse);
+    }
+
+    @Override
+    public List<SupplyLandingPage> getAllSupplyForLanding() {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customRepository.getAllSupplyForLanding(sellerId);
     }
 }

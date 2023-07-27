@@ -4,8 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record OrderWareHouseResponse(
-        String wareHouseName,
-        int percentage
+        String location,
+        double percentage
 
 ) {
 }
