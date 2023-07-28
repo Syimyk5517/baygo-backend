@@ -4,6 +4,7 @@ import com.example.baygo.db.dto.response.AnalysisResponse;
 import com.example.baygo.db.dto.response.OrderResponse;
 import com.example.baygo.db.dto.response.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.RecentOrdersResponse;
 import com.example.baygo.db.model.enums.Status;
 
 import java.util.Date;
@@ -16,4 +17,6 @@ public interface OrderService {
     AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameOfTime);
 
     List<OrderWareHouseResponse> getAllOrdersByWareHouse();
+
+    List<RecentOrdersResponse> getResentOrders();
 }

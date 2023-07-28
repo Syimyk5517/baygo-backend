@@ -29,7 +29,6 @@ public class SellerSupplyController {
     private final PackingService packingService;
 
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
-    @GetMapping
     @PreAuthorize("hasAuthority('SELLER')")
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller
             (@RequestParam(required = false) String supplyNumber,
@@ -39,6 +38,21 @@ public class SellerSupplyController {
         return service.getAllSuppliesOfSeller(supplyNumber, status, page, pageSize);
     }
 
+    @Operation(summary = "Get all supply products", description = "This method to get all and search supply products")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public PaginationResponse<SupplyProductResponse> getSupplyProducts(
+            @PathVariable Long supplyId,
+            @RequestParam(required = false) String keyWorld,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "8") int size) {
+        return service.getSupplyProducts(supplyId, keyWorld, page, size);
+    }
+
+    @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public SupplyResponse getById(@PathVariable Long id) {
+        return service.getSupplyById(id);
+
     @Operation(summary = "repacking", description = "this is repackaging method")
     @PostMapping("{supplyId}")
     @PreAuthorize("hasAuthority('SELLER')")
@@ -46,7 +60,6 @@ public class SellerSupplyController {
         return packingService.repacking(supplyId, packingRequests);
     }
 
-    @GetMapping("/coefficients/acceptance")
     @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Delivery factor", description = "This method returns the acceptance coefficients")
     public PaginationResponse<DeliveryFactorResponse> deliveryFactorResponses(
@@ -57,8 +70,7 @@ public class SellerSupplyController {
         return service.findAllDeliveryFactor(keyword, date, size, page);
     }
 
-    @Operation(summary = "Transit direction from warehouse.",description = "This method transit direction of product of warehouse.")
-    @GetMapping("/transit_directions")
+    @Operation(summary = "Transit direction from warehouse.", description = "This method transit direction of product of warehouse.")
     public List<SupplyTransitDirectionResponse> getAllTransactions(
             @RequestParam(required = false) String transitWarehouse,
             @RequestParam(required = false) String destinationWarehouse) {
