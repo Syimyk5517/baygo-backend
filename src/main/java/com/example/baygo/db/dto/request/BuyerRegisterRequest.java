@@ -1,12 +1,9 @@
 package com.example.baygo.db.dto.request;
 
-import com.example.baygo.db.validations.NameValid;
-import com.example.baygo.db.validations.PasswordValid;
-import com.example.baygo.db.validations.PhoneNumberValid;
+import com.example.baygo.validations.NameValid;
+import com.example.baygo.validations.PasswordValid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-
-import java.time.LocalDate;
 
 public record BuyerRegisterRequest(
         @NotBlank(message = "Необходимо указать имя и фамилию.")

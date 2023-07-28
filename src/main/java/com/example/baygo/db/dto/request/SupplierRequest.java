@@ -1,7 +1,7 @@
 package com.example.baygo.db.dto.request;
 
 import com.example.baygo.db.model.enums.SupplyType;
-import com.example.baygo.db.validations.NameValid;
+import com.example.baygo.validations.NameValid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
