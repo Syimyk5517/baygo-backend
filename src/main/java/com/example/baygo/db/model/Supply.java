@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -49,4 +50,15 @@ public class Supply {
 
     @OneToMany(mappedBy = "supply", cascade = ALL)
     private List<SupplyProduct> supplyProduct;
+
+    @OneToOne(cascade = ALL)
+    private Supplier supplier;
+
+    public void addSupplyProduct(SupplyProduct supplyProduct) {
+        if (this.supplyProduct == null) {
+            this.supplyProduct = new ArrayList<>();
+        }
+        this.supplyProduct.add(supplyProduct);
+    }
+
 }

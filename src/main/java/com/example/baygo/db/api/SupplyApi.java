@@ -1,11 +1,12 @@
 package com.example.baygo.db.api;
 
+import com.example.baygo.db.dto.request.PackingRequest;
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.SuppliesResponse;
-import com.example.baygo.db.dto.response.SupplyProductResponse;
-import com.example.baygo.db.dto.response.SupplyResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.db.service.PackingService;
 import com.example.baygo.db.service.SupplyService;
 import com.example.baygo.dto.response.SupplyTransitDirectionResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class SupplyApi {
     private final SupplyService service;
+    private final PackingService packingService;
 
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
     @PreAuthorize("hasAuthority('SELLER')")
@@ -50,6 +52,12 @@ public class SupplyApi {
     @PreAuthorize("hasAuthority('SELLER')")
     public SupplyResponse getById(@PathVariable Long id) {
         return service.getSupplyById(id);
+
+    @Operation(summary = "repacking", description = "this is repackaging method")
+    @PostMapping("{supplyId}")
+    @PreAuthorize("hasAuthority('SELLER')")
+    SimpleResponse packing(@PathVariable Long supplyId, @RequestBody List<PackingRequest> packingRequests){
+        return packingService.repacking(supplyId, packingRequests);
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
