@@ -18,5 +18,5 @@ public interface OrderService {
 
     List<OrderWareHouseResponse> getAllOrdersByWareHouse();
 
-    List<RecentOrdersResponse> getResentOrders(Long sellerId);
+    List<RecentOrdersResponse> getResentOrders();
 }
