@@ -1,6 +1,6 @@
 package com.example.baygo.db.dto.request;
 
-import com.example.baygo.db.validations.BicValid;
+import com.example.baygo.validations.BicValid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
