@@ -4,6 +4,7 @@ import com.example.baygo.db.model.enums.SupplyStatus;
 import lombok.Builder;
 
 import java.time.LocalDate;
+
 @Builder
 public record SupplyLandingPage(
         Long id,

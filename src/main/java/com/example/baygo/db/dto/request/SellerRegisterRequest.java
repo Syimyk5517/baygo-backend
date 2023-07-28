@@ -1,9 +1,9 @@
 package com.example.baygo.db.dto.request;
 
-import com.example.baygo.db.validations.BicValid;
-import com.example.baygo.db.validations.NameValid;
-import com.example.baygo.db.validations.PasswordValid;
-import com.example.baygo.db.validations.PhoneNumberValid;
+import com.example.baygo.validations.BicValid;
+import com.example.baygo.validations.NameValid;
+import com.example.baygo.validations.PasswordValid;
+import com.example.baygo.validations.PhoneNumberValid;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;

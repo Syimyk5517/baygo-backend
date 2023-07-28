@@ -6,6 +6,5 @@ import lombok.Builder;
 public record OrderWareHouseResponse(
         String location,
         double percentage
-
 ) {
 }
