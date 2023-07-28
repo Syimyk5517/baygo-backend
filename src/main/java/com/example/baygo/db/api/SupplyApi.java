@@ -27,7 +27,6 @@ public class SupplyApi {
     private final SupplyService service;
 
     @Operation(summary = "Get all supplies of seller", description = "This method retrieves all supplies associated with a seller.")
-    @GetMapping
     @PreAuthorize("hasAuthority('SELLER')")
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller
             (@RequestParam(required = false) String supplyNumber,
@@ -38,7 +37,6 @@ public class SupplyApi {
     }
 
     @Operation(summary = "Get all supply products", description = "This method to get all and search supply products")
-    @GetMapping("/{supplyId}/supply_products")
     @PreAuthorize("hasAuthority('SELLER')")
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(
             @PathVariable Long supplyId,
@@ -49,13 +47,11 @@ public class SupplyApi {
     }
 
     @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
-    @GetMapping("/get_by_id/{id}")
     @PreAuthorize("hasAuthority('SELLER')")
     public SupplyResponse getById(@PathVariable Long id) {
         return service.getSupplyById(id);
     }
 
-    @GetMapping("/coefficients/acceptance")
     @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "Delivery factor", description = "This method returns the acceptance coefficients")
     public PaginationResponse<DeliveryFactorResponse> deliveryFactorResponses(
@@ -66,8 +62,7 @@ public class SupplyApi {
         return service.findAllDeliveryFactor(keyword, date, size, page);
     }
 
-    @Operation(summary = "Transit direction from warehouse.",description = "This method transit direction of product of warehouse.")
-    @GetMapping("/transit_directions")
+    @Operation(summary = "Transit direction from warehouse.", description = "This method transit direction of product of warehouse.")
     public List<SupplyTransitDirectionResponse> getAllTransactions(
             @RequestParam(required = false) String transitWarehouse,
             @RequestParam(required = false) String destinationWarehouse) {

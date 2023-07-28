@@ -17,7 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("DELETE FROM Order o WHERE o.id = :orderId ")
     void deleteById(@Param("orderId") Long orderId);
 
-    @Query("select new com.example.baygo.db.dto.response.RecentOrdersResponse(o.id,sp.product.articul,p.name,sp.price,pc,o.status)" +
-            " FROM Order o JOIN o.productCount pc JOIN Size s ON KEY(pc) = s join SubProduct sp JOIN Product p where p.seller.id =:sellerId")
+    @Query("SELECT NEW com.example.baygo.db.dto.response.RecentOrdersResponse(o.id,p.articul,p.name, sp.price, VALUE(pc) ,o.status)" +
+            " FROM Order o JOIN o.productCount pc JOIN KEY(pc).subProduct sp JOIN sp.product p WHERE p.seller.id =:sellerId order by o.id desc limit 5")
     List<RecentOrdersResponse> getAllRecentOrders(Long sellerId);
 }

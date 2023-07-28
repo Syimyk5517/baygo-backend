@@ -31,27 +31,24 @@ public class ProductSellerApi {
     }
 
     @Operation(summary = "Get colors", description = "This method gets the colors for saving products")
-    @GetMapping("/color")
     @PreAuthorize("hasAuthority('SELLER')")
-    public List<ColorResponse> getColors(){
+    public List<ColorResponse> getColors() {
         return ColorResponse.getColors();
     }
 
     @Operation(summary = "Get barcode", description = "This method gets the barcode for saving products")
-    @GetMapping("/barcode")
     @PreAuthorize("hasAuthority('SELLER')")
-    public int getBarcode(){
+    public int getBarcode() {
         return productService.getBarcode();
     }
 
     @Operation(summary = "Get all products", description = "This method gets all products of seller. Status: 'Все товары', 'В избранном', 'В корзине', 'Все акции'")
-    @GetMapping
     @PreAuthorize("hasAuthority('SELLER')")
     public PaginationResponse<ProductResponseForSeller> getAllProductForSeller(
             @RequestParam(defaultValue = "Все товары") String status,
             @RequestParam(required = false) String keyWord,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "11") int size){
-        return productService.findAll(status,keyWord, page, size);
+            @RequestParam(defaultValue = "11") int size) {
+        return productService.findAll(status, keyWord, page, size);
     }
 }

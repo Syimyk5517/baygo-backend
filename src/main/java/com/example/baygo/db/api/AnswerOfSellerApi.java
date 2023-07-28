@@ -20,19 +20,18 @@ import org.springframework.web.bind.annotation.*;
 public class AnswerOfSellerApi {
     private final AnswerOfSellerService answerOfSellerService;
 
-    @Operation(summary = "Save answer!",description = "This method saves answer for question!")
+    @Operation(summary = "Save answer!", description = "This method saves answer for question!")
     @PostMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public SimpleResponse saveAnswer(@Valid @RequestBody AnswerOfSellerRequest request){
+    public SimpleResponse saveAnswer(@Valid @RequestBody AnswerOfSellerRequest request) {
         return answerOfSellerService.addAnswer(request);
     }
 
-    @Operation(summary = "Get all questions!",description = "This method gets all questions!")
-    @GetMapping
+    @Operation(summary = "Get all questions!", description = "This method gets all questions!")
     @PreAuthorize("hasAuthority('SELLER')")
     public PaginationResponse<BuyerQuestionResponse> getQuestions(@RequestParam(required = false) String keyWord,
                                                                   @RequestParam(required = false, defaultValue = "1") int page,
-                                                                  @RequestParam(required = false, defaultValue = "3") int pageSize){
+                                                                  @RequestParam(required = false, defaultValue = "3") int pageSize) {
         return answerOfSellerService.getAllQuestions(keyWord, page, pageSize);
     }
 }
