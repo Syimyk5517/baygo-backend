@@ -1,5 +1,6 @@
 package com.example.baygo.repository.custom.impl;
 
+import com.example.baygo.db.dto.response.GetAllReviewsResponse;
 import com.example.baygo.db.dto.response.PaginationReviewResponse;
 import com.example.baygo.db.dto.response.ReviewResponse;
 import com.example.baygo.repository.custom.CustomReviewRepository;
@@ -92,5 +93,30 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
                 .totalPagesHigh(totalPageHigh)
                 .totalPagesLow(totalPageLow)
                 .build();
+    }
+
+    @Override
+    public List<GetAllReviewsResponse> getAllReviewsForSeller(Long sellerId) {
+        String sql = """
+                select r.id as id,
+                       (select spi.images
+                       from sub_product_images spi
+                       where spi.sub_product_id = sp.id limit 1) as image,
+                       r.grade as grade,
+                       r.text as text,
+                       r.date_and_time as dateAndTime
+                    from reviews r
+                    join sub_products sp on r.product_id = sp.product_id
+                    join products p on sp.product_id = p.id
+                    where p.seller_id = ?
+                    order by r.date_and_time desc limit 4
+                """;
+        return jdbcTemplate.query(sql, (resultSet, i)-> new GetAllReviewsResponse(
+                resultSet.getLong("id"),
+                resultSet.getString("image"),
+                resultSet.getInt("grade"),
+                resultSet.getString("text"),
+                resultSet.getDate("dateAndTime").toLocalDate()
+        ), sellerId);
     }
 }

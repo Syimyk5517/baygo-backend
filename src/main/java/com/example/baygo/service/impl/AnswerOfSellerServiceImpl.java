@@ -3,6 +3,7 @@ package com.example.baygo.service.impl;
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
+import com.example.baygo.db.dto.response.QuestionForSellerLandingResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +41,11 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     public PaginationResponse<BuyerQuestionResponse> getAllQuestions(String keyWord, int page, int pageSize) {
         Seller seller = jwtService.getAuthenticate().getSeller();
         return customAnswerOfSellerRepository.getAllQuestions(keyWord,page,pageSize, seller.getId());
+    }
+
+    @Override
+    public List<QuestionForSellerLandingResponse> getAllQuestionsForLandingOfSeller() {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customAnswerOfSellerRepository.getAllQuestionsForSeller(sellerId);
     }
 }
