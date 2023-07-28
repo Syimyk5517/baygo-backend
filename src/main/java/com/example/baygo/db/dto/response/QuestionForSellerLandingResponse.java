@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Builder
 @Data
 @AllArgsConstructor
-public class GetBuyerQuestionResponse {
+public class QuestionForSellerLandingResponse {
     private Long id;
     private String productPhoto;
     private String description;

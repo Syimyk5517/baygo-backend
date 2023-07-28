@@ -27,7 +27,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<GetAllReviewsResponse> getAllReviews() {
-        return customReviewRepository.getAllReviewsForSeller();
+    public List<GetAllReviewsResponse> getAllReviewsForLandingOfSeller() {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customReviewRepository.getAllReviewsForSeller(sellerId);
     }
 }

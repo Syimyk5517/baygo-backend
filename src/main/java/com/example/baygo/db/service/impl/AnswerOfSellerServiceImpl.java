@@ -3,7 +3,7 @@ package com.example.baygo.db.service.impl;
 import com.example.baygo.db.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
-import com.example.baygo.db.dto.response.GetBuyerQuestionResponse;
+import com.example.baygo.db.dto.response.QuestionForSellerLandingResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -15,11 +15,9 @@ import com.example.baygo.db.service.AnswerOfSellerService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,7 +44,8 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     }
 
     @Override
-    public List<GetBuyerQuestionResponse> getAllQuestions() {
-        return customAnswerOfSellerRepository.getAllQuestionsForSeller();
+    public List<QuestionForSellerLandingResponse> getAllQuestionsForLandingOfSeller() {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return customAnswerOfSellerRepository.getAllQuestionsForSeller(sellerId);
     }
 }

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface ReviewService {
     PaginationReviewResponse<ReviewResponse> getAllReviews(String keyword, int page, int size);
-    List<GetAllReviewsResponse> getAllReviews();
+
+    List<GetAllReviewsResponse> getAllReviewsForLandingOfSeller();
 }

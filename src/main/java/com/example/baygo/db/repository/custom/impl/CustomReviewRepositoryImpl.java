@@ -96,23 +96,27 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
     }
 
     @Override
-    public List<GetAllReviewsResponse> getAllReviewsForSeller() {
+    public List<GetAllReviewsResponse> getAllReviewsForSeller(Long sellerId) {
         String sql = """
                 select r.id as id,
-                       spi.images as images,
+                       (select spi.images
+                       from sub_product_images spi
+                       where spi.sub_product_id = sp.id limit 1) as image,
                        r.grade as grade,
-                       r.text as text, 
+                       r.text as text,
                        r.date_and_time as dateAndTime
                     from reviews r
                     join sub_products sp on r.product_id = sp.product_id
-                    join sub_product_images spi on sp.id = spi.sub_product_id
+                    join products p on sp.product_id = p.id
+                    where p.seller_id = ?
+                    order by r.date_and_time desc limit 4
                 """;
         return jdbcTemplate.query(sql, (resultSet, i)-> new GetAllReviewsResponse(
                 resultSet.getLong("id"),
-                resultSet.getString("images"),
+                resultSet.getString("image"),
                 resultSet.getInt("grade"),
                 resultSet.getString("text"),
                 resultSet.getDate("dateAndTime").toLocalDate()
-        ));
+        ), sellerId);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.baygo.db.api;
 
 import com.example.baygo.db.dto.response.GetAllReviewsResponse;
-import com.example.baygo.db.dto.response.GetBuyerQuestionResponse;
+import com.example.baygo.db.dto.response.QuestionForSellerLandingResponse;
 import com.example.baygo.db.service.AnswerOfSellerService;
 import com.example.baygo.db.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,16 +24,17 @@ public class SellerLendingApi {
     private final AnswerOfSellerService answerOfSellerService;
     private final ReviewService reviewService;
 
-    @Operation(summary = "Get all questions", description = "This method will get all questions of buyer")
+    @Operation(summary = "Get all questions", description = "This method will get all questions of buyer for seller")
     @PreAuthorize("hasAuthority('SELLER')")
-    @GetMapping
-    public List<GetBuyerQuestionResponse> getAllQuestions(){
-        return answerOfSellerService.getAllQuestions();
+    @GetMapping("/questions")
+    public List<QuestionForSellerLandingResponse> getAllQuestions() {
+        return answerOfSellerService.getAllQuestionsForLandingOfSeller();
     }
+
     @Operation(summary = "Get all reviews", description = "This method will get all reviews of buyer")
     @PreAuthorize("hasAuthority('SELLER')")
-    @GetMapping("/get_all_reviews")
-    public List<GetAllReviewsResponse> getAllReviews(){
-        return reviewService.getAllReviews();
+    @GetMapping("/reviews")
+    public List<GetAllReviewsResponse> getAllReviews() {
+        return reviewService.getAllReviewsForLandingOfSeller();
     }
 }

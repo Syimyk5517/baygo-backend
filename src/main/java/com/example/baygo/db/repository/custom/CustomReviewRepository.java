@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface CustomReviewRepository {
     PaginationReviewResponse<ReviewResponse> getAllReviews(Long sellerId, String keyword, int page, int size);
-    List<GetAllReviewsResponse> getAllReviewsForSeller();
+
+    List<GetAllReviewsResponse> getAllReviewsForSeller(Long sellerId);
 }
