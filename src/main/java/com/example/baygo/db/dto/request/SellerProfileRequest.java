@@ -1,8 +1,7 @@
 package com.example.baygo.db.dto.request;
 
-import com.example.baygo.db.model.Seller;
-import com.example.baygo.db.validations.NameValid;
-import com.example.baygo.db.validations.PhoneNumberValid;
+import com.example.baygo.validations.NameValid;
+import com.example.baygo.validations.PhoneNumberValid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
