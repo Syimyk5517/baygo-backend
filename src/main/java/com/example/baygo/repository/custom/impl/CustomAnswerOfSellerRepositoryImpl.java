@@ -22,7 +22,7 @@ public class CustomAnswerOfSellerRepositoryImpl implements CustomAnswerOfSellerR
                     (SELECT i.images FROM sub_product_images i
                     join sub_products sp on sp.id = i.sub_product_id
                     where sp.product_id = p.id LIMIT 1) as image,
-                    p.id as product_id, u.full_name as full_name,b.photo as photo,
+                    p.id as product_id, b.full_name as full_name,b.photo as photo,
                     bq.question as question, p.articul as articul, p.name as name,
                     bq.created_at as create_at
                 from buyer_questions bq
