@@ -1,4 +1,4 @@
-package com.example.baygo.db.api;
+package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.DiscountRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Discount Seller API")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class DiscountSellerApi {
+public class SellerDiscountController {
     private final DiscountService discountService;
-    @Operation(summary = "Save a discount!",description = "This method saves discount for subProducts!")
+
+    @Operation(summary = "Save a discount!", description = "This method saves discount for subProducts!")
     @PostMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public SimpleResponse saveDiscount(@RequestBody @Valid DiscountRequest discountRequest){
-       return discountService.saveDiscount(discountRequest);
+    public SimpleResponse saveDiscount(@RequestBody @Valid DiscountRequest discountRequest) {
+        return discountService.saveDiscount(discountRequest);
     }
 }

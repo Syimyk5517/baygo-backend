@@ -4,6 +4,7 @@ import com.example.baygo.db.dto.request.DiscountRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 
 public interface DiscountService {
-      SimpleResponse saveDiscount(DiscountRequest request);
-      void deleteExpiredDiscount();
+    SimpleResponse saveDiscount(DiscountRequest request);
+
+    void deleteExpiredDiscount();
 }

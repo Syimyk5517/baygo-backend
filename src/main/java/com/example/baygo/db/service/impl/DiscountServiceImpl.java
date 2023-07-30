@@ -5,8 +5,8 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.model.Discount;
 import com.example.baygo.db.model.SubProduct;
 import com.example.baygo.db.repository.DiscountRepository;
-import com.example.baygo.db.repository.SubProductRepository;
 import com.example.baygo.db.service.DiscountService;
+import com.example.baygo.repository.SubProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,9 +39,9 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     //cron = "0 0/5 * * * ?" every 5 minute
-//cron = "0 0 0 * * ?" every day
-//cron = "0 0 * * * ?" every hour
-    @Scheduled(cron = "0 0 * * * ?")
+    //cron = "0 0 0 * * ?" every day
+    //cron = "0 0 * * * ?" every hour
+    @Scheduled(cron = "0 0/5 * * * ?")
     @Override
     public void deleteExpiredDiscount() {
         List<Discount> discounts = discountRepository.findByDateOfFinishIsLessThanEqual(LocalDateTime.now().withSecond(0).withNano(0));
