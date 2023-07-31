@@ -9,7 +9,7 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.BuyerQuestion;
 import com.example.baygo.db.model.Seller;
-import com.example.baygo.repository.BuyerQuestionRepository;
+import com.example.baygo.repository.QuestionOfBuyerRepository;
 import com.example.baygo.repository.custom.CustomAnswerOfSellerRepository;
 import com.example.baygo.service.AnswerOfSellerService;
 import jakarta.transaction.Transactional;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
-    private final BuyerQuestionRepository buyerQuestionRepository;
+    private final QuestionOfBuyerRepository buyerQuestionRepository;
     private final CustomAnswerOfSellerRepository customAnswerOfSellerRepository;
     private final JwtService jwtService;
 
