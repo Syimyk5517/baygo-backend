@@ -6,7 +6,9 @@ import com.example.baygo.db.dto.request.SellerRegisterRequest;
 import com.example.baygo.db.dto.response.AuthenticationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.google.firebase.auth.FirebaseAuthException;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface AuthenticationService {
     AuthenticationResponse buyerRegister(BuyerRegisterRequest request);
 
