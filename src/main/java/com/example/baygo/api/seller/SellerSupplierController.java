@@ -14,14 +14,16 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Seller supplier")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAuthority('SELLER')")
 public class SellerSupplierController {
 
     private final SupplierService service;
 
     @Operation(summary = "Create the supplier", description = "This method creating the supplier")
-    @PostMapping("{supplyId}")
-    @PreAuthorize("hasAuthority('SELLER')")
-    SimpleResponse create(SupplierRequest supplierRequest,@PathVariable Long supplyId){
+    @PostMapping("/{supplyId}")
+    SimpleResponse create(
+            @PathVariable Long supplyId,
+            @RequestBody SupplierRequest supplierRequest){
         return service.save(supplierRequest, supplyId);
     }
 }

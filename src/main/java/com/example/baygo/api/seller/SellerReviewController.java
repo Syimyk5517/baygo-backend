@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Seller review")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAuthority('SELLER')")
 public class SellerReviewController {
 
     private final ReviewService reviewService;
 
     @Operation(summary = "Get All Review", description = "This method getAll Review ,search,pagination")
-    @PreAuthorize("hasAuthority('SELLER')")
-    public PaginationReviewResponse<ReviewResponse> getAllReview(
+    @GetMapping
+    public PaginationReviewResponse<ReviewResponse> getAllReviews(
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int pageSize) {

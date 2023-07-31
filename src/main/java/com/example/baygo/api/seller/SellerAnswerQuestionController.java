@@ -29,6 +29,7 @@ public class SellerAnswerQuestionController {
 
     @Operation(summary = "Get all questions!", description = "This method gets all questions!")
     @PreAuthorize("hasAuthority('SELLER')")
+    @GetMapping("/questions")
     public PaginationResponse<BuyerQuestionResponse> getQuestions(@RequestParam(required = false) String keyWord,
                                                                   @RequestParam(required = false, defaultValue = "1") int page,
                                                                   @RequestParam(required = false, defaultValue = "3") int pageSize) {
