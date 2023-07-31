@@ -41,7 +41,7 @@ public class DiscountServiceImpl implements DiscountService {
     //cron = "0 0/5 * * * ?" every 5 minute
     //cron = "0 0 0 * * ?" every day
     //cron = "0 0 * * * ?" every hour
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     @Override
     public void deleteExpiredDiscount() {
         List<Discount> discounts = discountRepository.findByDateOfFinishIsLessThanEqual(LocalDateTime.now().withSecond(0).withNano(0));
