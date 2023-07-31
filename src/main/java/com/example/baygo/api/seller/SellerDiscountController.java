@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class SellerDiscountController {
     private final DiscountService discountService;
 
-    @Operation(summary = "Save a discount!", description = "This method saves discount for subProducts!")
+    @Operation(summary = "Save a discount", description = "This method saves discount for subProducts!")
     @PostMapping
     @PreAuthorize("hasAuthority('SELLER')")
     public SimpleResponse saveDiscount(@RequestBody @Valid DiscountRequest discountRequest) {
