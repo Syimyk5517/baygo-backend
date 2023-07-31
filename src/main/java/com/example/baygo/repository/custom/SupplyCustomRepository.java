@@ -7,10 +7,12 @@ import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public interface SupplyCustomRepository {
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize);
 

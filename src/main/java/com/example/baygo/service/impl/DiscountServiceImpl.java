@@ -1,11 +1,11 @@
-package com.example.baygo.db.service.impl;
+package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.request.DiscountRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.model.Discount;
 import com.example.baygo.db.model.SubProduct;
-import com.example.baygo.db.repository.DiscountRepository;
-import com.example.baygo.db.service.DiscountService;
+import com.example.baygo.repository.DiscountRepository;
+import com.example.baygo.service.DiscountService;
 import com.example.baygo.repository.SubProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.DiscountRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.db.service.DiscountService;
+import com.example.baygo.service.DiscountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

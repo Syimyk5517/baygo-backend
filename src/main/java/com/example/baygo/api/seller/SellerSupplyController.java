@@ -70,7 +70,7 @@ public class SellerSupplyController {
 
     @Operation(summary = "Transit direction from warehouse.", description = "This method transit direction of product of warehouse.")
     @GetMapping("/transit_direction")
-    public List<SupplyTransitDirectionResponse> getAllTransactions(
+    public List<SupplyTransitDirectionResponse> getAllTransitDirections(
             @RequestParam(required = false) String transitWarehouse,
             @RequestParam(required = false) String destinationWarehouse) {
         return service.getAllTransitDirections(transitWarehouse, destinationWarehouse);
