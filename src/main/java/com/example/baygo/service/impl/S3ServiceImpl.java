@@ -11,10 +11,9 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,57 +25,47 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public List<Map<String, String>> uploadFile(String bucketName, List<MultipartFile> files) {
-        List<Map<String, String>> uploadResults = new ArrayList<>();
-
-        for (MultipartFile file : files) {
+        return files.stream().map(file -> {
             try {
-                String key = System.currentTimeMillis() + file.getOriginalFilename();
-                PutObjectRequest request = PutObjectRequest.builder().bucket(bucketName).contentType(file.getContentType()).contentLength(file.getSize()).key(key).build();
+                String key = Instant.now().toEpochMilli() + file.getOriginalFilename();
+                PutObjectRequest request = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .contentType(file.getContentType())
+                        .contentLength(file.getSize())
+                        .key(key)
+                        .build();
                 s3.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
                 String fileLink = BUCKET_PATH + key;
                 Map<String, String> uploadResult = new HashMap<>();
                 uploadResult.put("filename", file.getOriginalFilename());
                 uploadResult.put("link", fileLink);
-                uploadResults.add(uploadResult);
+                return uploadResult;
             } catch (Exception e) {
                 e.printStackTrace();
                 Map<String, String> uploadResult = new HashMap<>();
                 uploadResult.put("filename", file.getOriginalFilename());
                 uploadResult.put("error", "Failed to upload file");
-                uploadResults.add(uploadResult);
+                return uploadResult;
             }
-        }
-
-        return uploadResults;
-
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public void putObject(PutObjectRequest request, RequestBody fromInputStream) {
-        s3.putObject(request, fromInputStream);
-    }
-
-
     public Map<String, String> deleteFile(String fileLink) {
         try {
             String key = fileLink.substring(BUCKET_PATH.length());
-            s3.deleteObject((DeleteObjectRequest) buildDeleteObjectRequest(key));
+            DeleteObjectRequest request = DeleteObjectRequest.builder()
+                    .bucket("baygo")
+                    .key(key)
+                    .build();
+            s3.deleteObject(request);
 
-            return Map.of("message", fileLink + " has been deleted");
+            return Collections.singletonMap("message", fileLink + " has been deleted");
         } catch (S3Exception e) {
             throw e;
         } catch (Exception e) {
             throw new IllegalStateException("Failed to delete file: " + e.getMessage());
         }
     }
-
-    private Object buildDeleteObjectRequest(String key) {
-        return DeleteObjectRequest.builder().bucket("baygo").key(key).build();
-    }
-    @Override
-    public void deleteObject(Object baygo) {
-        s3.deleteObject((DeleteObjectRequest) baygo);
-    }
-
 }

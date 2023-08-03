@@ -166,7 +166,7 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
             String location = rs.getString("location");
             double percentage = rs.getDouble("percentage");
             return new OrderWareHouseResponse(location, percentage);
-        }, sellerId, sellerId); // Add the sellerId parameter twice to pass it for both occurrences of the seller_id parameter
+        }, sellerId, sellerId);
     }
 }
 
