@@ -9,6 +9,12 @@ import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.repository.custom.CustomOrderRepository;
 import com.example.baygo.service.OrderService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -47,4 +53,17 @@ public class OrderServiceImpl implements OrderService {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return orderRepository.getAllRecentOrders(sellerId);
     }
+
+    @Override
+    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, Status status) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "dateOfOrder"));
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        Page<OrderResponse> orderResponses = orderRepository.getAllOrders(sellerId, keyword, status, pageable);
+        return new PaginationResponse<>(orderResponses.getContent(),
+                orderResponses.getNumber() + 1,
+                orderResponses.getTotalPages());
+    }
+
+
 }
+

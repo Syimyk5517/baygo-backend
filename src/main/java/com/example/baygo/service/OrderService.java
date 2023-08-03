@@ -21,4 +21,6 @@ public interface OrderService {
     List<OrderWareHouseResponse> getAllOrdersByWareHouse();
 
     List<RecentOrdersResponse> getResentOrders();
+
+    PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, Status status);
 }
