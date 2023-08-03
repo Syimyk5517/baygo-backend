@@ -1,19 +1,17 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.service.S3Service;
-import com.google.api.client.util.Value;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,50 +20,45 @@ public class S3ServiceImpl implements S3Service {
     @Value("${aws_s3_link}")
     private String BUCKET_PATH;
 
-
     @Override
-    public List<Map<String, String>> uploadFile(String bucketName, List<MultipartFile> files) {
-        return files.stream().map(file -> {
-            try {
-                String key = Instant.now().toEpochMilli() + file.getOriginalFilename();
-                PutObjectRequest request = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .contentType(file.getContentType())
-                        .contentLength(file.getSize())
-                        .key(key)
-                        .build();
-                s3.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-
-                String fileLink = BUCKET_PATH + key;
-                Map<String, String> uploadResult = new HashMap<>();
-                uploadResult.put("filename", file.getOriginalFilename());
-                uploadResult.put("link", fileLink);
-                return uploadResult;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Map<String, String> uploadResult = new HashMap<>();
-                uploadResult.put("filename", file.getOriginalFilename());
-                uploadResult.put("error", "Failed to upload file");
-                return uploadResult;
-            }
-        }).collect(Collectors.toList());
+    public Map<String, String> uploadFile(MultipartFile file) throws IOException {
+        String key = System.currentTimeMillis() + file.getOriginalFilename();
+        PutObjectRequest put = PutObjectRequest.builder()
+                .bucket("baygo")
+                .contentType("jpeg")
+                .contentType("png")
+                .contentType("ogg")
+                .contentType("mp3")
+                .contentType("mpeg")
+                .contentType("ogg")
+                .contentType("m4a")
+                .contentType("oga")
+                .contentLength(file.getSize())
+                .key(key)
+                .build();
+        s3.putObject(put, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+        return Map.of(
+                "link", BUCKET_PATH + key);
     }
 
     @Override
     public Map<String, String> deleteFile(String fileLink) {
+
+
         try {
             String key = fileLink.substring(BUCKET_PATH.length());
-            DeleteObjectRequest request = DeleteObjectRequest.builder()
-                    .bucket("baygo")
-                    .key(key)
-                    .build();
-            s3.deleteObject(request);
 
-            return Collections.singletonMap("message", fileLink + " has been deleted");
+
+            s3.deleteObject(dor -> dor.bucket("baygo").key(key).build());
+
         } catch (S3Exception e) {
-            throw e;
+            throw new IllegalStateException(e.awsErrorDetails().errorMessage());
         } catch (Exception e) {
-            throw new IllegalStateException("Failed to delete file: " + e.getMessage());
+            throw new IllegalStateException(e.getMessage());
         }
+        return Map.of(
+                "message", fileLink + " has been deleted");
     }
+
+
 }
