@@ -17,6 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
     private final S3Client s3;
+    @Value("${aws_bucket_name}")
+    private String BUCKET_NAME;
     @Value("${aws_s3_link}")
     private String BUCKET_PATH;
 
