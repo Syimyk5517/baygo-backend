@@ -57,7 +57,5 @@ public class OrderServiceImpl implements OrderService {
                 orderResponses.getNumber() + 1,
                 orderResponses.getTotalPages());
     }
-
-
 }
 

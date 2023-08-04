@@ -1,6 +1,9 @@
 package com.example.baygo.api.seller;
 
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
+import com.example.baygo.db.dto.response.orders.OrderResponse;
+import com.example.baygo.db.model.enums.Status;
 import com.example.baygo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,9 +22,24 @@ import java.util.Date;
 public class SellerOrderController {
     private final OrderService orderService;
 
+    @GetMapping
+    @Operation(summary = "Get all orders", description = "This method will get all orders and filter by status and keyword")
+    public PaginationResponse<OrderResponse> getAllOrders(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Status status,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return orderService.getAllOrdersByFilter(page, size, keyword, status);
+    }
+
     @Operation(summary = "Get weekly analysis", description = "This method will get week analysis and filter ")
     @GetMapping("/analysis")
-    AnalysisResponse weeklyAnalysisOrder(@RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate, @RequestParam(required = false) Long warehouseId, @RequestParam(required = false) String nameOfTime) {
+    AnalysisResponse weeklyAnalysisOrder(
+            @RequestParam(required = false) Date startDate,
+            @RequestParam(required = false) Date endDate,
+            @RequestParam(required = false) Long warehouseId,
+            @RequestParam(required = false) String nameOfTime) {
         return orderService.getWeeklyAnalysis(startDate, endDate, warehouseId, nameOfTime);
     }
 }

@@ -37,9 +37,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "AND (:status IS NULL OR o.status = :status) " +
             "ORDER BY o.dateOfOrder DESC")
     Page<OrderResponse> getAllOrders(Long sellerId, String keyword, Status status, Pageable pageable);
-
-
-
 }
 
 
