@@ -1,6 +1,6 @@
 package com.example.baygo.api.seller;
 
-import com.example.baygo.db.dto.response.OrderResponse;
+import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.model.enums.Status;
 import com.example.baygo.service.OrderService;
