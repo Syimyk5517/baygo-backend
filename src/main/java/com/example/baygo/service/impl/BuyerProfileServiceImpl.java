@@ -24,6 +24,7 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
     private final PasswordEncoder encoder;
     private final OrderRepository orderRepository;
     private final JdbcTemplate jdbcTemplate;
+
     @Transactional
     @Override
     public SimpleResponse updateProfile(BuyerProfileRequest request) {
@@ -37,6 +38,7 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         buyer.getUser().setPhoneNumber(request.phoneNumber());
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Ваш профиль успешно изменен!").build();
     }
+
     @Transactional
     @Override
     public SimpleResponse updateProfileImage(BuyerProfileImageRequest request) {
@@ -44,6 +46,7 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         buyer.setPhoto(request.imgUrl());
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Ваше изображение успешно обновлено").build();
     }
+
     @Override
     public SimpleResponse deleteProfile() {
         User user = jwtService.getAuthenticate();

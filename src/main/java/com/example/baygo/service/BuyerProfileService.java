@@ -6,6 +6,8 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 
 public interface BuyerProfileService {
     SimpleResponse updateProfile(BuyerProfileRequest request);
+
     SimpleResponse updateProfileImage(BuyerProfileImageRequest request);
+
     SimpleResponse deleteProfile();
 }
