@@ -1,4 +1,4 @@
-package com.example.baygo.db.dto.response;
+package com.example.baygo.db.dto.response.orders;
 
 import com.example.baygo.db.model.enums.Status;
 import lombok.Data;
