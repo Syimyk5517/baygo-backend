@@ -9,6 +9,4 @@ public interface S3Service {
     Map<String, String> uploadFile(MultipartFile file) throws IOException;
 
     Map<String, String> deleteFile(String fileLink);
-
-
 }

@@ -14,28 +14,21 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/file")
+@RequestMapping("/api/s3")
 @CrossOrigin(origins = "*")
 @Tag(name = "S3 API", description = "API for working with files in Amazon S3 storage")
-public class S3Api {
+public class S3Controller {
 
     private final S3Service s3Service;
 
-    @Operation(summary = "Upload a file to S3 bucket",
-            description = "Uploads a file to the specified S3 bucket.")
-    @PostMapping(value = "/upload", consumes = "multipart/form-data")
-    public ResponseEntity<Map<String, String>> uploadFiles(
-
-            @RequestParam("files") MultipartFile files
-    ) throws IOException {
+    @Operation(summary = "Upload a file to S3 bucket", description = "Uploads a file to the specified S3 bucket.")
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<Map<String, String>> uploadFiles(@RequestParam("files") MultipartFile files) throws IOException {
         return ResponseEntity.ok(s3Service.uploadFile(files));
-
     }
 
-
-    @DeleteMapping("/deleteFile")
+    @DeleteMapping
     public ResponseEntity<Map<String, String>> deleteFile(@RequestParam("fileLink") String fileLink) {
-        s3Service.deleteFile(fileLink);
-        return ResponseEntity.ok(Collections.singletonMap("message", fileLink + " has been deleted"));
+        return ResponseEntity.ok(s3Service.deleteFile(fileLink));
     }
 }

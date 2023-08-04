@@ -43,14 +43,9 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public Map<String, String> deleteFile(String fileLink) {
-
-
         try {
             String key = fileLink.substring(BUCKET_PATH.length());
-
-
             s3.deleteObject(dor -> dor.bucket("baygo").key(key).build());
-
         } catch (S3Exception e) {
             throw new IllegalStateException(e.awsErrorDetails().errorMessage());
         } catch (Exception e) {
@@ -59,6 +54,4 @@ public class S3ServiceImpl implements S3Service {
         return Map.of(
                 "message", fileLink + " has been deleted");
     }
-
-
 }

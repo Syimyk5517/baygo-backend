@@ -17,7 +17,6 @@ public class S3Config {
     @Value("${aws_s3_region}")
     private String REGION;
 
-
     @Bean
     S3Client s3Client() {
 
@@ -30,6 +29,6 @@ public class S3Config {
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .build();
     }
-        }
+}
 
 
