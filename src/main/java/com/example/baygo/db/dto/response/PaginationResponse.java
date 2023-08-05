@@ -8,5 +8,6 @@ import java.util.List;
 public record PaginationResponse<T> (
         List<T> elements,
         int currentPage,
-        int totalPages
+        int totalPages,
+        int quantityOfProducts
 ){}

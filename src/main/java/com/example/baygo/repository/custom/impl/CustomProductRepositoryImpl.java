@@ -1,13 +1,18 @@
 package com.example.baygo.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
     public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, String status, String keyWord, int page, int size) {
@@ -118,4 +125,157 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 .currentPage(page)
                 .build();
     }
+
+    @Override
+    public PaginationResponse<ProductBuyerResponse> getAllProductsBuyer(String keyWord, List<String> sizes, List<String> compositions, List<String> brands, BigDecimal minPrice, BigDecimal maxPrice, List<String> colors, String sortBy, int page, int pageSize) {
+
+            StringBuilder jpqlBuilder = new StringBuilder("SELECT " +
+                    "s.id as sizeId, " +
+                    "(select i.images from SubProductImages i where i.subProduct.id = sp.id limit 1) as image, " +
+                    "p.name as name, p.description as description, p.rating as rating, " +
+                    "count(r) as quantityOfRating, sp.price as price, " +
+                    "coalesce(d.percent, 0) as percentOfDiscount " +
+                    "from Product p " +
+                    "left join p.reviews r " +
+                    "join p.subProducts sp " +
+                    "%s join sp.discount d " +
+                    "join sp.sizes s " +
+                    "%s " +
+                    "where s.quantity > 0 %s %s %s %s %s %s %s " +
+                    "group by s.id, image, name, description, rating, price, percentOfDiscount %s");
+
+            List<Object> params = new ArrayList<>();
+
+            String keywordCondition = "";
+            if (keyWord != null) {
+                keywordCondition = "AND p.name LIKE ? ";
+                params.add("%" + keyWord + "%");
+            }
+
+            StringBuilder sizeCondition = new StringBuilder();
+            if (sizes != null) {
+                sizeCondition.append("AND s.size in (");
+                for (int i = 0; i < sizes.size(); i++) {
+                    if ((sizes.size() - 1) != i) {
+                        sizeCondition.append(" ?, ");
+                    } else {
+                        sizeCondition.append(" ? ");
+                    }
+                }
+                sizeCondition.append(")");
+                params.addAll(sizes);
+            }
+
+        StringBuilder compositionCondition = new StringBuilder();
+        if (compositions != null) {
+            compositionCondition.append("AND p.composition in ( ");
+            for (int comp = 0; comp < compositions.size(); comp++) {
+                if((compositions.size()-1) != comp) {
+                    compositionCondition.append(" ?, " +
+                            "");
+                }else {
+                    compositionCondition.append(" ? ");
+                }
+            }
+            compositionCondition.append(" )");
+            params.addAll(compositions);
+        }
+
+        StringBuilder brandCondition = new StringBuilder();
+        if (brands != null) {
+            brandCondition.append("AND p.brand in ( ");
+            for (int i = 0; i < brands.size(); i++) {
+                if((brands.size()-1) != i) {
+                    brandCondition.append(" ?, ");
+                }else {
+                    brandCondition.append(" ? ");
+                }
+            }
+            brandCondition.append(" )");
+            params.addAll(brands);
+        }
+
+            String priceCondition = "";
+            if (minPrice != null && maxPrice != null) {
+                priceCondition = "AND sp.price between ? and ? ";
+                params.add(minPrice);
+                params.add(maxPrice);
+
+            } else if (minPrice != null) {
+                priceCondition = "AND sp.price >= ? ";
+                params.add(minPrice);
+            } else if (maxPrice != null) {
+                priceCondition = "AND sp.price <= ? ";
+                params.add(maxPrice);
+            }
+
+        StringBuilder colorCondition = new StringBuilder();
+        if (colors != null) {
+            colorCondition.append("AND sp.color in ( ");
+            for (int color = 0; color < colors.size(); color++) {
+                if ((colors.size() - 1) != color) {
+                    colorCondition.append(" ?, ");
+                } else {
+                    colorCondition.append(" ? ");
+                }
+            }
+            colorCondition.append(")");
+            params.addAll(colors);
+        }
+
+            String orderBy = "";
+            String condition = "";
+            String joinType = "LEFT";
+            String addJoin = "";
+            if (sortBy != null) {
+                switch (sortBy) {
+                    case "Новинки":
+                        condition = "AND p.dateOfCreate >= CURRENT_DATE - interval '7 day' ";
+                        break;
+                    case "Бестселлеры":
+                        addJoin = "join sp.orders o on o.subProduct = sp";
+                        condition = "AND p.dateOfCreate >= CURRENT_DATE - interval '7 day' and o.productCount > 20 ";
+                        orderBy = ", o.productCount\n" +
+                                "order by o.productCount";
+                        break;
+                    case "Все акции":
+                        joinType = "";
+                        break;
+                    case "По увеличению цены":
+                        orderBy = "order by sp.price";
+                        break;
+                    case "По уменьшению цены":
+                        orderBy = "order by sp.price DESC";
+                        break;
+                }
+            }
+
+            String jpql = String.format(jpqlBuilder.toString(), joinType, addJoin, keywordCondition, sizeCondition, compositionCondition, brandCondition, priceCondition, colorCondition, condition, orderBy);
+
+            TypedQuery<Long> countQuery = entityManager.createQuery("SELECT COUNT(*) " + jpql, Long.class);
+            for (int i = 0; i < params.size(); i++) {
+                countQuery.setParameter(i + 1, params.get(i));
+            }
+            int count = countQuery.getSingleResult().intValue();
+            int totalPage = (int) Math.ceil((double) count / pageSize);
+            int offset = (page - 1) * pageSize;
+
+            jpql = jpql + " LIMIT :pageSize OFFSET :offset";
+            TypedQuery<ProductBuyerResponse> query = entityManager.createQuery(jpql, ProductBuyerResponse.class);
+            for (int i = 0; i < params.size(); i++) {
+                query.setParameter(i + 1, params.get(i));
+            }
+            query.setParameter("pageSize", pageSize);
+            query.setParameter("offset", offset);
+
+            List<ProductBuyerResponse> products = query.getResultList();
+
+            return PaginationResponse.<ProductBuyerResponse>builder()
+                    .currentPage(page)
+                    .totalPages(totalPage)
+                    .quantityOfProducts(count)
+                    .elements(products).build();
+        }
+
+
 }

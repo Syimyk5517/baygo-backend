@@ -27,14 +27,11 @@ public class SubProduct {
     @ElementCollection
     private List<String> images;
     private BigDecimal price;
-
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;
-
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "product_id")
     private Product product;
-
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "discount_id")
     private Discount discount;
