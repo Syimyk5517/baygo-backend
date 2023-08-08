@@ -1,4 +1,4 @@
-package com.example.baygo.db.dto.response;
+package com.example.baygo.db.dto.response.orders;
 
 import lombok.Builder;
 

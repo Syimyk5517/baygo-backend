@@ -20,6 +20,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 //            " Notification n where n.id =: sellerId")
 //    List<NotificationResponse>findBySellerIdAndRead(Long sellerId, boolean read);
 
+    List<Notification> getNotificationByBuyerId(Long buyerId);
+
     @Query("SELECT new com.example.baygo.db.dto.response.NotificationResponse (n.id,n.tittle,n.message,n.read,n.createAt)FROM Notification n WHERE n.read = :readStatus AND n.id=:userId")
     List<NotificationResponse> findByReadStatusByUserContains(Long userId, Boolean readStatus);
     @Query("SELECT n FROM Notification n WHERE n.id = :messageId AND n.buyer.id = :sellerId")
