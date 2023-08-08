@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,10 +51,17 @@ public class Buyer {
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> lastViews;
 
-    @OneToMany(mappedBy = "buyer",cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    @OneToMany(mappedBy = "buyer", cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<Order> orders;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "buyer", cascade = {ALL})
+    private List<Notification> notifications = new ArrayList<>();
+    public void  addNotification(Notification notification){
+        notifications.add(notification);
+        notification.setBuyer(this);
+    }
 }
