@@ -1,10 +1,12 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.request.DiscountRequest;
+import com.example.baygo.db.dto.response.CalendarActionResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.model.Discount;
 import com.example.baygo.db.model.SubProduct;
 import com.example.baygo.repository.DiscountRepository;
+import com.example.baygo.repository.custom.CustomCalendarActionRepository;
 import com.example.baygo.service.DiscountService;
 import com.example.baygo.repository.SubProductRepository;
 import jakarta.transaction.Transactional;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +25,7 @@ import java.util.List;
 public class DiscountServiceImpl implements DiscountService {
     private final DiscountRepository discountRepository;
     private final SubProductRepository subProductRepository;
+    private final CustomCalendarActionRepository customCalendarActionRepository;
 
     @Override
     public SimpleResponse saveDiscount(DiscountRequest request) {
@@ -53,5 +57,10 @@ public class DiscountServiceImpl implements DiscountService {
             discountRepository.delete(discount);
         }
         System.out.println("Скидка успешно удалена!");
+    }
+
+    @Override
+    public List<CalendarActionResponse> getAllDiscount(LocalDate date) {
+        return customCalendarActionRepository.getAllDiscount(date);
     }
 }
