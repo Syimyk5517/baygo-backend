@@ -1,7 +1,8 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.response.*;
+import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -57,5 +59,19 @@ public class OrderServiceImpl implements OrderService {
                 orderResponses.getNumber() + 1,
                 orderResponses.getTotalPages());
     }
+
+
+    public PaginationResponse<OrdersResponse> getAllFbsOrders(int page, int size, String keyword, LocalDate dateOfOrder) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        Page<OrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, dateOfOrder, pageable);
+        return new PaginationResponse<>(orderResponses.getContent(),
+                orderResponses.getNumber() + 1,
+                orderResponses.getTotalPages());
+
+    }
 }
+
+
+
 

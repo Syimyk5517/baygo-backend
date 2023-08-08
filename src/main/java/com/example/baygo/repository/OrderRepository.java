@@ -1,5 +1,6 @@
 package com.example.baygo.repository;
 
+import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
 import com.example.baygo.db.model.Order;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -37,7 +39,41 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "AND (:status IS NULL OR o.status = :status) " +
             "ORDER BY o.dateOfOrder DESC")
     Page<OrderResponse> getAllOrders(Long sellerId, String keyword, Status status, Pageable pageable);
+
+
+
+    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.OrdersResponse(o.id, sp.mainImage, KEY(pc).barcode, VALUE(o.productCount), p.name, p.articul, p.brand,  sp.color, CONCAT(fw.street, ' ', fw.houseNumber), o.dateOfOrder) " +
+            "FROM Order o " +
+            "JOIN o.productCount pc " +
+            "JOIN KEY(pc).subProduct sp " +
+            "JOIN sp.product p " +
+            "JOIN p.seller s2 " +
+            "JOIN s2.fbsWarehouse fw " +
+            "WHERE s2.id = :sellerId " +
+            "AND (:keyWord IS  NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:keyWord), '%') OR LOWER(p.articul) LIKE CONCAT('%', LOWER(:keyWord), '%')) " +
+            "AND (:dateOfOrder IS NULL OR o.dateOfOrder = :dateOfOrder) ")
+    Page<OrdersResponse> getAllOrdersFbs(
+            @Param("sellerId") Long sellerId,
+            @Param("keyWord") String keyWord,
+            @Param("dateOfOrder") LocalDate dateOfOrder, Pageable pageable);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -24,6 +24,7 @@ public class SubProduct {
     private Long id;
     private String colorHexCode;
     private String color;
+    private String mainImage;
     @ElementCollection
     private List<String> images;
     private BigDecimal price;

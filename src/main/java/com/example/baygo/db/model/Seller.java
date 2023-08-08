@@ -38,4 +38,8 @@ public class Seller {
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+
+   @OneToMany(mappedBy = "seller", cascade = ALL)
+    private List<FbsWarehouse> fbsWarehouse;
 }
