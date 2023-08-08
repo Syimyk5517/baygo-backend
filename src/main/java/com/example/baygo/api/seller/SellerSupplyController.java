@@ -1,9 +1,17 @@
 package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.PackingRequest;
+import com.example.baygo.db.dto.request.supply.SupplyRequest;
+import com.example.baygo.db.dto.request.supply.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
+import com.example.baygo.db.dto.response.supply.DeliveryDraftResponse;
+import com.example.baygo.db.dto.response.supply.ProductBarcodeResponse;
+import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
+import com.example.baygo.db.dto.response.supply.WarehouseResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.service.PackingService;
 import com.example.baygo.service.SupplyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +62,7 @@ public class SellerSupplyController {
 
     @Operation(summary = "repacking", description = "this is repackaging method")
     @PostMapping("{supplyId}")
-    SimpleResponse packing(@PathVariable Long supplyId, @RequestBody List<PackingRequest> packingRequests){
+    SimpleResponse packing(@PathVariable Long supplyId, @RequestBody List<PackingRequest> packingRequests) {
         return packingService.repacking(supplyId, packingRequests);
     }
 
@@ -75,4 +83,63 @@ public class SellerSupplyController {
             @RequestParam(required = false) String destinationWarehouse) {
         return service.getAllTransitDirections(transitWarehouse, destinationWarehouse);
     }
+
+    @Operation(summary = "Get all drafts", description = "This method returns all delivery drafts")
+    @GetMapping("/delivery_drafts")
+    PaginationResponse<DeliveryDraftResponse> getDeliveryDrafts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "8") int pageSize) {
+        return service.getDeliveryDrafts(pageSize, page);
+    }
+
+    @Operation(summary = "Delete delivery draft", description = "This method deletes the delivery draft")
+    @DeleteMapping
+    public SimpleResponse deleteDeliveryDraft(@RequestParam Long supplyId) {
+        return service.deleteDeliveryDraft(supplyId);
+    }
+
+    @Operation(summary = "Get Seller's All Products", description = "This method is used to get all seller's products from db")
+    @GetMapping("/all-supplies")
+    public PaginationResponse<SupplySellerProductResponse> getAllSellerProducts(@RequestParam(required = false) Integer searchWithBarcode,
+                                                                                @RequestParam(required = false) String searchWithCategory,
+                                                                                @RequestParam(required = false) String searchWithBrand,
+                                                                                @RequestParam(defaultValue = "1") int page,
+                                                                                @RequestParam(defaultValue = "7") int pageSize) {
+        return service.getSellerProducts(searchWithBarcode, searchWithCategory, searchWithBrand, page, pageSize);
+    }
+
+    @Operation(summary = "Get all warehouses", description = "This method returns all warehouses")
+    @GetMapping("/all_warehouse")
+    List<WarehouseResponse> getAllWareHouses() {
+        return service.getAllWareHouses();
+    }
+
+    @Operation(summary = "Choose products",
+            description = "This method is for choosing products to send it to warehouse")
+    @PostMapping("/new_supply")
+    public SimpleResponse postToSupplyProducts(@RequestBody SupplyRequest supplyRequest) {
+        return service.createSupply(supplyRequest);
+    }
+
+    @Operation(summary = "Returns the cost of the warehouse for the next 14 days, depending on the type of delivery",
+            description = "This method Returns the cost of stock for the next 14 days depending on the type of delivery")
+    @GetMapping("/warehouse_cost")
+    public List<WarehouseCostResponse> getAllWarehouseCost(@RequestParam Long warehouseId,
+                                                           @RequestParam SupplyType supplyType) {
+        return service.getAllWarehouseCost(warehouseId, supplyType);
+    }
+
+    @Operation(summary = "Receive all products with a barcode depending on the delivery", description = "Get all barcode products")
+    @GetMapping("/all_barcode_products")
+    List<ProductBarcodeResponse> getAllBarcodeProducts(@RequestParam Long supplyId) {
+        return service.getAllBarcodeProducts(supplyId);
+    }
+
+    @Operation(summary = "Save and complete delivery", description = "This method saves and completes the supply")
+    @PostMapping("/complete_the_delivery")
+    SimpleResponse willCompleteTheDelivery(@RequestBody SupplyWrapperRequest supplyWrapperRequest) {
+        return service.willCompleteTheDelivery(supplyWrapperRequest);
+    }
+
+
 }

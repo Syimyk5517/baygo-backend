@@ -1,7 +1,7 @@
 package com.example.baygo.db.model;
 
-import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.db.model.enums.SupplyType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class Supply {
     private LocalDate changedAt;
     private int quantityOfProducts;
     private int acceptedProducts;
-    private BigDecimal commission;
+    private String commission;
     private BigDecimal supplyCost;
     private LocalDate plannedDate;
     private LocalDate actualDate;
@@ -53,6 +53,7 @@ public class Supply {
 
     @OneToOne(cascade = ALL)
     private Supplier supplier;
+    private Boolean isDraft;
 
     public void addSupplyProduct(SupplyProduct supplyProduct) {
         if (this.supplyProduct == null) {
