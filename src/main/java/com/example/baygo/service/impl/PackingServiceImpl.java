@@ -29,7 +29,7 @@ public class PackingServiceImpl implements PackingService {
         Supply existingSupply = supplyRepository.findById(supplyId).orElseThrow(() ->
                 new NotFoundException("Подкатегория с идентификатором: " + supplyId + " не найдена!"));
 
-        Map<Integer, Integer> barcodeToQuantityMap = new HashMap<>();
+        Map<String, Integer> barcodeToQuantityMap = new HashMap<>();
 
         for (PackingRequest packingRequest : packingRequests) {
             barcodeToQuantityMap.put(packingRequest.barcode(), packingRequest.quantity());
@@ -51,7 +51,7 @@ public class PackingServiceImpl implements PackingService {
 
         List<SupplyProduct> newSupplyProducts = new ArrayList<>();
         for (SupplyProduct existingSupplyProduct : existingSupply.getSupplyProduct()) {
-            int barcode = existingSupplyProduct.getSize().getBarcode();
+            String barcode = existingSupplyProduct.getSize().getBarcode();
             if (barcodeToQuantityMap.containsKey(barcode)) {
                 int newQuantity = existingSupplyProduct.getSize().getQuantity() + barcodeToQuantityMap.get(barcode);
                 existingSupplyProduct.getSize().setQuantity(newQuantity);

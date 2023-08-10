@@ -6,6 +6,6 @@ public record SizeRequest(
         @NotNull(message = "Размер должен быть указан!!!")
         String size,
         @NotNull(message = "Баркод должен быть указан!!!")
-        int barcode
+        String barcode
 ) {
 }

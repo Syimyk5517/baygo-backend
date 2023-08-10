@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public record PackingRequest(
         @NotNull(message = "Баркод должен быть указан!!!")
-        Integer barcode,
+        String barcode,
         @NotNull(message = "Количество должен быть указан!!!")
         Integer quantity
 ) {
