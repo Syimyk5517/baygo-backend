@@ -18,15 +18,14 @@ import com.example.baygo.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -98,31 +97,68 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PaginationResponse<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
-                                                                        String sizes,
-                                                                        String compositions,
+                                                                        List<String> sizes,
+                                                                        List<String> compositions,
                                                                         List<String> brands,
                                                                         BigDecimal minPrice,
                                                                         BigDecimal maxPrice,
-                                                                        String colors,
+                                                                        List<String> colors,
                                                                         String sortBy,
                                                                         int page,
                                                                         int pageSize) {
+
+        System.out.println(minPrice);
+        System.out.println(maxPrice);
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        System.out.println("before query");
-        System.out.println(brands);
-        Page<ProductBuyerResponse> sizePage = productRepository.finds(brands,pageable);
-        System.out.println("between");
-        for (ProductBuyerResponse response : sizePage.getContent()) {
+
+        String newSortBy = "";
+        if (sortBy != null) {
+            if(sortBy.equalsIgnoreCase("По увеличению цены") || sortBy.equalsIgnoreCase("По уменьшению цены")){
+                newSortBy = sortBy;
+                sortBy = null;
+            }
+        }
+
+        sizes = getDefaultIfEmpty(sizes);
+        compositions = getDefaultIfEmpty(compositions);
+        brands = getDefaultIfEmpty(brands);
+        colors = getDefaultIfEmpty(colors);
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord,sizes, compositions, brands, colors,
+                                                                    minPrice, maxPrice, sortBy, pageable);
+        System.out.println(minPrice);
+        System.out.println(maxPrice);
+
+        List<ProductBuyerResponse> sortedContent;
+
+        if (newSortBy.equalsIgnoreCase("По увеличению цены")){
+            sortedContent = allProducts.getContent()
+                    .stream()
+                    .sorted(Comparator.comparing(ProductBuyerResponse::getPrice))
+                    .collect(Collectors.toList());
+        }else if (newSortBy.equalsIgnoreCase("По уменьшению цены")) {
+            sortedContent = allProducts.getContent()
+                    .stream()
+                    .sorted(Comparator.comparing(ProductBuyerResponse::getPrice).reversed())
+                    .collect(Collectors.toList());
+        } else {
+            sortedContent = allProducts.getContent();
+        }
+
+
+        for (ProductBuyerResponse response : allProducts.getContent()) {
             response.setImage(productRepository.getImageBySubProductId(response.getSubProductId()).get(0));
         }
 
-        System.out.println("after");
-
         return PaginationResponse.<ProductBuyerResponse>builder()
-                .currentPage(sizePage.getNumber() + 1)
-                .totalPages(sizePage.getTotalPages())
-                .quantityOfProducts((int) sizePage.getTotalElements())
-                .elements(sizePage.getContent())
+                .currentPage(allProducts.getNumber() + 1)
+                .totalPages(allProducts.getTotalPages())
+                .quantityOfProducts((int) allProducts.getTotalElements())
+                .elements(sortedContent)
                 .build();
     }
+
+    private List<String> getDefaultIfEmpty(List<String> list) {
+        return (list == null || list.isEmpty()) ? List.of("") : list;
+    }
+
 }

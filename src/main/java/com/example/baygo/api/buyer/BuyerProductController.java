@@ -19,19 +19,20 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BuyerProductController {
     private final ProductService productService;
-    @Operation(summary = "Get all products.", description = "This method gets all products with filters, search.")
+
+    @Operation(summary = "Get all products.", description = "This method gets all products with filters and search.")
     @GetMapping
     @PermitAll
-    public PaginationResponse<ProductBuyerResponse> getAll( @RequestParam(required = false)   String keyWord,
-                                                            @RequestParam(required = false)  String sizes,
-                                                            @RequestParam(required = false)  String compositions,
-                                                            @RequestParam(required = false)  List<String> brands,
-                                                            @RequestParam(required = false)  BigDecimal minPrice,
-                                                            @RequestParam(required = false)  BigDecimal maxPrice,
-                                                            @RequestParam(required = false)  String colors,
-                                                            @RequestParam(required = false)   String sortBy,
-                                                            @RequestParam(required = false, defaultValue = "1") int page,
-                                                            @RequestParam(required = false, defaultValue = "16") int pageSize) {
+    public PaginationResponse<ProductBuyerResponse> getAll(@RequestParam(required = false) String keyWord,
+                                                           @RequestParam(required = false) List<String> sizes,
+                                                           @RequestParam(required = false) List<String> compositions,
+                                                           @RequestParam(required = false) List<String> brands,
+                                                           @RequestParam(required = false) BigDecimal minPrice,
+                                                           @RequestParam(required = false) BigDecimal maxPrice,
+                                                           @RequestParam(required = false) List<String> colors,
+                                                           @RequestParam(required = false) String sortBy,
+                                                           @RequestParam(required = false, defaultValue = "1") int page,
+                                                           @RequestParam(required = false, defaultValue = "16") int pageSize) {
         return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors, sortBy, page, pageSize);
     }
 }

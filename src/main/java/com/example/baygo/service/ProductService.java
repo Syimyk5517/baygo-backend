@@ -18,12 +18,12 @@ public interface ProductService {
     PaginationResponse<ProductResponseForSeller> findAll(String status, String keyWord, int page, int size);
 
     PaginationResponse<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
-                                                                 String sizes,
-                                                                 String compositions,
+                                                                 List<String> sizes,
+                                                                 List<String> compositions,
                                                                  List<String> brands,
                                                                  BigDecimal minPrice,
                                                                  BigDecimal maxPrice,
-                                                                 String colors,
+                                                                 List<String> colors,
                                                                  String sortBy,
                                                                  int page,
                                                                  int pageSize);
