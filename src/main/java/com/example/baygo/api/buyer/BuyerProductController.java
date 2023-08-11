@@ -30,9 +30,10 @@ public class BuyerProductController {
                                                            @RequestParam(required = false) BigDecimal minPrice,
                                                            @RequestParam(required = false) BigDecimal maxPrice,
                                                            @RequestParam(required = false) List<String> colors,
+                                                           @RequestParam(required = false) String filterBy,
                                                            @RequestParam(required = false) String sortBy,
                                                            @RequestParam(required = false, defaultValue = "1") int page,
                                                            @RequestParam(required = false, defaultValue = "16") int pageSize) {
-        return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors, sortBy, page, pageSize);
+        return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors,filterBy, sortBy, page, pageSize);
     }
 }

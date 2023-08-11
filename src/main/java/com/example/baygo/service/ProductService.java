@@ -24,6 +24,7 @@ public interface ProductService {
                                                                  BigDecimal minPrice,
                                                                  BigDecimal maxPrice,
                                                                  List<String> colors,
+                                                                 String filterBy,
                                                                  String sortBy,
                                                                  int page,
                                                                  int pageSize);

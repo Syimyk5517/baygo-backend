@@ -103,46 +103,25 @@ public class ProductServiceImpl implements ProductService {
                                                                         BigDecimal minPrice,
                                                                         BigDecimal maxPrice,
                                                                         List<String> colors,
+                                                                        String filterBy,
                                                                         String sortBy,
                                                                         int page,
                                                                         int pageSize) {
 
-        System.out.println(minPrice);
-        System.out.println(maxPrice);
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-
-        String newSortBy = "";
-        if (sortBy != null) {
-            if(sortBy.equalsIgnoreCase("По увеличению цены") || sortBy.equalsIgnoreCase("По уменьшению цены")){
-                newSortBy = sortBy;
-                sortBy = null;
-            }
-        }
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(
+                sortBy == null || sortBy.isEmpty() ? Sort.Order.desc("rating") :
+                sortBy.equalsIgnoreCase("По увеличению цены") ? Sort.Order.asc("sp.price") :
+                        sortBy.equalsIgnoreCase("По уменьшению цены") ? Sort.Order.desc("sp.price") :
+                                Sort.Order.desc("rating")
+        ));
 
         sizes = getDefaultIfEmpty(sizes);
         compositions = getDefaultIfEmpty(compositions);
         brands = getDefaultIfEmpty(brands);
         colors = getDefaultIfEmpty(colors);
+
         Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord,sizes, compositions, brands, colors,
-                                                                    minPrice, maxPrice, sortBy, pageable);
-        System.out.println(minPrice);
-        System.out.println(maxPrice);
-
-        List<ProductBuyerResponse> sortedContent;
-
-        if (newSortBy.equalsIgnoreCase("По увеличению цены")){
-            sortedContent = allProducts.getContent()
-                    .stream()
-                    .sorted(Comparator.comparing(ProductBuyerResponse::getPrice))
-                    .collect(Collectors.toList());
-        }else if (newSortBy.equalsIgnoreCase("По уменьшению цены")) {
-            sortedContent = allProducts.getContent()
-                    .stream()
-                    .sorted(Comparator.comparing(ProductBuyerResponse::getPrice).reversed())
-                    .collect(Collectors.toList());
-        } else {
-            sortedContent = allProducts.getContent();
-        }
+                                                                    minPrice, maxPrice,filterBy, pageable);
 
 
         for (ProductBuyerResponse response : allProducts.getContent()) {
@@ -153,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
                 .currentPage(allProducts.getNumber() + 1)
                 .totalPages(allProducts.getTotalPages())
                 .quantityOfProducts((int) allProducts.getTotalElements())
-                .elements(sortedContent)
+                .elements(allProducts.getContent())
                 .build();
     }
 

@@ -32,13 +32,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         AND ('' IN :colors OR sp.color IN (:colors))
                         AND (:minPrice IS NULL OR sp.price >= :minPrice)
                         AND (:maxPrice IS NULL OR sp.price <= :maxPrice)
-                        AND ((:sortBy = 'Новинки' AND p.dateOfCreate >= CURRENT_DATE - 7)
-                        OR (:sortBy = 'Все акции' AND d.percent > 0)
-                        OR (:sortBy = 'Бестселлеры' AND s.id IN
+                        AND ((:filterBy = 'Новинки' AND p.dateOfCreate >= CURRENT_DATE - 7)
+                        OR (:filterBy = 'Все акции' AND d.percent > 0)
+                        OR (:filterBy = 'Бестселлеры' AND s.id IN
                           (SELECT s.id FROM Order o WHERE KEY(o.productCount).id = s.id
                            AND (SELECT SUM(VALUE(o2.productCount) ) FROM Order o2 WHERE KEY(o2.productCount).id = s.id)> 20
                            AND o.status <> 'CANCELED' AND o.dateOfOrder >= CURRENT_DATE - 7))
-                        OR (:sortBy IS NULL))
+                        OR (:filterBy IS NULL))
                         GROUP BY s.id, sp.id, s.id, p.id, p.name, p.description, p.rating, sp.price, coalesce(d.percent, 0)
             """)
     Page<ProductBuyerResponse> finds(String keyWord,
@@ -48,7 +48,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                      List<String> colors,
                                      BigDecimal minPrice,
                                      BigDecimal maxPrice,
-                                     String sortBy,
+                                     String filterBy,
                                      Pageable pageable);
 
     @Query("select s.images from SubProduct s where s.id = :subProductId")
