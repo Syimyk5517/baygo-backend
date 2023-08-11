@@ -4,7 +4,6 @@ import com.example.baygo.db.dto.response.CalendarActionResponse;
 import com.example.baygo.db.dto.response.DayPromotion;
 import com.example.baygo.repository.custom.CustomCalendarActionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -26,34 +25,26 @@ public class CustomCalendarActionRepositoryImpl implements CustomCalendarActionR
             CalendarActionResponse calendarActionResponse = CalendarActionResponse.builder()
                     .date(futureDate)
                     .build();
-            for (int j = 9; j <= 16; j++) {
-                String sql = """
-                        SELECT EXTRACT(HOUR FROM date_of_start::timestamp) AS hour,date_of_finish
-                        FROM discounts d
-                        WHERE EXTRACT(YEAR FROM date_of_start::timestamp) = ?
-                          AND EXTRACT(MONTH FROM date_of_start::timestamp) = ?
-                          AND EXTRACT(DAY FROM date_of_start::timestamp) = ?
-                          AND EXTRACT(HOUR FROM date_of_start::timestamp) = ?;
-                        """;
 
-                DayPromotion dayPromotion = null;
-                try {
-                    dayPromotion = jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> {
-                        int hourInDatabase = resultSet.getInt("hour");
-                        LocalDate dateOfFinish = resultSet.getDate("date_of_finish").toLocalDate();
-                        return DayPromotion.builder()
-                                .time(hourInDatabase)
-                                .dateOfFinish(dateOfFinish)
-                                .build();
-                    }, futureDate.getYear(), futureDate.getMonthValue(), futureDate.getDayOfMonth(), j);
-                } catch (EmptyResultDataAccessException ignored) {
-                }
-                if (dayPromotion != null) {
-                    calendarActionResponse.addDayPromotion(dayPromotion);
-                }
-            }
+            String sql = """
+                    SELECT EXTRACT(HOUR FROM date_of_start::timestamp) AS hour,date_of_finish
+                    FROM discounts d
+                    WHERE EXTRACT(YEAR FROM date_of_start::timestamp) = ?
+                      AND EXTRACT(MONTH FROM date_of_start::timestamp) = ?
+                      AND EXTRACT(DAY FROM date_of_start::timestamp) = ?
+                      AND EXTRACT(HOUR FROM date_of_start::timestamp) > 7 AND EXTRACT(HOUR FROM date_of_start::timestamp) < 17 ;
+                    """;
+
+            List<DayPromotion> dayPromotions = jdbcTemplate.query(sql, (resultSet, rowNum) -> {
+                return DayPromotion.builder()
+                        .time(resultSet.getInt("hour"))
+                        .dateOfFinish(resultSet.getDate("date_of_finish").toLocalDate())
+                        .build();
+            }, futureDate.getYear(), futureDate.getMonthValue(), futureDate.getDayOfMonth());
+            calendarActionResponse.setDayPromotions(dayPromotions);
             calendarActionResponses.add(calendarActionResponse);
         }
+
         return calendarActionResponses;
 
     }
