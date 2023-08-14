@@ -1,5 +1,6 @@
 package com.example.baygo.service;
 
+import com.example.baygo.db.dto.request.fbs.SupplyRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
@@ -22,4 +23,6 @@ public interface SupplyService {
     List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
 
     List<SupplyLandingPage> getAllSupplyForLanding();
+
+    SimpleResponse saveSupply(SupplyRequest supplyRequest);
 }

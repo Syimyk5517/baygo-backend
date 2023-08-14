@@ -42,4 +42,8 @@ public class Seller {
 
    @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<FbsWarehouse> fbsWarehouse;
+
+   @ManyToOne
+   @JoinColumn(name = "warehouse_of_returns_id")
+   private Warehouse warehouseOfReturns;
 }

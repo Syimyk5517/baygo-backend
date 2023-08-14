@@ -22,4 +22,6 @@ public class Warehouse {
     private String name;
     private String location;
     BigDecimal transitCost;
+
+
 }

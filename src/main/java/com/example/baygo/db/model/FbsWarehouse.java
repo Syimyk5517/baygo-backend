@@ -1,11 +1,9 @@
 package com.example.baygo.db.model;
 
+import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.enums.DayOfWeek;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +13,7 @@ import java.util.List;
 @Table(name = "fbs_warehouses")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FbsWarehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fbs_warehouse_gen")
@@ -27,13 +26,28 @@ public class FbsWarehouse {
     private int indexOfCountry;
     private int houseNumber;
     private String phoneNumber;
-    @Enumerated(EnumType.STRING)
     @ElementCollection
+    @CollectionTable(name = "fbs_warehouse_working_day", joinColumns = @JoinColumn(name = "fbs_warehouse_id"))
+    @Column(name = "day_of_week", nullable = false)
+    @Enumerated(EnumType.STRING)
     private List<DayOfWeek> workingDay;
-    private String preparingSupply;
-    private String assemblyTime;
+    private int preparingSupply;
+    private int assemblyTime;
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private Seller seller;
+    @ManyToMany
+    private List<Size> sizes;
 
+    public void addProductQuantity(Long sizeId, int quantity) {
+        for (Size size : sizes) {
+            if (size.getId().equals(sizeId)) {
+                size.setFbsQuantity(size.getFbsQuantity() + quantity);
+                return;
+            }
+        }
+
+        throw new NotFoundException("Размер с заданным идентификатором не найден");
+    }
 }
+
