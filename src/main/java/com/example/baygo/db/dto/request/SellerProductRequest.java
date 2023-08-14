@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record ProductRequest (
+public record SellerProductRequest(
         @NotNull(message = "Категория должна быть указана!!!")
         Long subCategoryId,
         @NotBlank(message = "Страна производства должна быть указана!!!")
@@ -16,16 +16,12 @@ public record ProductRequest (
         String brand,
         @NotBlank(message = "Название продукта должно быть указано!!!")
         String name,
-        @NotBlank(message = "Фасон должен быть указан!!!")
-        String style,
         @NotBlank(message = "Сезон должен быть указан!!!")
         String season,
         @NotBlank(message = "Состав должен быть указан!!!")
         String composition,
-        @NotBlank(message = "Характеристика должна быть указана!!!")
-        String description,
         @Valid
         @NotEmpty(message = "Под продукты не должны быть пустыми!!!")
-        List<SubProductRequest> subProducts
+        List<SellerSubProductRequest> subProducts
 ){
 }

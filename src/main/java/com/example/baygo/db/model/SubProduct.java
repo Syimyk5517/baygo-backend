@@ -26,7 +26,12 @@ public class SubProduct {
     private String color;
     @ElementCollection
     private List<String> images;
+    private String mainImage;
     private BigDecimal price;
+    @Column(length = 2000)
+    private String description;
+    private int articulBG;
+    private String articulOfSeller;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;
