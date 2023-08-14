@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.ProductBuyerResponse(
-               s.id,sp.id,sp.product.id, p.name, p.description,
+               s.id,sp.id,p.id,sp.mainImage, p.name, p.description,
                p.rating,count(r),sp.price, coalesce(d.percent, 0))
                         FROM Product p
                         JOIN SubProduct sp ON p.id = sp.product.id
@@ -50,7 +49,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                      BigDecimal maxPrice,
                                      String filterBy,
                                      Pageable pageable);
-
-    @Query("select s.images from SubProduct s where s.id = :subProductId")
-    List<String> getImageBySubProductId(@Param("subProductId") Long subProductId);
 }
