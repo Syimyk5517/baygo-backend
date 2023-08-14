@@ -32,33 +32,23 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public SimpleResponse createSurvey(SurveyRequest request, SurveyType surveyType) {
 
-        Survey survey = surveyRepository.getSurveyBySurveyType(surveyType);
-
-        List<Question> questionRequests = new ArrayList<>();
+        Survey survey = surveyRepository.getSurveyBySurveyType(surveyType)
+                .orElseThrow(()-> new NotFoundException("Question with type " + surveyType + " not found"));
 
         for (QuestionRequest questionRequest : request.getQuestionRequests()) {
             Question question = new Question();
             question.setTitle(questionRequest.title());
 
-            List<Option> option1 = new ArrayList<>();
-
             for (OptionRequest optionRequest : questionRequest.optionRequests()) {
                 Option option = new Option();
                 option.setOptionOrder(optionRequest.getOptionOrder());
-                option.setTitle(optionRequest.getAnswer());
+                option.setTitle(optionRequest.getTitle());
                 option.setQuestion(question);
-                option1.add(option);
+                optionRepository.save(option);
             }
-            question.setOptions(option1);
-            questionRequests.add(question);
+            survey.getQuestions().add(question);
+            question.setSurvey(survey);
         }
-
-        survey.getQuestions().addAll(questionRequests);
-
-        for (Question questionRequest : questionRequests) {
-            questionRequest.setSurvey(survey);
-        }
-
 
         surveyRepository.save(survey);
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Survey successfully created").build();
@@ -69,7 +59,8 @@ public class SurveyServiceImpl implements SurveyService {
 
         List<SurveyQuestionResponse> surveyQuestionResponses = new ArrayList<>();
 
-        Survey surveyBySurveyType = surveyRepository.getSurveyBySurveyType(surveyType);
+        Survey surveyBySurveyType = surveyRepository.getSurveyBySurveyType(surveyType)
+                .orElseThrow(()-> new NotFoundException("Question with type " + surveyType + " not found"));
 
         for (Question question : surveyBySurveyType.getQuestions()) {
             SurveyQuestionResponse surveyQuestionResponse = new SurveyQuestionResponse();

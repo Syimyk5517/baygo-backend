@@ -23,6 +23,6 @@ public class Answer {
     private String phoneNumber;
     private String suggestionOrComment;
     private int rating;
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answer")
+    @ManyToMany(mappedBy = "answer", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Option>options;
 }

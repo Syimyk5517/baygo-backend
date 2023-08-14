@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class OptionRequest {
-    private String answer;
+    private String title;
     private int optionOrder;
 }
