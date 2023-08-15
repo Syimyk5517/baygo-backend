@@ -29,4 +29,5 @@ public class Message {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private Chat chat;
     private Boolean isSeller;
+    private Boolean isNewMessage;
 }

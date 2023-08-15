@@ -2,6 +2,7 @@ package com.example.baygo.api;
 
 import com.example.baygo.db.dto.request.MessageRequest;
 import com.example.baygo.db.dto.response.ChatResponse;
+import com.example.baygo.db.dto.response.NewMessageResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,16 @@ public class ChatApi {
     @GetMapping
     public List<ChatResponse> findAll() {
         return chatService.findAll();
+    }
+    @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")
+    @GetMapping("/find_by_id")
+    public ChatResponse findById(Long targetChatId){
+        return chatService.findById(targetChatId);
+    }
+    @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")
+    @GetMapping("/new_message")
+    List<NewMessageResponse> hasNewMessage(){
+        return chatService.hasNewMessage();
     }
 
     @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")

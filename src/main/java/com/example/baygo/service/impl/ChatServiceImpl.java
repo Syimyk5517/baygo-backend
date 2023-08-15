@@ -3,6 +3,7 @@ package com.example.baygo.service.impl;
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.MessageRequest;
 import com.example.baygo.db.dto.response.ChatResponse;
+import com.example.baygo.db.dto.response.NewMessageResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -54,6 +55,7 @@ public class ChatServiceImpl implements ChatService {
         message.setImage(messageRequest.image());
         message.setChat(chat);
         message.setTime(LocalDateTime.now());
+        message.setIsNewMessage(true);
         message.setIsSeller(messageRequest.chatId() == 0);
 
         chat.addMessage(message);
@@ -66,8 +68,18 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public List<NewMessageResponse> hasNewMessage() {
+        return customChatRepository.hasNewMessage();
+    }
+
+    @Override
     public List<ChatResponse> findAll() {
         return customChatRepository.findAll();
+    }
+
+    @Override
+    public ChatResponse findById(Long targetChatId) {
+        return customChatRepository.findById(targetChatId);
     }
 
     @Override
