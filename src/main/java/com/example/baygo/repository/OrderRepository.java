@@ -42,11 +42,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.OrdersResponse(o.id, sp.mainImage, KEY(pc).barcode, VALUE(o.productCount), p.name, p.articul, p.brand,  sp.color, CONCAT(fw.street, ' ', fw.houseNumber), o.dateOfOrder) " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.OrdersResponse(o.id, sp.mainImage, KEY(pc).barcode, VALUE(o.productCount), p.name, p.articul, p.brand,s.size,  sp.color, CONCAT(fw.street, ' ', fw.houseNumber), o.dateOfOrder) " +
             "FROM Order o " +
             "JOIN o.productCount pc " +
             "JOIN KEY(pc).subProduct sp " +
             "JOIN sp.product p " +
+            "JOIN sp.sizes s " +
             "JOIN p.seller s2 " +
             "JOIN s2.fbsWarehouse fw " +
             "WHERE s2.id = :sellerId " +

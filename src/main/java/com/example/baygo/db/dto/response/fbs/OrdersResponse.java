@@ -12,6 +12,7 @@ public record OrdersResponse(
         String name,
         String articul,
         String brand,
+        String size,
         String color,
         String address,
         LocalDate dateOfOrder
