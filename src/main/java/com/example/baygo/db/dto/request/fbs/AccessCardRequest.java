@@ -8,6 +8,6 @@ public record AccessCardRequest(
         String driverFirstName,
         String driverLastname,
         String brand,
-        int number
+        String number
 ) {
 }

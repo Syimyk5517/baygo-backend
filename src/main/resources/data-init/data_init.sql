@@ -174,9 +174,9 @@ VALUES (1,
        (2,
         'Запрос', 'Запрос', 'Запрос на получение информации', 1);
 
-INSERT INTO access_cards (id, driver_first_name, driver_last_name, car_brand, number_of_car)
-VALUES (1, 'Асан', 'Асанов', 'Toyota', 12345),
-       (2, 'Усон', 'Усонов', 'Ford', 2345);
+INSERT INTO access_cards (id, driver_first_name, driver_last_name, car_brand, number_of_car,supply_type)
+VALUES (1, 'Асан', 'Асанов', 'Toyota', '1234','MONO_PALLETS'),
+       (2, 'Усон', 'Усонов', 'Ford', '3478','BOX');
 
 INSERT INTO categories(id, name)
 VALUES (1,
@@ -756,12 +756,12 @@ VALUES (1, 'БайGo', 'Бишкек', 1200.00),
        (15, 'Запад-Карго', 'Уральск', 1200.00);
 
 INSERT INTO fbs_warehouses (id, name, country, city, index_of_country, street, house_number, phone_number,
-                            preparing_supply, assembly_time, seller_id)
-VALUES (1, 'Жибек Жолу', 'Кыргызстан', 'Бишкек', 723500, 'Лев Толстой', 123, '+1234567890', 3, 4, 1),
-       (2, 'Асман', 'Кыргызстан', 'Талас', 754200, 'Тунгуч', 456, '+9876543210', 3, 2, 2),
-       (3, 'Аю Гранд', 'Кыргызстан', 'Чуй', 237800, 'Жал', 789, '+1112223334', 1, 4, 1),
-       (4, 'Амазон', 'Кыргызстан', 'Ош', 753600, 'Рабочий городок', 101, '+5556667778', 1, 3, 3),
-       (5, 'Караван', 'Кыргызстан', 'Баткен', 780023, 'К.Акиева', 222, '+9990001112', 3, 2, 1);
+                            preparing_supply, assembly_time,type_of_supplier,type_of_product,shipping_type, seller_id)
+VALUES (1, 'Жибек Жолу', 'Кыргызстан', 'Бишкек', 723500, 'Лев Толстой', 123, '+1234567890', 3, 4,'WITH_MY_OWN_RESOURCES','ORDINARY','BY_CARRIER_BAIGO', 1),
+       (2, 'Асман', 'Кыргызстан', 'Талас', 754200, 'Тунгуч', 456, '+9876543210', 3, 2,'WITH_MY_OWN_RESOURCES','ORDINARY','BY_CARRIER_BAIGO', 2),
+       (3, 'Аю Гранд', 'Кыргызстан', 'Чуй', 237800, 'Жал', 789, '+1112223334', 1, 4,'WITH_MY_OWN_RESOURCES','ORDINARY','BY_CARRIER_BAIGO', 1),
+       (4, 'Амазон', 'Кыргызстан', 'Ош', 753600, 'Рабочий городок', 101, '+5556667778', 1, 3,'WITH_MY_OWN_RESOURCES','ORDINARY','BY_CARRIER_BAIGO', 3),
+       (5, 'Караван', 'Кыргызстан', 'Баткен', 780023, 'К.Акиева', 222, '+9990001112', 3, 2,'WITH_MY_OWN_RESOURCES','ORDINARY','BY_CARRIER_BAIGO', 1);
 INSERT INTO fbs_warehouse_working_day(fbs_warehouse_id, day_of_week)
 VALUES (1, 'MONDAY'),
        (1, 'TUESDAY'),

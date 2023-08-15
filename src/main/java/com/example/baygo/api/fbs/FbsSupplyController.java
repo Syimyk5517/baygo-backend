@@ -19,7 +19,6 @@ public class FbsSupplyController {
     private final SupplyService supplyService;
     @PostMapping
     public SimpleResponse saveSupply(@RequestBody SupplyRequest supplyRequest){
-        System.out.println("GGGG");
      return supplyService.saveSupply(supplyRequest);
     }
 

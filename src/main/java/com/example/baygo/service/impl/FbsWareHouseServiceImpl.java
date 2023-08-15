@@ -2,6 +2,7 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.fbs.AccessCardRequest;
+import com.example.baygo.db.dto.request.fbs.ShipmentRequest;
 import com.example.baygo.db.dto.request.fbs.WareHouseRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
@@ -37,46 +38,48 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
                 .workingDay(wareHouseRequest.dayOfWeek())
                 .preparingSupply(wareHouseRequest.preparingSupply())
                 .assemblyTime(wareHouseRequest.assemblyTime())
-                .seller(seller)
-                .build();
+                .seller(seller).build();
         fbsWarehouseRepository.save(fbsWarehouse);
 
         Long selectedWarehouseId = wareHouseRequest.wareHouseId();
         Warehouse warehouse = warehouseRepository.findById(selectedWarehouseId).orElseThrow(
                 () -> new NotFoundException(String.format("Склад %s не найден", wareHouseRequest.wareHouseId())));
-
         if (seller != null) {
-                seller.setWarehouseOfReturns(warehouse);
-                sellerRepository.save(seller);
-
-                return new SimpleResponse(HttpStatus.OK, String.format("Склад %s успешно сохранены", wareHouseRequest.wareHouseName()));
-            } else {
-                return new SimpleResponse(HttpStatus.BAD_REQUEST, "Продавец равен нулю");
-            }
+            seller.setWarehouseOfReturns(warehouse);
+            sellerRepository.save(seller);
+            return new SimpleResponse(HttpStatus.OK, String.format("Склад %s успешно сохранены", wareHouseRequest.wareHouseName()));
+        } else {
+            return new SimpleResponse(HttpStatus.BAD_REQUEST, "Продавец равен нулю");
+        }
 
     }
+
     @Override
     public SimpleResponse saveAccess(AccessCardRequest accessCardRequest) {
 
-        Warehouse warehouse = warehouseRepository.findById(accessCardRequest.warehouseId()).orElseThrow(
-                () -> new NotFoundException(String.format("Склад %s не найден", accessCardRequest.warehouseId())));
+        Warehouse warehouse = warehouseRepository.findById(accessCardRequest.warehouseId()).orElseThrow(() -> new NotFoundException(String.format("Склад %s не найден", accessCardRequest.warehouseId())));
         AccessCard accessCard = AccessCard.builder()
                 .driverFirstName(accessCardRequest.driverFirstName())
                 .driverLastName(accessCardRequest.driverLastname())
                 .carBrand(accessCardRequest.brand())
-                .numberOfCar(accessCardRequest.number())
-                .build();
+                .numberOfCar(accessCardRequest.number()).build();
         accessCardRepository.save(accessCard);
-
         Supply supply = new Supply();
         supply.setWarehouse(warehouse);
         supply.setAccessCard(accessCard);
         supplyRepository.save(supply);
-
         return new SimpleResponse(HttpStatus.OK, "Пропуск создан удачно");
     }
 
-
-
+    @Override
+    public SimpleResponse saveShippMethod(ShipmentRequest shipmentRequest) {
+        FbsWarehouse existingWareHouse = fbsWarehouseRepository.findById(shipmentRequest.wareHouseId()).orElseThrow(
+                () -> new NotFoundException(String.format("Склад %s не найден",shipmentRequest.wareHouseId())));
+        existingWareHouse.setTypeOfSupplier(shipmentRequest.typeOfSupplier());
+        existingWareHouse.setTypeOfProduct(shipmentRequest.typeOfProduct());
+        existingWareHouse.setShippingType(shipmentRequest.shippingType());
+        fbsWarehouseRepository.save(existingWareHouse);
+        return new SimpleResponse(HttpStatus.OK, "Метод отгрузки %s создан удачно");
+    }
 }
 

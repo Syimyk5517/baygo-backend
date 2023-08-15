@@ -1,5 +1,6 @@
 package com.example.baygo.db.model;
 
+import com.example.baygo.db.model.enums.SupplyType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,9 @@ public class AccessCard {
     private String driverFirstName;
     private String driverLastName;
     private String carBrand;
-    private int numberOfCar;
+    private String numberOfCar;
+    @Enumerated(EnumType.STRING)
+    private SupplyType supplyType;
     @OneToOne(mappedBy = "accessCard")
     private Supply supply;
 

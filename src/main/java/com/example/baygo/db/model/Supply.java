@@ -50,8 +50,6 @@ public class Supply {
     @OneToMany(mappedBy = "supply", cascade = ALL)
     private List<SupplyProduct> supplyProduct;
 
-    @OneToOne(cascade = ALL)
-    private Supplier supplier;
     @OneToOne
     private AccessCard accessCard;
 
