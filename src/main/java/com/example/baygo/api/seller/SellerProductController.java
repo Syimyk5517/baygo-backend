@@ -39,10 +39,10 @@ public class SellerProductController {
     @Operation(summary = "Get all products", description = "This method gets all products of seller. Status: 'Все товары', 'В избранном', 'В корзине', 'Все акции'")
     @GetMapping
     public PaginationResponse<ProductResponseForSeller> getAllProductForSeller(
-            @RequestParam(defaultValue = "Все товары") String status,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyWord,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "11") int size) {
-        return productService.findAll(status, keyWord, page, size);
+        return productService.findAll(categoryId, keyWord, page, size);
     }
 }
