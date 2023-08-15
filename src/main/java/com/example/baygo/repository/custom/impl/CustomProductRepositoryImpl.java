@@ -7,7 +7,6 @@ import com.example.baygo.repository.custom.CustomProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, int page, int size) {
+    public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {
         String sql = """
                     with count_cte as (
                         select count(*) as total
@@ -39,6 +38,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                            pr.rating as rating,
                            pr.date_of_change as date_of_change,
                            sp.color as color,
+                           (select s.size from sizes s where s.sub_product_id = sp.id limit 1) as size,
+                           (select s.barcode from sizes s where s.sub_product_id = sp.id limit 1) as barcode,
+                           (select s.quantity from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
@@ -83,6 +85,16 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                     )
                     """;
         }
+        switch (sortBy) {
+            case "rating" -> sql = sql.replace("order by pr.date_of_change desc",
+                    "order by pr.rating " + (ascending ? "asc" : "desc"));
+
+            case "quantity" -> sql = sql.replace("order by pr.date_of_change desc",
+                    "order by quantity " + (ascending ? "asc" : "desc"));
+
+            default -> sql = sql.replace("order by pr.date_of_change desc",
+                    "order by pr.date_of_change " + (ascending ? "asc" : "desc"));
+        }
 
         sql = String.format(sql, categoryCondition, keywordCondition);
 
@@ -106,6 +118,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 rs.getDouble("rating"),
                 rs.getDate("date_of_change").toLocalDate(),
                 rs.getString("color"),
+                rs.getString("size"),
+                rs.getInt("barcode"),
+                rs.getInt("quantity"),
                 jdbcTemplate.query(getSizes, ((resultSet, rowNum1) -> new SizeSellerResponse(
                         resultSet.getLong("id"),
                         resultSet.getString("size"),

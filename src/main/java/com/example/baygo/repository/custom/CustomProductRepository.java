@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomProductRepository {
-    PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, int page, int size);
+    PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size);
 }

@@ -36,13 +36,15 @@ public class SellerProductController {
         return ColorResponse.getColors();
     }
 
-    @Operation(summary = "Get all products", description = "This method gets all products of seller. Status: 'Все товары', 'В избранном', 'В корзине', 'Все акции'")
+    @Operation(summary = "Get all products", description = "This method gets all products of seller. The categoryId you can get on the SellerCategoryController. SortBy: dateOfChange, rating, quantity. Ascending: true, false")
     @GetMapping
     public PaginationResponse<ProductResponseForSeller> getAllProductForSeller(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyWord,
+            @RequestParam(defaultValue = "dateOfChange") String sortBy,
+            @RequestParam(defaultValue = "false") boolean ascending,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "11") int size) {
-        return productService.findAll(categoryId, keyWord, page, size);
+        return productService.findAll(categoryId, keyWord, sortBy, ascending, page, size);
     }
 }

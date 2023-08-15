@@ -14,6 +14,9 @@ public record ProductResponseForSeller(
         double rating,
         LocalDate dateOfChange,
         String color,
+        String size,
+        int barcode,
+        int quantity,
         List<SizeSellerResponse> sizes
 ) {
 }

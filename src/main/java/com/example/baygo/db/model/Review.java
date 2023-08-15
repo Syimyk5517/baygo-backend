@@ -32,8 +32,8 @@ public class Review {
     private LocalDateTime dateAndTime;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "sub_product_id")
+    private SubProduct subProduct;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "buyer_id")

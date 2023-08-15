@@ -75,8 +75,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PaginationResponse<ProductResponseForSeller> findAll(Long categoryId, String keyWord, int page, int size) {
+    public PaginationResponse<ProductResponseForSeller> findAll(Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        return customProductRepository.getAll(sellerId, categoryId, keyWord, page, size);
+        return customProductRepository.getAll(sellerId, categoryId, keyWord, sortBy, ascending, page, size);
     }
 }
