@@ -791,7 +791,7 @@ VALUES (1, 100, 1),
        (14, 349, 14),
        (15, 563, 15);
 
-INSERT INTO reviews(id, amount_of_like, answer, date_and_time, grade, text, buyer_id, product_id)
+INSERT INTO reviews(id, amount_of_like, answer, date_and_time, grade, text, buyer_id, sub_product_id)
 VALUES (1, 50, 'В наличии есть размер М?', '2023-07-13 12:00:00', 5,
         'Красивое платье доступно к продаже, доставка действует по всему Кыргызстану',
         1, 1),

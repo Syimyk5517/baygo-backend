@@ -27,13 +27,13 @@ public class BuyerQuestion {
     private Buyer buyer;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "sub_product_id")
+    private SubProduct subProduct;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String question;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String answer;
 
     private LocalDateTime createdAt;
