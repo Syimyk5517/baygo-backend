@@ -1,6 +1,6 @@
 package com.example.baygo.api.seller;
 
-import com.example.baygo.db.dto.request.ProductRequest;
+import com.example.baygo.db.dto.request.SellerProductRequest;
 import com.example.baygo.db.dto.response.ColorResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
@@ -26,7 +26,7 @@ public class SellerProductController {
 
     @Operation(summary = "Save the product", description = "This method saves the product")
     @PostMapping
-    public SimpleResponse saveProduct(@RequestBody @Valid ProductRequest productRequest) {
+    public SimpleResponse saveProduct(@RequestBody @Valid SellerProductRequest productRequest) {
         return productService.saveProduct(productRequest);
     }
 
@@ -34,12 +34,6 @@ public class SellerProductController {
     @GetMapping("/colors")
     public List<ColorResponse> getColors() {
         return ColorResponse.getColors();
-    }
-
-    @Operation(summary = "Get barcode", description = "This method gets the barcode for saving products")
-    @GetMapping("/barcode")
-    public int getBarcode() {
-        return productService.getBarcode();
     }
 
     @Operation(summary = "Get all products", description = "This method gets all products of seller. Status: 'Все товары', 'В избранном', 'В корзине', 'Все акции'")

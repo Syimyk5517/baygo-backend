@@ -1,9 +1,9 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.ProductRequest;
-import com.example.baygo.db.dto.request.SizeRequest;
-import com.example.baygo.db.dto.request.SubProductRequest;
+import com.example.baygo.db.dto.request.SellerProductRequest;
+import com.example.baygo.db.dto.request.SellerSizeRequest;
+import com.example.baygo.db.dto.request.SellerSubProductRequest;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SimpleResponse;
@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
 
     @Override
-    public SimpleResponse saveProduct(ProductRequest request) {
+    public SimpleResponse saveProduct(SellerProductRequest request) {
         SubCategory subCategory = subCategoryRepository.findById(request.subCategoryId()).orElseThrow(() -> {
             throw new NotFoundException("Подкатегория с идентификатором: " + request.subCategoryId() + " не найдена!");
         });
@@ -45,24 +45,25 @@ public class ProductServiceImpl implements ProductService {
         product.setManufacturer(request.manufacturer());
         product.setBrand(request.brand());
         product.setName(request.name());
-        product.setDescription(request.description());
         product.setDateOfCreate(LocalDate.now());
-        product.setArticul(UUID.randomUUID().toString().substring(0, 8));
-        product.setStyle(request.style());
         product.setSeason(request.season());
         product.setComposition(request.composition());
         product.setSubCategory(subCategory);
         product.setSeller(jwtService.getAuthenticate().getSeller());
 
-        for (SubProductRequest subProduct : request.subProducts()) {
+        for (SellerSubProductRequest subProduct : request.subProducts()) {
             SubProduct subProduct1 = new SubProduct();
             subProduct1.setColorHexCode(subProduct.colorHexCode());
             subProduct1.setColor(subProduct.color());
+            subProduct1.setMainImage(subProduct.mainImage());
             subProduct1.setImages(subProduct.images());
             subProduct1.setPrice(subProduct.price());
+            subProduct1.setDescription(subProduct.description());
+            subProduct1.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
+            subProduct1.setArticulOfSeller(subProduct.articulOfSeller());
             subProduct1.setProduct(product);
 
-            for (SizeRequest size : subProduct.sizes()) {
+            for (SellerSizeRequest size : subProduct.sizes()) {
                 Size size1 = new Size();
                 size1.setSize(size.size());
                 size1.setBarcode(size.barcode());
@@ -71,16 +72,6 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Продукт успешно сохранено!!!").build();
-    }
-
-    @Override
-    public int getBarcode() {
-        int hashCode = UUID.randomUUID().hashCode();
-        String randomHash = String.valueOf(hashCode);
-        if (randomHash.length() > 8) {
-            randomHash = randomHash.substring(0, 8);
-        }
-        return Math.abs(Integer.parseInt(randomHash));
     }
 
     @Override

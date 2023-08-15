@@ -8,15 +8,15 @@ import java.math.BigDecimal;
 @Data
 public class RecentOrdersResponse {
     private Long orderId;
-    private String articul;
+    private int articulBG;
     private String productName;
     private BigDecimal price;
     private int productCount;
     private Status status;
 
-    public RecentOrdersResponse(Long orderId, String articul, String productName, BigDecimal price, int productCount, Status status) {
+    public RecentOrdersResponse(Long orderId, int articulBG, String productName, BigDecimal price, int productCount, Status status) {
         this.orderId = orderId;
-        this.articul = articul;
+        this.articulBG = articulBG;
         this.productName = productName;
         this.price = price;
         this.productCount = productCount;

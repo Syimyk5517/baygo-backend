@@ -25,12 +25,9 @@ public class Product {
     private Long id;
     private String name;
     private String manufacturer;
-    private String description;
     private double rating;
     private LocalDate dateOfCreate;
     private LocalDate dateOfChange;
-    private String articul;
-    private String style;
     private String season;
     private String composition;
     private boolean isDraft;
