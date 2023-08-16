@@ -63,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
             newSubProduct.setHeight(subProduct.height());
             newSubProduct.setWidth(subProduct.width());
+            newSubProduct.setLength(subProduct.length());
             newSubProduct.setWeight(subProduct.weight());
             newSubProduct.setProduct(product);
 

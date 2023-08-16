@@ -30,8 +30,10 @@ public record SellerSubProductRequest(
         int height,
         @NotNull(message = "Ширина товара должна быть указана")
         int width,
+        @NotNull(message = "Длина товара должна быть указана")
+        int length,
         @NotNull(message = "Вес товара должна быть указана")
-        int weight,
+        double weight,
         @Valid
         @NotEmpty(message = "Размеры не должны быть пустыми!!!")
         List<SellerSizeRequest>sizes
