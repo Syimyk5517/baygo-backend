@@ -1,6 +1,6 @@
 package com.example.baygo.api.seller;
 
-import com.example.baygo.db.dto.response.PaginationReviewResponse;
+import com.example.baygo.db.dto.response.PaginationReviewAndQuestionResponse;
 import com.example.baygo.db.dto.response.ReviewResponse;
 import com.example.baygo.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,12 +19,13 @@ public class SellerReviewController {
 
     private final ReviewService reviewService;
 
-    @Operation(summary = "Get All Review", description = "This method getAll Review ,search,pagination")
+    @Operation(summary = "Get All Review", description = "This method getAll Review ,search,pagination. IsAnswered: false - to get unanswered reviews, true - to get archive of reviews.")
     @GetMapping
-    public PaginationReviewResponse<ReviewResponse> getAllReviews(
+    public PaginationReviewAndQuestionResponse<ReviewResponse> getAllReviews(
             @RequestParam(required = false) String keyWord,
+            @RequestParam(defaultValue = "false") boolean isAnswered,
             @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "4") int pageSize) {
-        return reviewService.getAllReviews(keyWord, page, pageSize);
+            @RequestParam(required = false, defaultValue = "8") int pageSize) {
+        return reviewService.getAllReviews(keyWord, isAnswered, page, pageSize);
     }
 }

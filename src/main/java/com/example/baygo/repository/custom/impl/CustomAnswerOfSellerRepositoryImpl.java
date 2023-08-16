@@ -1,8 +1,8 @@
 package com.example.baygo.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
+import com.example.baygo.db.dto.response.PaginationReviewAndQuestionResponse;
 import com.example.baygo.db.dto.response.QuestionForSellerLandingResponse;
-import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.repository.custom.CustomAnswerOfSellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,30 +15,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomAnswerOfSellerRepositoryImpl implements CustomAnswerOfSellerRepository {
     private final JdbcTemplate jdbcTemplate;
-    @Override
-    public PaginationResponse<BuyerQuestionResponse> getAllQuestions(String keyWord, int page, int pageSize, Long sellerId) {
-        String sql = """
-                    select
-                    (SELECT i.images FROM sub_product_images i
-                    join sub_products sp on sp.id = i.sub_product_id
-                    where sp.product_id = p.id LIMIT 1) as image,
-                    p.id as product_id, b.full_name as full_name,b.photo as photo,
-                    bq.question as question, p.articul as articul, p.name as name,
-                    bq.created_at as create_at
-                from buyer_questions bq
-                         join buyers b on b.id = bq.buyer_id
-                         join users u on u.id = b.user_id
-                         join products p on p.id = bq.product_id
-                         join sellers s on s.id = p.seller_id
-                where s.id = %s %s """;
-        List<Object> params = new ArrayList<>();
 
+    @Override
+    public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, String keyWord, int page, int pageSize, Long sellerId) {
+        String sql = """
+                SELECT
+                    bq.id as question_id,
+                    sp.id as sub_product_id,
+                    sp.main_image as product_image,
+                    p.name as product_name,
+                    bq.question as question,
+                    bq.answer as answer,
+                    sp.articul_of_seller as articul_of_seller,
+                    sp.articulbg as articulBG,
+                    bq.created_at as date_and_time
+                from buyer_questions bq
+                join sub_products sp on bq.sub_product_id = sp.id
+                join products p on sp.product_id = p.id
+                where p.seller_id = ?
+                and bq.answer is null
+                %s
+                """;
+        List<Object> params = new ArrayList<>();
+        params.add(sellerId);
+
+        if (isAnswered) {
+            sql = sql.replace("and bq.answer is null", "AND bq.answer IS NOT NULL");
+        }
         String keywordCondition = "";
         if (keyWord != null) {
-            keywordCondition = "AND p.articul iLIKE ? ";
+            keywordCondition = "AND (p.name iLIKE ? OR sp.articul_of_seller iLIKE ? OR CAST(sp.articulbg AS TEXT) iLIKE ?)";
+            params.add("%" + keyWord + "%");
+            params.add("%" + keyWord + "%");
             params.add("%" + keyWord + "%");
         }
-        sql = String.format(sql, sellerId, keywordCondition);
+        sql = String.format(sql, keywordCondition);
 
         String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
         int count = jdbcTemplate.queryForObject(countSql, params.toArray(), Integer.class);
@@ -47,15 +58,17 @@ public class CustomAnswerOfSellerRepositoryImpl implements CustomAnswerOfSellerR
         sql = String.format(sql + "LIMIT %s OFFSET %s", pageSize, offset);
 
         List<BuyerQuestionResponse> questions = jdbcTemplate.query(sql, params.toArray(), (resultSet, i) -> new BuyerQuestionResponse(
-                resultSet.getLong("product_id"),
-                resultSet.getString("full_name"),
-                resultSet.getString("photo"),
-                resultSet.getString("image"),
+                resultSet.getLong("question_id"),
+                resultSet.getLong("sub_product_id"),
+                resultSet.getString("product_image"),
+                resultSet.getString("product_name"),
                 resultSet.getString("question"),
-                resultSet.getString("articul"),
-                resultSet.getString("name"),
-                resultSet.getDate("create_at").toLocalDate()));
-        return PaginationResponse.<BuyerQuestionResponse>builder()
+                resultSet.getString("answer"),
+                resultSet.getString("articul_of_seller"),
+                resultSet.getString("articulBG"),
+                resultSet.getString("date_and_time")));
+
+        return PaginationReviewAndQuestionResponse.<BuyerQuestionResponse>builder()
                 .currentPage(page)
                 .totalPages(totalPage)
                 .elements(questions).build();
@@ -78,7 +91,7 @@ public class CustomAnswerOfSellerRepositoryImpl implements CustomAnswerOfSellerR
                 order by bq.created_at desc limit 4
                 """;
 
-        return jdbcTemplate.query(getAllQuestion, (resultSet, i)-> new QuestionForSellerLandingResponse(
+        return jdbcTemplate.query(getAllQuestion, (resultSet, i) -> new QuestionForSellerLandingResponse(
                 resultSet.getLong("id"),
                 resultSet.getString("productPhoto"),
                 resultSet.getString("description"),

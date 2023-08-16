@@ -43,4 +43,7 @@ public class SubProduct {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "discount_id")
     private Discount discount;
+
+    @OneToMany(mappedBy = "subProduct", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 }
