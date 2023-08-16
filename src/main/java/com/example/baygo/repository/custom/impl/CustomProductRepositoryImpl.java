@@ -1,15 +1,20 @@
 package com.example.baygo.repository.custom.impl;
 
+import com.example.baygo.db.dto.response.ColorResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
+import com.example.baygo.db.dto.response.product.ProductGetByIdResponse;
+import com.example.baygo.db.dto.response.product.SizeResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,7 +48,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
-                             join sellers sel on pr.seller_id = sel.id
+                             join sellers sel on pr.seller_id = serial
                              %s
                     where sel.id = ? %s
                     order by pr.date_of_change desc
@@ -54,7 +59,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                    s.id,
                    s.size,
                    s.barcode,
-                   s.quantity
+                   s.fbs_quantity
                 from sizes s
                 where s.sub_product_id = ?
                 """;
@@ -118,4 +123,73 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 .currentPage(page)
                 .build();
     }
-}
+
+    @Override
+    public ProductGetByIdResponse getById(Long id, Long subProductId) {
+        String query = """
+                    SELECT sp.id as subProductId, p.name,  sp.color, p.brand, sp.price, sp.articul_of_seller, p.description,
+                        COUNT(r.id) as amountOfReviews,
+                           COALESCE(SUM(r.amount_of_like), 0) as totalLikes,
+                           COALESCE(AVG(r.grade), 0) as averageRating
+                    FROM sub_products sp
+                    JOIN products p on sp.product_id = p.id 
+                    LEFT JOIN reviews r ON p.id = r.product_id
+                    WHERE sp.id = ?
+                    GROUP BY sp.id, sp.color, sp.price,p.name, p.brand, sp.price, sp.articul_of_seller, p.description
+                """;
+        Object[] params = {subProductId};
+
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query, params);
+        if (rows.isEmpty()) {
+            return null;
+        }
+
+        Map<String, Object> row = rows.get(0);
+        Long subProductId1 = (Long) row.get("subProductId");
+        String name = (String) row.get("name");
+        String color = (String) row.get("color");
+        String brand = (String) row.get("brand");
+        BigDecimal price = (BigDecimal) row.get("price");
+        String articul = (String) row.get("articul_of_seller");
+        String description = (String) row.get("description");
+        double rating = ((BigDecimal) row.get("averageRating")).doubleValue();
+        int amountOfReviews = ((Number) row.get("amountOfReviews")).intValue();
+        int totalLikes = rows.stream()
+                .mapToInt(r -> ((Number) r.get("totalLikes")).intValue())
+                .sum();
+
+        int percentageOfLikes = 0;
+        if (totalLikes != 0) {
+            percentageOfLikes = Math.round((float) totalLikes / totalLikes * 100);
+        }
+
+        String colorQuery = """
+                    SELECT sp.color, sp.color_hex_code
+                    FROM sub_products sp
+                    WHERE sp.product_id = ?
+                """;
+
+        List<ColorResponse> colorResponses = jdbcTemplate.query(colorQuery, params, (rs, rowNum) -> {
+            String colorHex = rs.getString("color_hex_code");
+            String color1 = rs.getString("color");
+            return new ColorResponse(colorHex, color1);
+        });
+
+
+        String sizeQuery = """
+                    SELECT   s.size
+                    FROM sub_products sp
+                    JOIN sizes s ON sp.id = s.sub_product_id
+                    WHERE sp.id= ?
+                """;
+
+        List<SizeResponse> sizeResponses = jdbcTemplate.query(sizeQuery, params, (rs, rowNum) -> {
+            String size = rs.getString("size");
+
+            return new SizeResponse(size);
+        });
+
+
+        return new ProductGetByIdResponse(subProductId1, name, color, articul, brand, price, rating, amountOfReviews, percentageOfLikes, colorResponses, sizeResponses, description);
+    }
+    }

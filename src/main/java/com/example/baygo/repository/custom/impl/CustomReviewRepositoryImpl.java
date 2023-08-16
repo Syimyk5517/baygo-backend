@@ -3,13 +3,20 @@ package com.example.baygo.repository.custom.impl;
 import com.example.baygo.db.dto.response.GetAllReviewsResponse;
 import com.example.baygo.db.dto.response.PaginationReviewResponse;
 import com.example.baygo.db.dto.response.ReviewResponse;
+import com.example.baygo.db.dto.response.product.ImagesResponse;
+import com.example.baygo.db.dto.response.product.RatingResponse;
+import com.example.baygo.db.dto.response.product.ReviewForProduct;
+import com.example.baygo.db.dto.response.product.ReviewGetByIdResponse;
 import com.example.baygo.repository.custom.CustomReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Array;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -111,7 +118,7 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
                     where p.seller_id = ?
                     order by r.date_and_time desc limit 4
                 """;
-        return jdbcTemplate.query(sql, (resultSet, i)-> new GetAllReviewsResponse(
+        return jdbcTemplate.query(sql, (resultSet, i) -> new GetAllReviewsResponse(
                 resultSet.getLong("id"),
                 resultSet.getString("image"),
                 resultSet.getInt("grade"),
@@ -119,4 +126,90 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
                 resultSet.getDate("dateAndTime").toLocalDate()
         ), sellerId);
     }
+
+    @Override
+    public ReviewGetByIdResponse getAllReviewsOfProduct(Long subProductId, boolean withImages) {
+        String query = """
+                SELECT round(avg(r.grade)) as totalRating
+                FROM reviews r
+                JOIN products p on p.id = r.product_id
+                JOIN sub_products sp on p.id = sp.product_id
+                WHERE sp.id = ?""";
+
+        return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+            double rating = rs.getDouble("totalRating");
+
+            String sql = """
+                        SELECT grade, COUNT(*) * 100 / SUM(COUNT(*)) OVER () AS percentage
+                        FROM reviews  r
+                        JOIN products p on p.id = r.product_id
+                        JOIN sub_products sp on p.id = sp.product_id
+                        WHERE sp.id = ?
+                        GROUP BY grade ORDER BY grade DESC
+                    """;
+            List<RatingResponse> ratingResponses = jdbcTemplate.query(sql, (resultSet, row) -> {
+                int grade = resultSet.getInt("grade");
+                int percentage = resultSet.getInt("percentage");
+                return new RatingResponse(grade, percentage);
+            }, subProductId);
+
+            String imageQuery = """
+                        SELECT r.id as imageId, ri.images 
+                        FROM reviews r
+                        JOIN review_images ri ON r.id = ri.review_id 
+                        JOIN products p on p.id = r.product_id
+                        JOIN sub_products sp on p.id = sp.product_id
+                        WHERE sp.id = ?
+                    """;
+
+            List<ImagesResponse> images = jdbcTemplate.query(imageQuery, (r, rowN) -> {
+                Long imageId = r.getLong("imageId");
+                String imageUrl = r.getString("images");
+                return new ImagesResponse(imageId, imageUrl);
+            }, subProductId);
+
+            String reviewQuery = """
+                        SELECT r.id, r.date_and_time, r.text,
+                               b.full_name, b.photo,
+                               COALESCE(ri.images, ARRAY[]::text[]) as images
+                        FROM reviews r
+                        JOIN buyers b ON r.buyer_id = b.id
+                        JOIN users u ON b.user_id = u.id
+                        JOIN products p ON p.id = r.product_id
+                        JOIN sub_products sp ON p.id = sp.product_id
+                        LEFT JOIN (
+                            SELECT review_id, ARRAY_AGG(images) as images
+                            FROM review_images
+                            GROUP BY review_id
+                        ) ri ON r.id = ri.review_id
+                        WHERE sp.id = ?
+                        GROUP BY r.id, r.date_and_time, r.text, b.full_name, b.photo, ri.images
+                    """;
+
+            if (!withImages) {
+                reviewQuery += " HAVING  bool_or(ri.images IS NOT NULL)";
+            }
+
+            reviewQuery += " ORDER BY r.date_and_time DESC";
+
+            List<ReviewForProduct> reviewsResponse = jdbcTemplate.query(reviewQuery, (rs1, rowN) -> {
+                Long id = rs1.getLong("id");
+                LocalDate createdAt = rs1.getObject("date_and_time", LocalDate.class);
+                String description = rs1.getString("text");
+                String fullName = rs1.getString("full_name");
+                String photo = rs1.getString("photo");
+                Array imageArray = rs1.getArray("images");
+                String[] image = (String[]) imageArray.getArray();
+                return new ReviewForProduct(id, fullName, createdAt, photo, description, Arrays.asList(image).toString());
+            }, subProductId);
+
+            return ReviewGetByIdResponse.builder()
+                    .rating(rating)
+                    .ratings(ratingResponses)
+                    .images(images)
+                    .review(reviewsResponse)
+                    .build();
+        }, subProductId);
+    }
 }
+

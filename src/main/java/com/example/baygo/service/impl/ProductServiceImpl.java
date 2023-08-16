@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
             subProduct1.setImages(subProduct.images());
             subProduct1.setPrice(subProduct.price());
             subProduct1.setDescription(subProduct.description());
-            subProduct1.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
+            subProduct1.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
             subProduct1.setArticulOfSeller(subProduct.articulOfSeller());
             subProduct1.setProduct(product);
 
@@ -79,4 +79,6 @@ public class ProductServiceImpl implements ProductService {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return customProductRepository.getAll(sellerId, status, keyWord, page, size);
     }
+
+
 }

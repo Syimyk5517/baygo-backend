@@ -2,6 +2,7 @@ package com.example.baygo.api.buyer;
 
 import com.example.baygo.db.dto.request.ReviewByBuyerRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.product.ReviewGetByIdResponse;
 import com.example.baygo.service.ReviewByBuyerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,5 +24,11 @@ public class ReviewByBuyerApi {
     @PreAuthorize("hasAuthority('BUYER')")
     public SimpleResponse saveReview(@RequestBody @Valid ReviewByBuyerRequest request){
         return service.saveReview(request);
+    }
+    @Operation(summary = "Get all reviews by sub product_id")
+    @GetMapping("/subProductId")
+    @PreAuthorize("hasAuthority('BUYER')")
+    public ReviewGetByIdResponse getReviewByProduct(@RequestParam Long subProductId, @RequestParam(required = false) boolean withImages){
+        return service.getAllReviewByProduct(subProductId,withImages);
     }
 }

@@ -11,4 +11,6 @@ public interface ProductService {
     SimpleResponse saveProduct(SellerProductRequest request);
 
     PaginationResponse<ProductResponseForSeller> findAll(String status, String keyWord, int page, int size);
+
+
 }

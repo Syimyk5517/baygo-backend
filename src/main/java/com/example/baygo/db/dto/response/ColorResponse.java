@@ -1,8 +1,10 @@
 package com.example.baygo.db.dto.response;
 
+import lombok.Builder;
+
 import java.util.ArrayList;
 import java.util.List;
-
+@Builder
 public record ColorResponse(
         String hexCode,
         String name
