@@ -26,6 +26,12 @@ public record SellerSubProductRequest(
         String description,
         @NotBlank(message = "Артикул продавца должен быть указан!!!")
         String articulOfSeller,
+        @NotNull(message = "Высота товара должна быть указана")
+        int height,
+        @NotNull(message = "Ширина товара должна быть указана")
+        int width,
+        @NotNull(message = "Вес товара должна быть указана")
+        int weight,
         @Valid
         @NotEmpty(message = "Размеры не должны быть пустыми!!!")
         List<SellerSizeRequest>sizes

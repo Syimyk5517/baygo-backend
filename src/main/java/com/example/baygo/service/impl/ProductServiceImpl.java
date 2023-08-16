@@ -61,6 +61,9 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setDescription(subProduct.description());
             newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
+            newSubProduct.setHeight(subProduct.height());
+            newSubProduct.setWidth(subProduct.width());
+            newSubProduct.setWeight(subProduct.weight());
             newSubProduct.setProduct(product);
 
             for (SellerSizeRequest size : subProduct.sizes()) {
