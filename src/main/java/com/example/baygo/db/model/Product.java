@@ -38,9 +38,6 @@ public class Product {
     private SubCategory subCategory;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Review> reviews;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<SubProduct> subProducts;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})

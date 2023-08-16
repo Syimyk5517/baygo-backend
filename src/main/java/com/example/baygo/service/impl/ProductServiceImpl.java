@@ -52,33 +52,31 @@ public class ProductServiceImpl implements ProductService {
         product.setSeller(jwtService.getAuthenticate().getSeller());
 
         for (SellerSubProductRequest subProduct : request.subProducts()) {
-            SubProduct subProduct1 = new SubProduct();
-            subProduct1.setColorHexCode(subProduct.colorHexCode());
-            subProduct1.setColor(subProduct.color());
-            subProduct1.setMainImage(subProduct.mainImage());
-            subProduct1.setImages(subProduct.images());
-            subProduct1.setPrice(subProduct.price());
-            subProduct1.setDescription(subProduct.description());
-            subProduct1.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
-            subProduct1.setArticulOfSeller(subProduct.articulOfSeller());
-            subProduct1.setProduct(product);
+            SubProduct newSubProduct = new SubProduct();
+            newSubProduct.setColorHexCode(subProduct.colorHexCode());
+            newSubProduct.setColor(subProduct.color());
+            newSubProduct.setMainImage(subProduct.mainImage());
+            newSubProduct.setImages(subProduct.images());
+            newSubProduct.setPrice(subProduct.price());
+            newSubProduct.setDescription(subProduct.description());
+            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
+            newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
+            newSubProduct.setProduct(product);
 
             for (SellerSizeRequest size : subProduct.sizes()) {
-                Size size1 = new Size();
-                size1.setSize(size.size());
-                size1.setBarcode(size.barcode());
-                size1.setSubProduct(subProduct1);
-                sizeRepository.save(size1);
+                Size newSize = new Size();
+                newSize.setSize(size.size());
+                newSize.setBarcode(size.barcode());
+                newSize.setSubProduct(newSubProduct);
+                sizeRepository.save(newSize);
             }
         }
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Продукт успешно сохранено!!!").build();
     }
 
     @Override
-    public PaginationResponse<ProductResponseForSeller> findAll(String status, String keyWord, int page, int size) {
+    public PaginationResponse<ProductResponseForSeller> findAll(Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        return customProductRepository.getAll(sellerId, status, keyWord, page, size);
+        return customProductRepository.getAll(sellerId, categoryId, keyWord, sortBy, ascending, page, size);
     }
-
-
 }

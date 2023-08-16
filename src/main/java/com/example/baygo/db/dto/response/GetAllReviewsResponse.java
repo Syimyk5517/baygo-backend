@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class GetAllReviewsResponse {
-    private Long id;
-    private String images;
+    private Long reviewId;
+    private String productImage;
     private int grade;
-    private String text;
+    private String comment;
     private LocalDate dateAndTime;
 }
