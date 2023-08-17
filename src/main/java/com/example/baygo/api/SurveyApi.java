@@ -21,9 +21,8 @@ public class SurveyApi {
     @Operation(summary = "Create survey ", description = "This method create survey.")
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public SimpleResponse createSurvey(@RequestBody SurveyRequest surveyRequest,
-                                        @RequestParam SurveyType surveyType){
-        return surveyService.createSurvey(surveyRequest, surveyType);
+    public SimpleResponse createSurvey(@RequestBody SurveyRequest surveyRequest){
+        return surveyService.createSurvey(surveyRequest);
     }
 
     @Operation(summary = "Get survey from buyers", description = "This method get survey from buyers.")

@@ -4,9 +4,9 @@ import com.example.baygo.db.model.Survey;
 import com.example.baygo.db.model.enums.SurveyType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
-        Optional<Survey> getSurveyBySurveyType(SurveyType surveyType);
+        List<Survey> getSurveyBySurveyType(SurveyType surveyType);
 
 }

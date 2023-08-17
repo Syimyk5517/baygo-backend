@@ -30,10 +30,11 @@ public class SurveyServiceImpl implements SurveyService {
     private final AnswerRepository answerRepository;
 
     @Override
-    public SimpleResponse createSurvey(SurveyRequest request, SurveyType surveyType) {
+    public SimpleResponse createSurvey(SurveyRequest request) {
 
-        Survey survey = surveyRepository.getSurveyBySurveyType(surveyType)
-                .orElseThrow(()-> new NotFoundException("Question with type " + surveyType + " not found"));
+        Survey survey = new Survey();
+        survey.setSurveyType(request.getSurveyType());
+        survey.setTitle(request.getTitle());
 
         for (QuestionRequest questionRequest : request.getQuestionRequests()) {
             Question question = new Question();
@@ -46,7 +47,7 @@ public class SurveyServiceImpl implements SurveyService {
                 option.setQuestion(question);
                 optionRepository.save(option);
             }
-            survey.getQuestions().add(question);
+            survey.addQuestion(question);
             question.setSurvey(survey);
         }
 
@@ -59,10 +60,11 @@ public class SurveyServiceImpl implements SurveyService {
 
         List<SurveyQuestionResponse> surveyQuestionResponses = new ArrayList<>();
 
-        Survey surveyBySurveyType = surveyRepository.getSurveyBySurveyType(surveyType)
-                .orElseThrow(()-> new NotFoundException("Question with type " + surveyType + " not found"));
+        List<Survey> surveysBySurveyType = surveyRepository.getSurveyBySurveyType(surveyType);
 
-        for (Question question : surveyBySurveyType.getQuestions()) {
+        Survey survey = surveysBySurveyType.get(surveysBySurveyType.size()-1);
+
+        for (Question question : survey.getQuestions()) {
             SurveyQuestionResponse surveyQuestionResponse = new SurveyQuestionResponse();
             surveyQuestionResponse.setTitle(question.getTitle());
             surveyQuestionResponse.setQuestionId(question.getId());
