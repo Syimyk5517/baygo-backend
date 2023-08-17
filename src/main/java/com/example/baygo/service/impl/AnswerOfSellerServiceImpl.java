@@ -2,10 +2,10 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
+import com.example.baygo.db.dto.request.QuestionOfSellerUpdateRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.BuyerQuestion;
-import com.example.baygo.db.model.Seller;
 import com.example.baygo.repository.QuestionOfBuyerRepository;
 import com.example.baygo.repository.custom.CustomAnswerOfSellerRepository;
 import com.example.baygo.service.AnswerOfSellerService;
@@ -46,5 +46,17 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     public List<QuestionForSellerLandingResponse> getAllQuestionsForLandingOfSeller() {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return customAnswerOfSellerRepository.getAllQuestionsForSeller(sellerId);
+    }
+
+    @Override
+    public SimpleResponse questionUpdate(QuestionOfSellerUpdateRequest request) {
+        BuyerQuestion question = buyerQuestionRepository.findById(request.id()).orElseThrow(() -> new NotFoundException(String.format("Вопрос с идентификатором: " + request.id() + " не найден!")));
+        question.setAnswer(request.answer());
+        question.setCreatedAt(LocalDateTime.now());
+        buyerQuestionRepository.save(question);
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Successfully update!!!")
+                .build();
     }
 }
