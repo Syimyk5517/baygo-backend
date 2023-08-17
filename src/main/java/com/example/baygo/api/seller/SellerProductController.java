@@ -1,6 +1,6 @@
 package com.example.baygo.api.seller;
 
-import com.example.baygo.db.dto.request.ProductRequest;
+import com.example.baygo.db.dto.request.SellerProductRequest;
 import com.example.baygo.db.dto.response.ColorResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
@@ -26,7 +26,7 @@ public class SellerProductController {
 
     @Operation(summary = "Save the product", description = "This method saves the product")
     @PostMapping
-    public SimpleResponse saveProduct(@RequestBody @Valid ProductRequest productRequest) {
+    public SimpleResponse saveProduct(@RequestBody @Valid SellerProductRequest productRequest) {
         return productService.saveProduct(productRequest);
     }
 
@@ -36,19 +36,15 @@ public class SellerProductController {
         return ColorResponse.getColors();
     }
 
-    @Operation(summary = "Get barcode", description = "This method gets the barcode for saving products")
-    @GetMapping("/barcode")
-    public int getBarcode() {
-        return productService.getBarcode();
-    }
-
-    @Operation(summary = "Get all products", description = "This method gets all products of seller. Status: 'Все товары', 'В избранном', 'В корзине', 'Все акции'")
+    @Operation(summary = "Get all products", description = "This method gets all products of seller. The categoryId you can get on the SellerCategoryController. SortBy: dateOfChange, rating, quantity. Ascending: true, false")
     @GetMapping
     public PaginationResponse<ProductResponseForSeller> getAllProductForSeller(
-            @RequestParam(defaultValue = "Все товары") String status,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyWord,
+            @RequestParam(defaultValue = "dateOfChange") String sortBy,
+            @RequestParam(defaultValue = "false") boolean ascending,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "11") int size) {
-        return productService.findAll(status, keyWord, page, size);
+        return productService.findAll(categoryId, keyWord, sortBy, ascending, page, size);
     }
 }
