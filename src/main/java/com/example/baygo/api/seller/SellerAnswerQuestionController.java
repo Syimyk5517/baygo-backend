@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Seller answer question")
 @CrossOrigin(origins = "*", maxAge = 3600)
-//@PreAuthorize("hasAuthority('SELLER')")
+@PreAuthorize("hasAuthority('SELLER')")
 public class SellerAnswerQuestionController {
     private final AnswerOfSellerService answerOfSellerService;
 
