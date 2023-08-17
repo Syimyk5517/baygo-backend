@@ -8,7 +8,9 @@ import java.util.List;
 
 @Builder
 public record ProductGetByIdResponse(
+        Long productId,
         Long suProductId,
+        Long sizeId,
         String name,
         String color,
         String articul,

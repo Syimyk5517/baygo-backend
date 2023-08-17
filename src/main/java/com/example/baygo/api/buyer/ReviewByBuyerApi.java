@@ -19,16 +19,17 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewByBuyerApi {
     private final ReviewByBuyerService service;
 
-    @Operation(summary = "Save Review",description = "This method saves reviews which written by Buyer!")
+    @Operation(summary = "Save Review", description = "This method saves reviews which written by Buyer!")
     @PostMapping
     @PreAuthorize("hasAuthority('BUYER')")
-    public SimpleResponse saveReview(@RequestBody @Valid ReviewByBuyerRequest request){
+    public SimpleResponse saveReview(@RequestBody @Valid ReviewByBuyerRequest request) {
         return service.saveReview(request);
     }
+
     @Operation(summary = "Get all reviews by sub product_id")
     @GetMapping("/subProductId")
     @PreAuthorize("hasAuthority('BUYER')")
-    public ReviewGetByIdResponse getReviewByProduct(@RequestParam Long subProductId, @RequestParam(required = false) boolean withImages){
-        return service.getAllReviewByProduct(subProductId,withImages);
+    public ReviewGetByIdResponse getReviewByProduct(@RequestParam Long subProductId, @RequestParam(required = false) boolean withImages) {
+        return service.getAllReviewByProduct(subProductId, withImages);
     }
 }

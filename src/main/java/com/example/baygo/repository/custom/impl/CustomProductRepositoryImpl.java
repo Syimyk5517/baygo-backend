@@ -1,15 +1,20 @@
 package com.example.baygo.repository.custom.impl;
 
+import com.example.baygo.db.dto.response.ColorResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
+import com.example.baygo.db.dto.response.product.ProductGetByIdResponse;
+import com.example.baygo.db.dto.response.product.SizeResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -56,7 +61,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                    s.id,
                    s.size,
                    s.barcode,
-                   s.fbs_quantity
+                   s.quantity
                 from sizes s
                 where s.sub_product_id = ?
                 """;
@@ -138,15 +143,16 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     @Override
     public ProductGetByIdResponse getById(Long id, Long subProductId) {
         String query = """
-                    SELECT sp.id as subProductId, p.name,  sp.color, p.brand, sp.price, sp.articul_of_seller, p.description,
+                    SELECT sp.id as subProductId,p.id as productId,s.id as sizeId, p.name,  sp.color, p.brand, sp.price, sp.articul_of_seller, sp.description,
                         COUNT(r.id) as amountOfReviews,
                            COALESCE(SUM(r.amount_of_like), 0) as totalLikes,
                            COALESCE(AVG(r.grade), 0) as averageRating
                     FROM sub_products sp
+                    JOIN sizes s on sp.id = s.sub_product_id
                     JOIN products p on sp.product_id = p.id 
-                    LEFT JOIN reviews r ON p.id = r.product_id
+                    LEFT JOIN reviews r ON sp.id = r.sub_product_id
                     WHERE sp.id = ?
-                    GROUP BY sp.id, sp.color, sp.price,p.name, p.brand, sp.price, sp.articul_of_seller, p.description
+                    GROUP BY sp.id,p.id,s.id, sp.color, sp.price,p.name, p.brand, sp.price, sp.articul_of_seller, sp.description
                 """;
         Object[] params = {subProductId};
 
@@ -157,6 +163,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
         Map<String, Object> row = rows.get(0);
         Long subProductId1 = (Long) row.get("subProductId");
+        Long productId = (Long) row.get("productId");
+        Long sizeId = (Long) row.get("sizeId");
         String name = (String) row.get("name");
         String color = (String) row.get("color");
         String brand = (String) row.get("brand");
@@ -188,19 +196,21 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
 
         String sizeQuery = """
-                    SELECT   s.size
+                    SELECT s.id,  s.size
                     FROM sub_products sp
                     JOIN sizes s ON sp.id = s.sub_product_id
                     WHERE sp.id= ?
                 """;
 
         List<SizeResponse> sizeResponses = jdbcTemplate.query(sizeQuery, params, (rs, rowNum) -> {
+            Long sizeId1 = (Long) row.get("sizeId");
             String size = rs.getString("size");
 
-            return new SizeResponse(size);
+
+            return new SizeResponse(sizeId1,size);
         });
 
 
-        return new ProductGetByIdResponse(subProductId1, name, color, articul, brand, price, rating, amountOfReviews, percentageOfLikes, colorResponses, sizeResponses, description);
+        return new ProductGetByIdResponse(subProductId1,productId,sizeId, name, color, articul, brand, price, rating, amountOfReviews, percentageOfLikes, colorResponses, sizeResponses, description);
     }
-    }
+}

@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record SizeResponse(
+        Long sizeI,
         String size
 ) {
 }
