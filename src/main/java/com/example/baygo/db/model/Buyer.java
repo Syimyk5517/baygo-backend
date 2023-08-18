@@ -56,4 +56,8 @@ public class Buyer {
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void addBasket(Size size) {
+        basket.add(size);
+    }
 }
