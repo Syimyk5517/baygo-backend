@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record QuestionOfBuyerRequest(
         @NotNull(message = "Идентификатор продукта должен быть указан!!!")
-        Long productId,
+        Long subProductId,
         @NotBlank(message = "Необходимо указать имя!")
         @NameValid(message = "Имя должно содержать от 2 до 33 символов!")
         String name,

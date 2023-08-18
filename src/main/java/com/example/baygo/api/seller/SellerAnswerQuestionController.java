@@ -3,6 +3,7 @@ package com.example.baygo.api.seller;
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.PaginationReviewAndQuestionResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.AnswerOfSellerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,12 +28,14 @@ public class SellerAnswerQuestionController {
         return answerOfSellerService.addAnswer(request);
     }
 
-    @Operation(summary = "Get all questions!", description = "This method gets all questions!")
+    @Operation(summary = "Get all questions!", description = "This method gets all questions. IsAnswered: false - to get unanswered questions, true - to get archive of questions.")
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/questions")
-    public PaginationResponse<BuyerQuestionResponse> getQuestions(@RequestParam(required = false) String keyWord,
-                                                                  @RequestParam(required = false, defaultValue = "1") int page,
-                                                                  @RequestParam(required = false, defaultValue = "3") int pageSize) {
-        return answerOfSellerService.getAllQuestions(keyWord, page, pageSize);
+    public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getQuestions(
+            @RequestParam(defaultValue = "false") boolean isAnswered,
+            @RequestParam(required = false) String keyWord,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "6") int pageSize) {
+        return answerOfSellerService.getAllQuestions(isAnswered,keyWord, page, pageSize);
     }
 }
