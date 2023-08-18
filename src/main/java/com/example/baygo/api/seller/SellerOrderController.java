@@ -3,7 +3,7 @@ package com.example.baygo.api.seller;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
-import com.example.baygo.db.model.enums.Status;
+import com.example.baygo.db.model.enums.OrderStatus;
 import com.example.baygo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +26,7 @@ public class SellerOrderController {
     @Operation(summary = "Get all orders", description = "This method will get all orders and filter by status and keyword")
     public PaginationResponse<OrderResponse> getAllOrders(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) OrderStatus status,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {

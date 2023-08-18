@@ -32,10 +32,13 @@ public class Seller {
     @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;
 
-    @OneToMany(mappedBy = "seller",cascade = ALL)
+    @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Product> products;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "seller", cascade = ALL)
+    private List<FBSSupply> fbsSupplies;
 }
