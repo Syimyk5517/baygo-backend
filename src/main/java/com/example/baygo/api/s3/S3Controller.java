@@ -30,6 +30,7 @@ public class S3Controller {
     }
 
     @DeleteMapping
+    @Operation(summary = "Delete a file", description = "This method to delete a file from S3 bucket.")
     public ResponseEntity<Map<String, String>> deleteFile(@RequestParam("fileLink") String fileLink) {
         return ResponseEntity.ok(s3Service.deleteFile(fileLink));
     }
