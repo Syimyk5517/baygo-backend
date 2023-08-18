@@ -4,6 +4,7 @@ import com.example.baygo.validations.ImageUrlValid;
 import com.example.baygo.validations.ImageUrlsValid;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +27,14 @@ public record SellerSubProductRequest(
         String description,
         @NotBlank(message = "Артикул продавца должен быть указан!!!")
         String articulOfSeller,
+        @Positive(message = "Высота должен быть  положительным !")
+        int height,
+        @Positive(message = "Ширина должна быть положительным! ")
+        int width,
+        @Positive(message = "Длина должна быть положительным !")
+        int length,
+        @Positive(message = "Вес должен быть положительным !")
+        double weight,
         @Valid
         @NotEmpty(message = "Размеры не должны быть пустыми!!!")
         List<SellerSizeRequest>sizes
