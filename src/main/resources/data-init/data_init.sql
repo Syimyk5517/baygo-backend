@@ -134,40 +134,6 @@ VALUES (1, 'Курстан', 'Эркинбаев',
         'timur@gmail.com',
         '+996700987654', '715010');
 
-INSERT INTO orders(id, date_of_order, date_of_received, order_number,
-                   payment_type, status, total_price, with_delivery,
-                   buyer_id, customer_id)
-VALUES (1, '2022-12-30', '2023-01-23', '11',
-        'ONLINE_BY_CARD', 'CANCELED', 2000, TRUE, 2, 1),
-       (2, '2023-12-21', '2023-10-05', '22',
-        'OFFLINE_BY_CARD', 'DELIVERED', 4560, TRUE, 1, 2),
-       (3, '2023-02-11', '2023-03-05', '33',
-        'OFFLINE_BY_CASH', 'CANCELED', 1999, FALSE, 2, 3),
-       (4, '2023-01-15', '2023-02-12', '44',
-        'OFFLINE_BY_CASH', 'DELIVERED', 870, FALSE, 1, 4),
-       (5, '2023-02-01', '2023-02-05', '55',
-        'ONLINE_BY_CARD', 'DELIVERED', 3690, TRUE, 1, 5),
-       (6, '2023-05-24', '2023-05-29', '66',
-        'OFFLINE_BY_CARD', 'SHIPPED', 500, FALSE, 2, 6),
-       (7, '2023-04-10', '2023-05-09', '77',
-        'OFFLINE_BY_CASH', 'DELIVERED', 4500, FALSE, 1, 7),
-       (8, '2023-06-17', '2023-07-05', '71',
-        'ONLINE_BY_CARD', 'DELIVERED', 7700, TRUE, 1, 8),
-       (9, '2023-07-12', '2023-07-27', '23',
-        'OFFLINE_BY_CASH', 'DELIVERED', 50000, FALSE, 1, 9),
-       (10, '2023-01-29', '2023-03-05', '86',
-        'OFFLINE_BY_CARD', 'DELIVERED', 90000, TRUE, 1, 10),
-       (11, '2023-02-25', '2023-03-11', '12',
-        'ONLINE_BY_CARD', 'DELIVERED', 7890, FALSE, 1, 11),
-       (12, '2023-04-22', '2023-05-01', '22',
-        'OFFLINE_BY_CASH', 'SHIPPED', 1240, TRUE, 1, 12),
-       (13, '2023-07-11', '2023-09-05', '131',
-        'OFFLINE_BY_CARD', 'DELIVERED', 2900, FALSE, 1, 13),
-       (14, '2023-04-19', '2023-04-25', '28',
-        'ONLINE_BY_CARD', 'CANCELED', 5000, FALSE, 2, 14),
-       (15, '2023-06-06', '2023-07-07', '17',
-        'ONLINE_BY_CARD', 'SHIPPED', 9999, FALSE, 1, 15);
-
 INSERT INTO appeals(id, title, divide, detailed_appeal, buyer_id)
 VALUES (1,
         'Жалоба', 'Жалоба', 'Жалоба на качество услуг', 1),
@@ -588,6 +554,53 @@ VALUES (1,
        (70,
         8466, 130, 'большой', 30);
 
+INSERT INTO orders(id, date_of_order, order_number,
+                   payment_type, total_price, with_delivery,
+                   buyer_id, customer_id)
+VALUES (1, '2022-12-30', '11',
+        'ONLINE_BY_CARD', 2000, TRUE, 2, 1),
+       (2, '2023-12-21', '22',
+        'OFFLINE_BY_CARD', 4560, TRUE, 1, 2),
+       (3, '2023-02-11', '33',
+        'OFFLINE_BY_CASH', 1999, FALSE, 2, 3),
+       (4, '2023-01-15', '44',
+        'OFFLINE_BY_CASH', 870, FALSE, 1, 4),
+       (5, '2023-02-01', '55',
+        'ONLINE_BY_CARD', 3690, TRUE, 1, 5),
+       (6, '2023-05-24', '66',
+        'OFFLINE_BY_CARD', 500, FALSE, 2, 6),
+       (7, '2023-04-10', '77',
+        'OFFLINE_BY_CASH', 4500, FALSE, 1, 7),
+       (8, '2023-06-17', '71',
+        'ONLINE_BY_CARD', 7700, TRUE, 1, 8),
+       (9, '2023-07-12', '23',
+        'OFFLINE_BY_CASH', 50000, FALSE, 1, 9),
+       (10, '2023-01-29', '86',
+        'OFFLINE_BY_CARD', 90000, TRUE, 1, 10),
+       (11, '2023-02-25', '12',
+        'ONLINE_BY_CARD', 7890, FALSE, 1, 11),
+       (12, '2023-04-22', '22',
+        'OFFLINE_BY_CASH', 1240, TRUE, 1, 12),
+       (13, '2023-07-11', '131',
+        'OFFLINE_BY_CARD', 2900, FALSE, 1, 13),
+       (14, '2023-04-19', '28',
+        'ONLINE_BY_CARD', 5000, FALSE, 2, 14),
+       (15, '2023-06-06', '17',
+        'ONLINE_BY_CARD', 9999, FALSE, 1, 15);
+
+INSERT INTO fbs_supplies (id, name, created_at, received_at, quantity_of_products, qr_code, fbs_supply_status, seller_id)
+VALUES (1, 'Supply 1', NOW(), NOW(), 100, '123456', 'RECEIVED', 1);
+
+
+INSERT INTO orders_sizes (id, quantity, order_status, date_of_received, qr_code, order_id, size_id, fbs_supply_id)
+VALUES (1, 2, 'PENDING', NOW(), '456789', 1, 1, 1);
+
+INSERT INTO returns (id, reason, country, city, address, postal_code, phone_number, date_of_return)
+VALUES (1, 'Product damaged', 'USA', 'New York', '123 Main St', 10001, '555-1234', '2023-08-16 10:00:00');
+
+INSERT INTO return_images (return_id, images)
+VALUES (1, 'image1.jpg');
+
 INSERT INTO buyers_baskets(buyer_id, sub_products_size_id)
 VALUES (1, 1),
        (1, 2),
@@ -774,22 +787,6 @@ VALUES (1,
         'Новые товары', 'https://cdn.esputnik.com/photos/shares/EmailExamples/8%20march%20RU%20(8).jpg',
         'Трендовые новинки: узнайте о наших последних товарах', '2023-06-29', '2023-07-30');
 
-INSERT INTO orders_sizes(order_id, product_count, size_id)
-VALUES (1, 100, 1),
-       (2, 240, 2),
-       (3, 699, 3),
-       (4, 349, 4),
-       (5, 793, 5),
-       (6, 111, 6),
-       (7, 24, 7),
-       (8, 49, 8),
-       (9, 39, 9),
-       (10, 493, 10),
-       (11, 100, 11),
-       (12, 2670, 12),
-       (13, 299, 13),
-       (14, 349, 14),
-       (15, 563, 15);
 
 INSERT INTO reviews(id, amount_of_like, answer, date_and_time, grade, text, buyer_id, sub_product_id)
 VALUES (1, 50, 'В наличии есть размер М?', '2023-07-13 12:00:00', 5,
@@ -865,9 +862,3 @@ VALUES (1, 'Новая коллекция',
        (5, 'Коллекция',
         'Запуск новой категории: Мы добавили новую категорию "Эксклюзивные коллекции". Приглашаем всех продавцов представить свои уникальные дизайны и стильные модели',
         '2023-07-25');
-
-
-
-
-
-
