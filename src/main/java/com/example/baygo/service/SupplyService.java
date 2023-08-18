@@ -27,15 +27,24 @@ public interface SupplyService {
     PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size);
 
     List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
+
     List<SupplyLandingPage> getAllSupplyForLanding();
+
     PaginationResponse<DeliveryDraftResponse> getDeliveryDrafts(int pageSize, int page);
+
     SimpleResponse deleteDeliveryDraft(Long supplyId);
-    PaginationResponse<SupplySellerProductResponse> getSellerProducts(Integer searchWithBarcode, String searchWithCategory,
-                                                                      String searchWithBrand, int page, int pageSize);
+
+    PaginationResponse<SupplySellerProductResponse> getSellerProducts(String searchWithBarcode, String category,
+                                                                      String brand, int page, int pageSize);
+
     List<WarehouseResponse> getAllWareHouses();
+
     SimpleResponse createSupply(SupplyRequest supplyRequest);
+
     List<WarehouseCostResponse> getAllWarehouseCost(Long warehouseId, SupplyType supplyType);
+
     List<ProductBarcodeResponse> getAllBarcodeProducts(Long supplyId);
+
     SimpleResponse willCompleteTheDelivery(SupplyWrapperRequest supplyWrapperRequest);
 
 }

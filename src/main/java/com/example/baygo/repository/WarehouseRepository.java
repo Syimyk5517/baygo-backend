@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
-    @Query("SELECT new com.example.baygo.db.dto.response.WarehouseResponse(w.id,w.name) FROM Warehouse w")
+    @Query("SELECT new com.example.baygo.db.dto.response.supply.WarehouseResponse(w.id,w.name) FROM Warehouse w")
     List<WarehouseResponse> findAllWarehouses();
 }

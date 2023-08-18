@@ -100,12 +100,12 @@ public class SellerSupplyController {
 
     @Operation(summary = "Get Seller's All Products", description = "This method is used to get all seller's products from db")
     @GetMapping("/all-supplies")
-    public PaginationResponse<SupplySellerProductResponse> getAllSellerProducts(@RequestParam(required = false) Integer searchWithBarcode,
-                                                                                @RequestParam(required = false) String searchWithCategory,
-                                                                                @RequestParam(required = false) String searchWithBrand,
+    public PaginationResponse<SupplySellerProductResponse> getAllSellerProducts(@RequestParam(required = false) String searchWithBarcode,
+                                                                                @RequestParam(required = false) String category,
+                                                                                @RequestParam(required = false) String brand,
                                                                                 @RequestParam(defaultValue = "1") int page,
                                                                                 @RequestParam(defaultValue = "7") int pageSize) {
-        return service.getSellerProducts(searchWithBarcode, searchWithCategory, searchWithBrand, page, pageSize);
+        return service.getSellerProducts(searchWithBarcode, category, brand, page, pageSize);
     }
 
     @Operation(summary = "Get all warehouses", description = "This method returns all warehouses")
@@ -113,6 +113,7 @@ public class SellerSupplyController {
     List<WarehouseResponse> getAllWareHouses() {
         return service.getAllWareHouses();
     }
+
 
     @Operation(summary = "Choose products",
             description = "This method is for choosing products to send it to warehouse")
