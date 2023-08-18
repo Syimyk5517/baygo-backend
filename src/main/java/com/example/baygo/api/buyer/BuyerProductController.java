@@ -1,6 +1,7 @@
 package com.example.baygo.api.buyer;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.PaginationResponseWithQuantity;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,17 +24,17 @@ public class BuyerProductController {
     @Operation(summary = "Get all products.", description = "This method gets all products with filters and search.")
     @GetMapping
     @PermitAll
-    public PaginationResponse<ProductBuyerResponse> getAll(@RequestParam(required = false) String keyWord,
-                                                           @RequestParam(required = false) List<String> sizes,
-                                                           @RequestParam(required = false) List<String> compositions,
-                                                           @RequestParam(required = false) List<String> brands,
-                                                           @RequestParam(required = false) BigDecimal minPrice,
-                                                           @RequestParam(required = false) BigDecimal maxPrice,
-                                                           @RequestParam(required = false) List<String> colors,
-                                                           @RequestParam(required = false) String filterBy,
-                                                           @RequestParam(required = false) String sortBy,
-                                                           @RequestParam(required = false, defaultValue = "1") int page,
-                                                           @RequestParam(required = false, defaultValue = "16") int pageSize) {
+    public PaginationResponseWithQuantity<ProductBuyerResponse> getAll(@RequestParam(required = false) String keyWord,
+                                                                       @RequestParam(required = false) List<String> sizes,
+                                                                       @RequestParam(required = false) List<String> compositions,
+                                                                       @RequestParam(required = false) List<String> brands,
+                                                                       @RequestParam(required = false) BigDecimal minPrice,
+                                                                       @RequestParam(required = false) BigDecimal maxPrice,
+                                                                       @RequestParam(required = false) List<String> colors,
+                                                                       @RequestParam(required = false) String filterBy,
+                                                                       @RequestParam(required = false) String sortBy,
+                                                                       @RequestParam(required = false, defaultValue = "1") int page,
+                                                                       @RequestParam(required = false, defaultValue = "16") int pageSize) {
         return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors,filterBy, sortBy, page, pageSize);
     }
 }

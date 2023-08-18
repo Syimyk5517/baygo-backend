@@ -4,9 +4,7 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.SellerProductRequest;
 import com.example.baygo.db.dto.request.SellerSizeRequest;
 import com.example.baygo.db.dto.request.SellerSubProductRequest;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.ProductResponseForSeller;
-import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Product;
 import com.example.baygo.db.model.Size;
@@ -90,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PaginationResponse<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
+    public PaginationResponseWithQuantity<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
                                                                         List<String> sizes,
                                                                         List<String> compositions,
                                                                         List<String> brands,
@@ -117,10 +115,10 @@ public class ProductServiceImpl implements ProductService {
         Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord,sizes, compositions, brands, colors,
                                                                     minPrice, maxPrice,filterBy, pageable);
 
-        return PaginationResponse.<ProductBuyerResponse>builder()
+        return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
                 .currentPage(allProducts.getNumber() + 1)
                 .totalPages(allProducts.getTotalPages())
-                .quantityOfProducts((int) allProducts.getTotalElements())
+                .quantityOfProduct((int) allProducts.getTotalElements())
                 .elements(allProducts.getContent())
                 .build();
     }

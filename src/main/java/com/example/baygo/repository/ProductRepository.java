@@ -17,12 +17,12 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.ProductBuyerResponse(
-               s.id,sp.id,p.id,sp.mainImage, p.name, p.description,
+               s.id,sp.id,p.id,sp.mainImage, p.name, sp.description,
                p.rating,count(r),sp.price, coalesce(d.percent, 0))
                         FROM Product p
                         JOIN SubProduct sp ON p.id = sp.product.id
                         JOIN Size s ON sp.id = s.subProduct.id
-                        LEFT JOIN Review r ON p.id = r.product.id
+                        LEFT JOIN Review r ON sp.id = r.subProduct.id
                         LEFT JOIN Discount d ON sp.discount.id = d.id
                         WHERE (:keyWord IS NULL OR p.name iLIKE LOWER(CONCAT('%', :keyWord, '%')))
                         AND ('' IN :sizes OR s.size IN (:sizes))
@@ -32,13 +32,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         AND (:minPrice IS NULL OR sp.price >= :minPrice)
                         AND (:maxPrice IS NULL OR sp.price <= :maxPrice)
                         AND ((:filterBy = 'Новинки' AND p.dateOfCreate >= CURRENT_DATE - 7)
-                        OR (:filterBy = 'Все акции' AND d.percent > 0)
-                        OR (:filterBy = 'Бестселлеры' AND s.id IN
-                          (SELECT s.id FROM Order o WHERE KEY(o.productCount).id = s.id
-                           AND (SELECT SUM(VALUE(o2.productCount) ) FROM Order o2 WHERE KEY(o2.productCount).id = s.id)> 20
-                           AND o.status <> 'CANCELED' AND o.dateOfOrder >= CURRENT_DATE - 7))
-                        OR (:filterBy IS NULL))
-                        GROUP BY s.id, sp.id, s.id, p.id, p.name, p.description, p.rating, sp.price, coalesce(d.percent, 0)
+                         OR (:filterBy = 'Все акции' AND d.percent > 0)
+                         OR (:filterBy = 'Бестселлеры' AND s.id IN
+                           (SELECT o.size.id FROM OrderSize o WHERE o.size.id = s.id
+                           AND (SELECT SUM(o.quantity) FROM OrderSize o WHERE o.size.id = s.id ) > 20
+                           AND o.orderStatus <> 'CANCELED' AND o.order.dateOfOrder >= CURRENT_DATE - 7))
+                         OR (:filterBy IS NULL))
+                       GROUP BY s.id, sp.id, s.id, p.id, p.name, sp.description, p.rating, sp.price, coalesce(d.percent, 0)
             """)
     Page<ProductBuyerResponse> finds(String keyWord,
                                      List<String> sizes,
