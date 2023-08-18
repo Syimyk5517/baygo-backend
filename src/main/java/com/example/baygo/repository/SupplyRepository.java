@@ -41,7 +41,7 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
                         JOIN Size s ON sub.id = s.subProduct.id
                         JOIN Seller seller ON p.seller.id = seller.id
                         WHERE seller.id = :sellerId
-                        AND (CAST(s.barcode AS string ) iLIKE CONCAT(:searchWithBarcode,"%" )
+                        AND (CAST(s.barcode AS string ) iLIKE CONCAT("%",:searchWithBarcode)
                         OR (:searchWithBarcode IS NULL ))
                         AND (:category IS NULL OR sc.name = :category)
                         AND (:brand IS NULL OR p.brand = :brand)
