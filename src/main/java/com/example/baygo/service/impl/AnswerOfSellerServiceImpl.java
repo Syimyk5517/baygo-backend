@@ -2,14 +2,11 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
-import com.example.baygo.db.dto.response.BuyerQuestionResponse;
-import com.example.baygo.db.dto.response.QuestionForSellerLandingResponse;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.BuyerQuestion;
 import com.example.baygo.db.model.Seller;
-import com.example.baygo.repository.BuyerQuestionRepository;
+import com.example.baygo.repository.QuestionOfBuyerRepository;
 import com.example.baygo.repository.custom.CustomAnswerOfSellerRepository;
 import com.example.baygo.service.AnswerOfSellerService;
 import jakarta.transaction.Transactional;
@@ -24,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
-    private final BuyerQuestionRepository buyerQuestionRepository;
+    private final QuestionOfBuyerRepository buyerQuestionRepository;
     private final CustomAnswerOfSellerRepository customAnswerOfSellerRepository;
     private final JwtService jwtService;
 
@@ -33,14 +30,16 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
         BuyerQuestion question = buyerQuestionRepository.findById(request.questionId()).orElseThrow(() -> new NotFoundException("Вопрос с идентификатором: " + request.questionId() + " не найден!"));
         question.setAnswer(request.answer());
         question.setReplyDate(LocalDateTime.now());
-        buyerQuestionRepository.save(question);
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Ответ успешно сохранено!").build();
     }
 
     @Override
-    public PaginationResponse<BuyerQuestionResponse> getAllQuestions(String keyWord, int page, int pageSize) {
-        Seller seller = jwtService.getAuthenticate().getSeller();
-        return customAnswerOfSellerRepository.getAllQuestions(keyWord,page,pageSize, seller.getId());
+    public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, String keyWord, int page, int pageSize) {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        PaginationReviewAndQuestionResponse<BuyerQuestionResponse> allQuestions = customAnswerOfSellerRepository.getAllQuestions(isAnswered, keyWord, page, pageSize, sellerId);
+        allQuestions.setCountOfUnanswered(buyerQuestionRepository.countOfUnansweredBySellerId(sellerId));
+        allQuestions.setCountOfArchive(buyerQuestionRepository.countOfAnsweredBySellerId(sellerId));
+        return allQuestions;
     }
 
     @Override

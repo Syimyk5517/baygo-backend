@@ -1,10 +1,11 @@
-package com.example.baygo.db.dto.response;
+package com.example.baygo.db.dto.response.orders;
 
-import com.example.baygo.db.model.enums.Status;
+import com.example.baygo.db.model.enums.OrderStatus;
 import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 public record OrderResponse(
@@ -13,7 +14,7 @@ public record OrderResponse(
         String firstName,
         BigDecimal productPrice,
         String productName,
-        LocalDate orderDate,
-        Status status
+        LocalDateTime orderDate,
+        OrderStatus status
 ) {
 }

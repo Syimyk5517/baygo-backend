@@ -7,13 +7,16 @@ public record ProductResponseForSeller(
         Long productId,
         Long subProductId,
         String image,
-        String vendorNumber,
-        String productArticle,
+        String articulOfSeller,
+        String articulBG,
         String product,
-        String brandName,
+        String brand,
         double rating,
         LocalDate dateOfChange,
         String color,
+        String size,
+        int barcode,
+        int quantity,
         List<SizeSellerResponse> sizes
 ) {
 }

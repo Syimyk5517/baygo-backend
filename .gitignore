@@ -40,6 +40,8 @@ src/main/resources/application-adil's.properties
 src/main/resources/application-bektursun.properties
 src/main/resources/application-jiide.properties
 src/main/resources/application-kurstan.yml
+src/main/resources/application-syimyk.properties
+src/main/resources/application-local.properties
 
 ### VS Code ###
 .vscode/

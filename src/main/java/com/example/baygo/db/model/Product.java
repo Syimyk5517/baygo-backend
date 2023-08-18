@@ -1,6 +1,5 @@
 package com.example.baygo.db.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,12 +25,9 @@ public class Product {
     private Long id;
     private String name;
     private String manufacturer;
-    private String description;
     private double rating;
     private LocalDate dateOfCreate;
     private LocalDate dateOfChange;
-    private String articul;
-    private String style;
     private String season;
     private String composition;
     private boolean isDraft;
@@ -41,11 +37,9 @@ public class Product {
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
 
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Review> reviews;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<SubProduct> subProducts;
+
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "seller_id")
     private Seller seller;
