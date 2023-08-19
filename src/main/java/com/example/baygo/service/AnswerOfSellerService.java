@@ -8,7 +8,7 @@ import java.util.List;
 public interface AnswerOfSellerService {
     SimpleResponse addAnswer(AnswerOfSellerRequest request);
 
-    PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, boolean ASC, String keyWord, int page, int pageSize);
+    PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, boolean ascending, String keyWord, int page, int pageSize);
 
     List<QuestionForSellerLandingResponse> getAllQuestionsForLandingOfSeller();
 }
