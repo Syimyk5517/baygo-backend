@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,6 +37,15 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = ALL)
     private Buyer buyer;
+    @OneToMany(mappedBy = "user", cascade = ALL)
+    private List<Chat> chats;
+
+    public void addChat(Chat chat) {
+        if (this.chats == null) {
+            this.chats = new ArrayList<>();
+        }
+        this.chats.add(chat);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
