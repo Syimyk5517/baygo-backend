@@ -2,7 +2,6 @@ package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
-import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.PaginationReviewAndQuestionResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.AnswerOfSellerService;
@@ -33,9 +32,10 @@ public class SellerAnswerQuestionController {
     @GetMapping("/questions")
     public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getQuestions(
             @RequestParam(defaultValue = "false") boolean isAnswered,
+            @RequestParam(defaultValue = "false") boolean ascending,
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "6") int pageSize) {
-        return answerOfSellerService.getAllQuestions(isAnswered,keyWord, page, pageSize);
+        return answerOfSellerService.getAllQuestions(isAnswered, ascending, keyWord, page, pageSize);
     }
 }

@@ -11,6 +11,10 @@ import com.example.baygo.repository.custom.CustomAnswerOfSellerRepository;
 import com.example.baygo.service.AnswerOfSellerService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -34,12 +38,23 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     }
 
     @Override
-    public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, String keyWord, int page, int pageSize) {
+    public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, boolean ascending, String keyWord, int page, int pageSize) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        PaginationReviewAndQuestionResponse<BuyerQuestionResponse> allQuestions = customAnswerOfSellerRepository.getAllQuestions(isAnswered, keyWord, page, pageSize, sellerId);
-        allQuestions.setCountOfUnanswered(buyerQuestionRepository.countOfUnansweredBySellerId(sellerId));
-        allQuestions.setCountOfArchive(buyerQuestionRepository.countOfAnsweredBySellerId(sellerId));
-        return allQuestions;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, ascending ? Sort.by("createdAt").ascending() : Sort.by("createdAt").descending());
+
+        Page<BuyerQuestionResponse> allQuestions = buyerQuestionRepository.getAllQuestions(sellerId, isAnswered, keyWord, pageable);
+        int countOfUnanswered = buyerQuestionRepository.countOfUnansweredBySellerId(sellerId);
+        int countOfArchive = buyerQuestionRepository.countOfAnsweredBySellerId(sellerId);
+
+        PaginationReviewAndQuestionResponse<BuyerQuestionResponse> response = PaginationReviewAndQuestionResponse.<BuyerQuestionResponse>builder()
+                .countOfUnanswered(countOfUnanswered)
+                .countOfArchive(countOfArchive)
+                .elements(allQuestions.getContent())
+                .currentPage(allQuestions.getNumber() + 1)
+                .totalPages(allQuestions.getTotalPages())
+                .build();
+
+        return response;
     }
 
     @Override
