@@ -1,7 +1,6 @@
 package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
-import com.example.baygo.db.dto.request.QuestionOfSellerUpdateRequest;
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
 import com.example.baygo.db.dto.response.PaginationReviewAndQuestionResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
@@ -32,18 +31,18 @@ public class SellerAnswerQuestionController {
     @GetMapping("/questions")
     public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getQuestions(
             @RequestParam(defaultValue = "false") boolean isAnswered,
-            @RequestParam(defaultValue = "false") boolean ascending,
+            @RequestParam(defaultValue = "false") boolean ASC,
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "6") int pageSize) {
-        return answerOfSellerService.getAllQuestions(isAnswered, keyWord, page, pageSize);
+        return answerOfSellerService.getAllQuestions(isAnswered,ASC, keyWord, page, pageSize);
     }
 
     @PutMapping("/update")
     @Operation(summary = "Update seller's question",
             description = "Allows sellers to modify details of a question from a buyer. " +
                     "Text, status, and answer can be changed. Updated question is saved.")
-    public SimpleResponse questionUpdate(@RequestBody QuestionOfSellerUpdateRequest request) {
+    public SimpleResponse questionUpdate(@RequestBody AnswerOfSellerRequest request) {
         return answerOfSellerService.questionUpdate(request);
     }
 }
