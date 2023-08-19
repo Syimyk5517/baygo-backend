@@ -4,14 +4,13 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.SellerProductRequest;
 import com.example.baygo.db.dto.request.SellerSizeRequest;
 import com.example.baygo.db.dto.request.SellerSubProductRequest;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.ProductResponseForSeller;
-import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Product;
 import com.example.baygo.db.model.Size;
 import com.example.baygo.db.model.SubCategory;
 import com.example.baygo.db.model.SubProduct;
+import com.example.baygo.repository.ProductRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.SubCategoryRepository;
 import com.example.baygo.repository.custom.CustomProductRepository;
@@ -19,10 +18,13 @@ import com.example.baygo.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     private final SizeRepository sizeRepository;
     private final JwtService jwtService;
     private final CustomProductRepository customProductRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public SimpleResponse saveProduct(SellerProductRequest request) {
@@ -83,4 +86,45 @@ public class ProductServiceImpl implements ProductService {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return customProductRepository.getAll(sellerId, categoryId, keyWord, sortBy, ascending, page, size);
     }
+
+    @Override
+    public PaginationResponseWithQuantity<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
+                                                                        List<String> sizes,
+                                                                        List<String> compositions,
+                                                                        List<String> brands,
+                                                                        BigDecimal minPrice,
+                                                                        BigDecimal maxPrice,
+                                                                        List<String> colors,
+                                                                        String filterBy,
+                                                                        String sortBy,
+                                                                        int page,
+                                                                        int pageSize) {
+
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(
+                sortBy == null || sortBy.isEmpty() ? Sort.Order.desc("rating") :
+                sortBy.equalsIgnoreCase("По увеличению цены") ? Sort.Order.asc("sp.price") :
+                        sortBy.equalsIgnoreCase("По уменьшению цены") ? Sort.Order.desc("sp.price") :
+                                Sort.Order.desc("rating")
+        ));
+
+        sizes = getDefaultIfEmpty(sizes);
+        compositions = getDefaultIfEmpty(compositions);
+        brands = getDefaultIfEmpty(brands);
+        colors = getDefaultIfEmpty(colors);
+
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord,sizes, compositions, brands, colors,
+                                                                    minPrice, maxPrice,filterBy, pageable);
+
+        return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
+                .currentPage(allProducts.getNumber() + 1)
+                .totalPages(allProducts.getTotalPages())
+                .quantityOfProduct((int) allProducts.getTotalElements())
+                .elements(allProducts.getContent())
+                .build();
+    }
+
+    private List<String> getDefaultIfEmpty(List<String> list) {
+        return (list == null || list.isEmpty()) ? List.of("") : list;
+    }
+
 }
