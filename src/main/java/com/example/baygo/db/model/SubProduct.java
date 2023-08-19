@@ -32,6 +32,10 @@ public class SubProduct {
     private String description;
     private int articulBG;
     private String articulOfSeller;
+    private int height;
+    private int width;
+    private int length;
+    private double weight;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;

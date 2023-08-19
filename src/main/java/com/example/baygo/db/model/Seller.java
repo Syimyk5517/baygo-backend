@@ -38,6 +38,10 @@ public class Seller {
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToOne(cascade = ALL)
     private Chat chat;
+
+    @OneToMany(mappedBy = "seller", cascade = ALL)
+    private List<FBSSupply> fbsSupplies;
 }
