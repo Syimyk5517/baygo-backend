@@ -1,5 +1,6 @@
 package com.example.baygo.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,6 @@ public class Discount {
     private int percent;
     private LocalDateTime dateOfStart;
     private LocalDateTime dateOfFinish;
-
     @OneToMany(mappedBy = "discount", cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<SubProduct> subProducts;
 }

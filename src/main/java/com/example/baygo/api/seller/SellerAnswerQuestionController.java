@@ -32,6 +32,7 @@ public class SellerAnswerQuestionController {
     @GetMapping("/questions")
     public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getQuestions(
             @RequestParam(defaultValue = "false") boolean isAnswered,
+            @RequestParam(defaultValue = "false") boolean ascending,
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "6") int pageSize) {
