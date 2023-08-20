@@ -27,9 +27,8 @@ public class Survey {
 
     public void addQuestion(Question question){
         if (this.questions == null){
-            List<Question>questions1 = new ArrayList<>();
-            questions1.add(question);
-            questions = questions1;
-        }else questions.add(question);
+            this.questions = new ArrayList<>();
+        }
+        questions.add(question);
     }
 }
