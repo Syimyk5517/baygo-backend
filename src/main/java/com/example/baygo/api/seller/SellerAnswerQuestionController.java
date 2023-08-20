@@ -31,11 +31,11 @@ public class SellerAnswerQuestionController {
     @GetMapping("/questions")
     public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getQuestions(
             @RequestParam(defaultValue = "false") boolean isAnswered,
-            @RequestParam(defaultValue = "false") boolean ASC,
+            @RequestParam(defaultValue = "false") boolean ascending,
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "6") int pageSize) {
-        return answerOfSellerService.getAllQuestions(isAnswered,ASC, keyWord, page, pageSize);
+        return answerOfSellerService.getAllQuestions(isAnswered,ascending, keyWord, page, pageSize);
     }
 
     @PutMapping("/update")

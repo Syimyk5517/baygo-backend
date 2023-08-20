@@ -69,7 +69,7 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
         question.setReplyDate(LocalDateTime.now());
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
-                .message("Вопрос с идентификатором: " + request.questionId() + " не найден!")
+                .message("Вопрос с идентификатором: " + request.questionId() + " успешно обновлен!")
                 .build();
     }
 }
