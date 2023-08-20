@@ -17,18 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Seller answer question")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAuthority('SELLER')")
 public class SellerAnswerQuestionController {
     private final AnswerOfSellerService answerOfSellerService;
 
     @Operation(summary = "Save answer!", description = "This method saves answer for question!")
     @PostMapping
-    @PreAuthorize("hasAuthority('SELLER')")
     public SimpleResponse saveAnswer(@Valid @RequestBody AnswerOfSellerRequest request) {
         return answerOfSellerService.addAnswer(request);
     }
 
     @Operation(summary = "Get all questions!", description = "This method gets all questions. IsAnswered: false - to get unanswered questions, true - to get archive of questions.")
-    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/questions")
     public PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getQuestions(
             @RequestParam(defaultValue = "false") boolean isAnswered,
@@ -36,6 +35,14 @@ public class SellerAnswerQuestionController {
             @RequestParam(required = false) String keyWord,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "6") int pageSize) {
-        return answerOfSellerService.getAllQuestions(isAnswered, ascending, keyWord, page, pageSize);
+        return answerOfSellerService.getAllQuestions(isAnswered,ascending, keyWord, page, pageSize);
+    }
+
+    @PutMapping("/update")
+    @Operation(summary = "Update seller's question",
+            description = "Allows sellers to modify details of a question from a buyer. " +
+                    "Text, status, and answer can be changed. Updated question is saved.")
+    public SimpleResponse questionUpdate(@RequestBody AnswerOfSellerRequest request) {
+        return answerOfSellerService.questionUpdate(request);
     }
 }
