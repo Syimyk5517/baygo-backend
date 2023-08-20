@@ -1,11 +1,13 @@
 package com.example.baygo.db.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 
 public record SellerSizeRequest(
         @NotNull(message = "Размер должен быть указан!!!")
         String size,
-        @NotNull(message = "Баркод должен быть указан!!!")
+        @Positive(message = "Баркод должен быть положительным !")
         int barcode
 ) {
 }
