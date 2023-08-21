@@ -1,12 +1,10 @@
 package com.example.baygo.db.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +23,7 @@ public class Return {
     private String reason;
     @ElementCollection
     @CollectionTable(name = "return_images", joinColumns = @JoinColumn(name = "return_id"))
-    @Value(value = "3000000")
+    @Column(length = 10000)
     private List<String> images;
     private String country;
     private String city;
