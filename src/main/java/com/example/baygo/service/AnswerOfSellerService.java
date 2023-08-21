@@ -11,4 +11,5 @@ public interface AnswerOfSellerService {
     PaginationReviewAndQuestionResponse<BuyerQuestionResponse> getAllQuestions(boolean isAnswered, boolean ascending, String keyWord, int page, int pageSize);
 
     List<QuestionForSellerLandingResponse> getAllQuestionsForLandingOfSeller();
+    SimpleResponse questionUpdate(AnswerOfSellerRequest request);
 }

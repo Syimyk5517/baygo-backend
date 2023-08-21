@@ -5,7 +5,6 @@ import com.example.baygo.db.dto.request.AnswerOfSellerRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.BuyerQuestion;
-import com.example.baygo.db.model.Seller;
 import com.example.baygo.repository.QuestionOfBuyerRepository;
 import com.example.baygo.repository.custom.CustomAnswerOfSellerRepository;
 import com.example.baygo.service.AnswerOfSellerService;
@@ -61,5 +60,16 @@ public class AnswerOfSellerServiceImpl implements AnswerOfSellerService {
     public List<QuestionForSellerLandingResponse> getAllQuestionsForLandingOfSeller() {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return customAnswerOfSellerRepository.getAllQuestionsForSeller(sellerId);
+    }
+
+    @Override
+    public SimpleResponse questionUpdate(AnswerOfSellerRequest request) {
+        BuyerQuestion question = buyerQuestionRepository.findById(request.questionId()).orElseThrow(() -> new NotFoundException(String.format("Вопрос с идентификатором: " + request.questionId() + " не найден!")));
+        question.setAnswer(request.answer());
+        question.setReplyDate(LocalDateTime.now());
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Вопрос с идентификатором: " + request.questionId() + " успешно обновлен!")
+                .build();
     }
 }
