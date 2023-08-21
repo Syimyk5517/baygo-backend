@@ -8,7 +8,7 @@ import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
-import com.example.baygo.db.model.enums.Status;
+import com.example.baygo.db.model.enums.OrderStatus;
 import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.repository.custom.CustomOrderRepository;
 import com.example.baygo.service.OrderService;
@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, Status status) {
+    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus status) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "dateOfOrder"));
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         Page<OrderResponse> orderResponses = orderRepository.getAllOrders(sellerId, keyword, status, pageable);

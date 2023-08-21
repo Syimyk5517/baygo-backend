@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('SELLER')")
 public class SellerSupplierController {
-
     private final SupplierService service;
 
     @Operation(summary = "Create the supplier", description = "This method creating the supplier")

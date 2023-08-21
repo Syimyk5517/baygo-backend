@@ -6,13 +6,14 @@ import java.time.LocalDate;
 
 @Builder
 public record BuyerQuestionResponse(
-        Long productId,
-        String buyerFullName,
-        String buyerProfileImage,
+        Long questionId,
+        Long subProductId,
         String productImage,
-        String question,
-        String productArticul,
         String productName,
-        LocalDate dateOfQuestion
+        String question,
+        String answer,
+        String articulOfSeller,
+        int articulBG,
+        String dateAndTime
 ) {
 }

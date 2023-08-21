@@ -4,6 +4,8 @@ import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,9 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
-    public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, String status, String keyWord, int page, int size) {
+    public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {
         String sql = """
                     with count_cte as (
                         select count(*) as total
@@ -30,22 +34,24 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                     )
                     select pr.id as product_id,
                            sp.id as sub_product_id,
-                           (select spi.images
-                           from sub_product_images spi
-                           where spi.sub_product_id = sp.id limit 1) as sub_product_photo,
-                           sel.vendor_number as vendor_number,
-                           pr.articul as product_articul,
-                           pr.name as product_name,
-                           pr.brand as product_brand,
-                           pr.rating as product_rating,
-                           pr.date_of_change as product_date_of_change,
-                           sp.color as sub_product_color,
+                           sp.main_image as sub_product_image,
+                           sp.articul_of_seller as articul_of_seller,
+                           sp.articulbg as articulbg,
+                           sc.name as product,
+                           pr.brand as brand,
+                           pr.rating as rating,
+                           pr.date_of_change as date_of_change,
+                           sp.color as color,
+                           (select s.size from sizes s where s.sub_product_id = sp.id limit 1) as size,
+                           (select s.barcode from sizes s where s.sub_product_id = sp.id limit 1) as barcode,
+                           (select s.quantity from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
                              join sellers sel on pr.seller_id = sel.id
-                             %s
-                    where sel.id = ? %s
+                             join sub_categories sc on pr.sub_category_id = sc.id
+                             join categories c on sc.category_id = c.id
+                    where sel.id = ? %s %s
                     order by pr.date_of_change desc
                 """;
 
@@ -58,13 +64,10 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 from sizes s
                 where s.sub_product_id = ?
                 """;
-
-        String sqlStatus = switch (status) {
-            case "В избранном" -> "join buyers_favorites bsp on sp.id = bsp.sub_products_id";
-            case "В корзине" -> "join buyers_baskets bsps on s.id = bsps.sub_products_size_id";
-            case "Все акции" -> "join discounts d on d.id = sp.discount_id";
-            default -> "";
-        };
+        String categoryCondition = "";
+        if (categoryId != null) {
+            categoryCondition = " and c.id = " + categoryId;
+        }
 
         List<Object> params = new ArrayList<>();
         params.add(sellerId);
@@ -75,15 +78,29 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
             params.add("%" + keyWord + "%");
             params.add("%" + keyWord + "%");
             params.add("%" + keyWord + "%");
+            params.add("%" + keyWord + "%");
+            params.add("%" + keyWord + "%");
 
             keywordCondition = """
                     and (
-                    pr.name iLIKE ? OR pr.articul iLIKE ? OR pr.brand iLIKE ?
+                    pr.name iLIKE ? OR sp.articul_of_seller iLIKE ?
+                    OR CAST(sp.articulbg AS TEXT) iLIKE ? OR sc.name iLIKE ?
+                    OR pr.brand iLIKE ?
                     )
                     """;
         }
+        switch (sortBy) {
+            case "rating" -> sql = sql.replace("order by pr.date_of_change desc",
+                    "order by pr.rating " + (ascending ? "asc" : "desc"));
 
-        sql = String.format(sql, sqlStatus, keywordCondition);
+            case "quantity" -> sql = sql.replace("order by pr.date_of_change desc",
+                    "order by quantity " + (ascending ? "asc" : "desc"));
+
+            default -> sql = sql.replace("order by pr.date_of_change desc",
+                    "order by pr.date_of_change " + (ascending ? "asc" : "desc"));
+        }
+
+        sql = String.format(sql, categoryCondition, keywordCondition);
 
         int count = jdbcTemplate.queryForObject("select count(*) from (" + sql + ") as count_query", Integer.class, params.toArray());
 
@@ -97,14 +114,17 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         List<ProductResponseForSeller> response = jdbcTemplate.query(sql, params.toArray(), (rs, rowNum) -> new ProductResponseForSeller(
                 rs.getLong("product_id"),
                 rs.getLong("sub_product_id"),
-                rs.getString("sub_product_photo"),
-                rs.getString("vendor_number"),
-                rs.getString("product_articul"),
-                rs.getString("product_name"),
-                rs.getString("product_brand"),
-                rs.getDouble("product_rating"),
-                rs.getDate("product_date_of_change").toLocalDate(),
-                rs.getString("sub_product_color"),
+                rs.getString("sub_product_image"),
+                rs.getString("articul_of_seller"),
+                rs.getString("articulbg"),
+                rs.getString("product"),
+                rs.getString("brand"),
+                rs.getDouble("rating"),
+                rs.getDate("date_of_change").toLocalDate(),
+                rs.getString("color"),
+                rs.getString("size"),
+                rs.getInt("barcode"),
+                rs.getInt("quantity"),
                 jdbcTemplate.query(getSizes, ((resultSet, rowNum1) -> new SizeSellerResponse(
                         resultSet.getLong("id"),
                         resultSet.getString("size"),

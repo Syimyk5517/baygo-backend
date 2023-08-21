@@ -26,7 +26,16 @@ public class SubProduct {
     private String color;
     @ElementCollection
     private List<String> images;
+    private String mainImage;
     private BigDecimal price;
+    @Column(length = 2000)
+    private String description;
+    private int articulBG;
+    private String articulOfSeller;
+    private int height;
+    private int width;
+    private int length;
+    private double weight;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;
@@ -38,4 +47,7 @@ public class SubProduct {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "discount_id")
     private Discount discount;
+
+    @OneToMany(mappedBy = "subProduct", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 }
