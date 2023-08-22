@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setImages(subProduct.images());
             newSubProduct.setPrice(subProduct.price());
             newSubProduct.setDescription(subProduct.description());
-            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
+            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
             newSubProduct.setHeight(subProduct.height());
             newSubProduct.setWidth(subProduct.width());
@@ -89,22 +89,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PaginationResponseWithQuantity<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
-                                                                        List<String> sizes,
-                                                                        List<String> compositions,
-                                                                        List<String> brands,
-                                                                        BigDecimal minPrice,
-                                                                        BigDecimal maxPrice,
-                                                                        List<String> colors,
-                                                                        String filterBy,
-                                                                        String sortBy,
-                                                                        int page,
-                                                                        int pageSize) {
+                                                                                    List<String> sizes,
+                                                                                    List<String> compositions,
+                                                                                    List<String> brands,
+                                                                                    BigDecimal minPrice,
+                                                                                    BigDecimal maxPrice,
+                                                                                    List<String> colors,
+                                                                                    String filterBy,
+                                                                                    String sortBy,
+                                                                                    int page,
+                                                                                    int pageSize) {
 
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(
                 sortBy == null || sortBy.isEmpty() ? Sort.Order.desc("rating") :
-                sortBy.equalsIgnoreCase("По увеличению цены") ? Sort.Order.asc("sp.price") :
-                        sortBy.equalsIgnoreCase("По уменьшению цены") ? Sort.Order.desc("sp.price") :
-                                Sort.Order.desc("rating")
+                        sortBy.equalsIgnoreCase("По увеличению цены") ? Sort.Order.asc("sp.price") :
+                                sortBy.equalsIgnoreCase("По уменьшению цены") ? Sort.Order.desc("sp.price") :
+                                        Sort.Order.desc("rating")
         ));
 
         sizes = getDefaultIfEmpty(sizes);
@@ -112,8 +112,8 @@ public class ProductServiceImpl implements ProductService {
         brands = getDefaultIfEmpty(brands);
         colors = getDefaultIfEmpty(colors);
 
-        Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord,sizes, compositions, brands, colors,
-                                                                    minPrice, maxPrice,filterBy, pageable);
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord, sizes, compositions, brands, colors,
+                minPrice, maxPrice, filterBy, pageable);
 
         return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
                 .currentPage(allProducts.getNumber() + 1)
@@ -127,4 +127,50 @@ public class ProductServiceImpl implements ProductService {
         return (list == null || list.isEmpty()) ? List.of("") : list;
     }
 
+    public ProductGetByIdResponse getById(Long id) {
+        return customProductRepository.getById(id);
+    }
+
+    @Override
+    public SimpleResponse updateProduct(SellerProductRequest request, Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("With product ID :" + id + "not found!!!")));
+        SubCategory subCategory = subCategoryRepository.findById(request.subCategoryId())
+                .orElseThrow(() -> new NotFoundException(String.format("With sub product ID  : " + request.subCategoryId() + "not found!!!")));
+        product.setName(request.name());
+        product.setBrand(request.brand());
+        product.setManufacturer(request.manufacturer());
+        product.setDateOfCreate(LocalDate.now());
+        product.setSeason(request.season());
+        product.setComposition(request.composition());
+        product.setSubCategory(subCategory);
+        product.setSeller(jwtService.getAuthenticate().getSeller());
+
+        for (SellerSubProductRequest subProduct : request.subProducts()) {
+            SubProduct subProduct1 = new SubProduct();
+            subProduct1.setColorHexCode(subProduct.colorHexCode());
+            subProduct1.setColor(subProduct.color());
+            subProduct1.setMainImage(subProduct.mainImage());
+            subProduct1.setImages(subProduct.images());
+            subProduct1.setPrice(subProduct.price());
+            subProduct1.setDescription(subProduct.description());
+            subProduct1.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
+            subProduct1.setArticulOfSeller(subProduct.articulOfSeller());
+            subProduct1.setHeight(subProduct.height());
+            subProduct1.setWidth(subProduct.width());
+            subProduct1.setLength(subProduct.length());
+            subProduct1.setWeight(subProduct.weight());
+            subProduct1.setProduct(product);
+
+            for (SellerSizeRequest size : subProduct.sizes()) {
+                Size size1 = new Size();
+                size1.setSize(size.size());
+                size1.setBarcode(size.barcode());
+                size1.setSubProduct(subProduct1);
+            }
+        }
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Успешно обновлено!!!")
+                .build();
+    }
 }

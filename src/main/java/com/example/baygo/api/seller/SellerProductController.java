@@ -1,10 +1,7 @@
 package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.SellerProductRequest;
-import com.example.baygo.db.dto.response.ColorResponse;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.ProductResponseForSeller;
-import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,5 +43,20 @@ public class SellerProductController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "11") int size) {
         return productService.findAll(categoryId, keyWord, sortBy, ascending, page, size);
+    }
+
+    @GetMapping("/find")
+    @Operation(summary = "Retrieve Product Details",
+            description = "Retrieves detailed information about a product based on the provided ID.")
+    public ProductGetByIdResponse getById(@RequestParam Long id) {
+        return productService.getById(id);
+    }
+
+    @Operation(summary = "Update Product",
+            description = "Updates product information based on the provided data.")
+    @PutMapping
+    public SimpleResponse updateProduct(@RequestBody SellerProductRequest request,
+                                        @RequestParam Long id) {
+        return productService.updateProduct(request, id);
     }
 }

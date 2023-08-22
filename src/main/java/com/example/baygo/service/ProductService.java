@@ -25,4 +25,9 @@ public interface ProductService {
                                                                              String sortBy,
                                                                              int page,
                                                                              int pageSize);
+
+    ProductGetByIdResponse getById(Long id);
+
+    SimpleResponse updateProduct(SellerProductRequest request, Long id);
+
 }
