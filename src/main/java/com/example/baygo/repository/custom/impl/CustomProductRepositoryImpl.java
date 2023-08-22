@@ -4,6 +4,8 @@ import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
     public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {

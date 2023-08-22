@@ -13,7 +13,7 @@ public record BuyerQuestionResponse(
         String question,
         String answer,
         String articulOfSeller,
-        String articulBG,
+        int articulBG,
         String dateAndTime
 ) {
 }
