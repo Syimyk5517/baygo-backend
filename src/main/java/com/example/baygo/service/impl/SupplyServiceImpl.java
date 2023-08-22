@@ -32,15 +32,9 @@ public class SupplyServiceImpl implements SupplyService {
     private final SupplyCustomRepository customRepository;
 
     @Override
-    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, Boolean isCreatedAt, int page, int pageSize) {
+    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, Boolean isAscending, int page, int pageSize) {
         Long currentUserId = jwtService.getAuthenticate().getId();
-        Pageable pageable;
-
-        if (isCreatedAt) {
-            pageable = PageRequest.of(page - 1, pageSize, Sort.Direction.ASC, "createdAt");
-        } else {
-            pageable = PageRequest.of(page - 1, pageSize, Sort.Direction.DESC, "createdAt");
-        }
+        Pageable pageable = PageRequest.of(page - 1, pageSize, isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, "createdAt");
         Page<SuppliesResponse> suppliesResponses = repository.getAllSuppliesOfSeller(currentUserId, supplyNumber, status, pageable);
         return new PaginationResponse<>(suppliesResponses.getContent(),
                 suppliesResponses.getNumber() + 1,
