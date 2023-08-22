@@ -7,7 +7,6 @@ import com.example.baygo.repository.custom.CustomAddToBasketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Repository

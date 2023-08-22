@@ -9,7 +9,7 @@ import com.example.baygo.db.model.Size;
 import com.example.baygo.repository.BuyerRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.custom.impl.CustomAddToBasketRepositoryImpl;
-import com.example.baygo.service.AddToBasketService;
+import com.example.baygo.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,19 +17,26 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
-public class AddToBasketServiceImpl implements AddToBasketService {
+public class BasketServiceImpl implements BasketService {
     private final SizeRepository sizeRepository;
     private final CustomAddToBasketRepositoryImpl customAddToBasketRepository;
     private final BuyerRepository buyerRepository;
     private final JwtService jwtService;
     @Override
-    public SimpleResponse addToBasket(Long sizeId) {
+    public SimpleResponse addToBasketOrDelete(Long sizeId, boolean delete) {
         Size size = sizeRepository.findById(sizeId).orElseThrow( ()-> new NotFoundException(sizeId + "Такой размер не найден"));
         Buyer buyer= jwtService.getAuthenticate().getBuyer();
-        buyer.addBasket(size);
+        if (delete) {
+            buyer.removeBasket(size);
+        } else {
+            buyer.addBasket(size);
+        }
         buyerRepository.save(buyer);
-        return SimpleResponse.builder().httpStatus(HttpStatus.OK).message(
-                "Продукт добавлен в корзину.").build();
+        String message = delete ? "Продукт удален из корзины." : "Продукт добавлен в корзину.";
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message(message)
+                .build();
     }
 
     @Override
@@ -38,12 +45,12 @@ public class AddToBasketServiceImpl implements AddToBasketService {
     }
 
     @Override
-    public SimpleResponse deleteFromBasket(Long sizeId) {
+    public SimpleResponse deleteAllFromBasket() {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
-        Size size = sizeRepository.findById(sizeId).orElseThrow(() ->
-                new NotFoundException("Такой продукт не найден в корзине."));
-        buyer.getBasket().remove(size);
+        List<Size> sizes = sizeRepository.findAll();
+        buyer.getBasket().removeAll(sizes);
+        buyerRepository.save(buyer);
         return SimpleResponse.builder().httpStatus(HttpStatus.OK)
-                .message("Продукт из корзины удалена.").build();
+                .message("Продукты из корзины удалены.").build();
     }
 }

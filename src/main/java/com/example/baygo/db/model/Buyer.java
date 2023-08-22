@@ -60,4 +60,8 @@ public class Buyer {
     public void addBasket(Size size) {
         basket.add(size);
     }
+
+    public void removeBasket(Size size) {
+        basket.remove(size);
+    }
 }

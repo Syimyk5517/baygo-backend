@@ -5,8 +5,8 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 
 import java.util.List;
 
-public interface AddToBasketService {
-    SimpleResponse addToBasket(Long sizeId);
+public interface BasketService {
+    SimpleResponse addToBasketOrDelete(Long sizeId, boolean deleteOrNot);
     List<ProductsInBasketResponse> getAllProductsFromBasket();
-    SimpleResponse deleteFromBasket(Long sizeId);
+    SimpleResponse deleteAllFromBasket();
 }
