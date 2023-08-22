@@ -22,5 +22,6 @@ public class Supplier {
     private String surnameOfSupplier;
     private String carBrand;
     private String carNumber;
+    @Enumerated(EnumType.STRING)
     private SupplyType supplyType;
 }
