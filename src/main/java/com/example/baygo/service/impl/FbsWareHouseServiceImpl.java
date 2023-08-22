@@ -1,13 +1,17 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.fbs.AccessCardRequest;
 import com.example.baygo.db.dto.request.fbs.ShipmentRequest;
 import com.example.baygo.db.dto.request.fbs.WareHouseRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.*;
-import com.example.baygo.repository.*;
+import com.example.baygo.db.model.FbsWarehouse;
+import com.example.baygo.db.model.Seller;
+import com.example.baygo.db.model.User;
+import com.example.baygo.db.model.Warehouse;
+import com.example.baygo.repository.FbsWarehouseRepository;
+import com.example.baygo.repository.SellerRepository;
+import com.example.baygo.repository.WarehouseRepository;
 import com.example.baygo.service.FbsWareHouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,9 +23,8 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
     private final FbsWarehouseRepository fbsWarehouseRepository;
     private final WarehouseRepository warehouseRepository;
     private final SellerRepository sellerRepository;
-    private final AccessCardRepository accessCardRepository;
     private final JwtService jwtService;
-    private final SupplyRepository supplyRepository;
+
 
     @Override
     public SimpleResponse saveWarehouse(WareHouseRequest wareHouseRequest) {
@@ -54,27 +57,11 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
 
     }
 
-    @Override
-    public SimpleResponse saveAccess(AccessCardRequest accessCardRequest) {
-
-        Warehouse warehouse = warehouseRepository.findById(accessCardRequest.warehouseId()).orElseThrow(() -> new NotFoundException(String.format("Склад %s не найден", accessCardRequest.warehouseId())));
-        AccessCard accessCard = AccessCard.builder()
-                .driverFirstName(accessCardRequest.driverFirstName())
-                .driverLastName(accessCardRequest.driverLastname())
-                .carBrand(accessCardRequest.brand())
-                .numberOfCar(accessCardRequest.number()).build();
-        accessCardRepository.save(accessCard);
-        Supply supply = new Supply();
-        supply.setWarehouse(warehouse);
-        supply.setAccessCard(accessCard);
-        supplyRepository.save(supply);
-        return new SimpleResponse(HttpStatus.OK, "Пропуск создан удачно");
-    }
 
     @Override
     public SimpleResponse saveShippMethod(ShipmentRequest shipmentRequest) {
         FbsWarehouse existingWareHouse = fbsWarehouseRepository.findById(shipmentRequest.wareHouseId()).orElseThrow(
-                () -> new NotFoundException(String.format("Склад %s не найден",shipmentRequest.wareHouseId())));
+                () -> new NotFoundException(String.format("Склад %s не найден", shipmentRequest.wareHouseId())));
         existingWareHouse.setTypeOfSupplier(shipmentRequest.typeOfSupplier());
         existingWareHouse.setTypeOfProduct(shipmentRequest.typeOfProduct());
         existingWareHouse.setShippingType(shipmentRequest.shippingType());

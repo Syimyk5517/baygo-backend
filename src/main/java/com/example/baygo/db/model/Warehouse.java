@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,8 @@ public class Warehouse {
     private String name;
     private String location;
     BigDecimal transitCost;
+    @OneToMany(mappedBy = "warehouse", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<FBSSupply> fbsSupply;
 
 
 }

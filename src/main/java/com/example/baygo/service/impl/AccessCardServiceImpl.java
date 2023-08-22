@@ -1,7 +1,7 @@
 package com.example.baygo.service.impl;
 
 
-import com.example.baygo.db.dto.request.SupplierRequest;
+import com.example.baygo.db.dto.request.AccessCardRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.AccessCard;
@@ -19,17 +19,16 @@ public class AccessCardServiceImpl implements AccessCardService {
 
 
     @Override
-    public SimpleResponse save(SupplierRequest supplierRequest, Long supplyId) {
+    public SimpleResponse save(AccessCardRequest accessCardRequest, Long supplyId) {
         Supply supply = supplyRepository.findById(supplyId)
                 .orElseThrow(() -> new NotFoundException("Поставки не найдены!!"));
 
         AccessCard accessCard = new AccessCard();
-        accessCard.setDriverFirstName(supplierRequest.name());
-        accessCard.setDriverLastName(supplierRequest.surname());
-        accessCard.setCarBrand(supplierRequest.carBrand());
-        accessCard.setNumberOfCar(supplierRequest.carNumber());
-        accessCard.setSupplyType(supplierRequest.supplyType());
-
+        accessCard.setDriverFirstName(accessCard.getDriverFirstName());
+        accessCard.setDriverLastName(accessCard.getDriverLastName());
+        accessCard.setCarBrand(accessCard.getCarBrand());
+        accessCard.setNumberOfCar(accessCard.getNumberOfCar());
+        accessCard.setSupplyType(accessCard.getSupplyType());
         supply.setAccessCard(accessCard);
 
         supplyRepository.save(supply);

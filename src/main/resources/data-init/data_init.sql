@@ -590,11 +590,11 @@ VALUES (1, '2022-12-30', '11',
         'ONLINE_BY_CARD', 9999, FALSE, 1, 15);
 
 INSERT INTO fbs_supplies (id, name, created_at, received_at, quantity_of_products, qr_code, fbs_supply_status, seller_id)
-VALUES (1, 'Supply 1', NOW(), NOW(), 100, '123456', 'RECEIVED', 1);
+VALUES (1, 'Supply 1', NOW(), NOW(), 100, '123456', 'DELIVERY', 1);
 
 
-INSERT INTO orders_sizes (id, quantity, order_status, date_of_received, qr_code, order_id, size_id, fbs_supply_id)
-VALUES (1, 2, 'PENDING', NOW(), '456789', 1, 1, 1);
+INSERT INTO orders_sizes (id, quantity, order_status, date_of_received,is_fbs_order, qr_code, order_id, size_id, fbs_supply_id)
+VALUES (1, 2, 'PENDING', NOW(),TRUE, '456789', 1, 1, 1);
 
 INSERT INTO returns (id, reason, country, city, address, postal_code, phone_number, date_of_return)
 VALUES (1, 'Product damaged', 'USA', 'New York', '123 Main St', 10001, '555-1234', '2023-08-16 10:00:00');

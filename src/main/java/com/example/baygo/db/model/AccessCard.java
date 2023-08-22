@@ -23,6 +23,8 @@ public class AccessCard {
     @Enumerated(EnumType.STRING)
     private SupplyType supplyType;
     @OneToOne(mappedBy = "accessCard")
+    private FBSSupply fbsSupply;
+    @OneToOne(mappedBy = "accessCard")
     private Supply supply;
 
 }

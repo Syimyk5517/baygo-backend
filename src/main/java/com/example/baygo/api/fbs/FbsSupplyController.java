@@ -4,9 +4,8 @@ import com.example.baygo.db.dto.request.fbs.SupplyOrderRequest;
 import com.example.baygo.db.dto.request.fbs.SupplyRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies;
-import com.example.baygo.db.dto.response.fbs.GetByIDFbsSupplyResponse;
 import com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders;
-import com.example.baygo.service.SupplyService;
+import com.example.baygo.service.FBSSupplyService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -22,22 +21,22 @@ import java.util.List;
 @CrossOrigin(value = "*",maxAge = 3600)
 @PreAuthorize("hasAnyAuthority('SELLER')")
 public class FbsSupplyController {
-    private final SupplyService supplyService;
-    @PostMapping
+    private final FBSSupplyService supplyService;
+    @PostMapping("/add_quantity")
     public SimpleResponse saveSupply(@RequestBody SupplyRequest supplyRequest){
      return supplyService.saveSupply(supplyRequest);
     }
-    @GetMapping
+    @GetMapping("/supplies")
     public List<GetAllFbsSupplies>getAllFbsSupplies(){
         return supplyService.getAllFbsSupplies();
     }
 
-    @GetMapping("{supplyId}")
+    @GetMapping("/{supplyId}")
     public GetSupplyWithOrders getByIdFbsSupply(@PathVariable Long supplyId){
         return supplyService.getSupplyByIdwithOrders(supplyId);
     }
 
-    @PostMapping("/supplyOfOrder")
+    @PostMapping("/save/assembly")
     public SimpleResponse saveAssemblyTask(@RequestBody SupplyOrderRequest supplyOrderRequest ){
         return supplyService.saveAssemblyTask(supplyOrderRequest);
     }

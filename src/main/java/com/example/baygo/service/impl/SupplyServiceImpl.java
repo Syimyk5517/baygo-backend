@@ -1,29 +1,20 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.fbs.SupplyOrderRequest;
-import com.example.baygo.db.dto.request.fbs.SupplyRequest;
-import com.example.baygo.db.dto.request.fbs.SupplySizeQuantityRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
-import com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies;
-import com.example.baygo.db.dto.response.fbs.GetByIDFbsSupplyResponse;
-import com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.*;
+import com.example.baygo.db.model.Supply;
 import com.example.baygo.db.model.enums.SupplyStatus;
-import com.example.baygo.repository.*;
+import com.example.baygo.repository.SupplyRepository;
 import com.example.baygo.repository.custom.SupplyCustomRepository;
 import com.example.baygo.service.SupplyService;
-import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -34,9 +25,6 @@ public class SupplyServiceImpl implements SupplyService {
     private final JwtService jwtService;
     private final SupplyRepository repository;
     private final SupplyCustomRepository customRepository;
-    private final FbsWarehouseRepository warehouseRepository;
-    private final SizeRepository sizeRepository;
-    private final OrderRepository orderRepository;
 
 
     @Override
@@ -87,48 +75,5 @@ public class SupplyServiceImpl implements SupplyService {
         return customRepository.getAllSupplyForLanding(sellerId);
     }
 
-    @Override
-    public SimpleResponse saveSupply(SupplyRequest supplyRequest) {
-        Long warehouseId = supplyRequest.wareHouseId();
-        List<SupplySizeQuantityRequest> supplySizeQuantityRequestList = supplyRequest.supplySizeQuantityRequestList();
 
-        FbsWarehouse warehouse = warehouseRepository.findById(warehouseId)
-                .orElseThrow(() -> new NotFoundException(String.format("Fbs склад с номером %s не найден", supplyRequest.wareHouseId())));
-
-        for (SupplySizeQuantityRequest sizeQuantityRequest : supplySizeQuantityRequestList) {
-            Long sizeId = sizeQuantityRequest.sizeId();
-            int quantity = sizeQuantityRequest.quantity();
-
-            Size size = sizeRepository.findById(sizeId)
-                    .orElseThrow(() -> new NotFoundException(String.format("Размер с ID %s не найден", sizeId)));
-
-            warehouse.addProductQuantity(size.getId(), quantity);
-        }
-
-        warehouseRepository.save(warehouse);
-
-        return new SimpleResponse(HttpStatus.OK, "Товары успешно добавлены");
-    }
-
-    @Override
-    public List<GetAllFbsSupplies> getAllFbsSupplies() {
-        return repository.getAllFbsSupplies();
-    }
-
-    @Override
-    public GetSupplyWithOrders getSupplyByIdwithOrders(Long supplyId) {
-        GetSupplyWithOrders result = new GetSupplyWithOrders();
-        result.setSupply(Collections.singletonList(repository.getFbsSupplyById(supplyId)));
-        result.setOrders(repository.getAllFbsOrdersBySupplyId(supplyId));
-
-        return result;
-    }
-
-    @Override
-    public SimpleResponse saveAssemblyTask(SupplyOrderRequest supplyOrderRequest) {
-        orderRepository.findById(supplyOrderRequest.orderId()).orElseThrow(
-                ()->new NotFoundException(String.format("Fbs заказы с номером %s не найден",supplyOrderRequest.orderId())));
-
-        return null;
-    }
 }

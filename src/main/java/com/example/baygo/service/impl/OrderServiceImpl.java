@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -51,23 +50,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus status) {
+    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus orderStatus) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "dateOfOrder"));
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<OrderResponse> orderResponses = orderRepository.getAllOrders(sellerId, keyword, status, pageable);
+        Page<OrderResponse> orderResponses = orderRepository.getAllOrders(sellerId, keyword, orderStatus, pageable);
         return new PaginationResponse<>(orderResponses.getContent(),
                 orderResponses.getNumber() + 1,
                 orderResponses.getTotalPages());
     }
 
-
-    public PaginationResponse<OrdersResponse> getAllFbsOrders(int page, int size, String keyword, LocalDate dateOfOrder) {
+    @Override
+    public PaginationResponse<OrdersResponse> getAllFbsOrders(int page, int size, String keyword, OrderStatus orderStatus) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<OrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, dateOfOrder, pageable);
+        Page<OrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, orderStatus, pageable);
         return new PaginationResponse<>(orderResponses.getContent(),
                 orderResponses.getNumber() + 1,
                 orderResponses.getTotalPages());
+
 
     }
 }

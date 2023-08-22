@@ -1,8 +1,11 @@
 package com.example.baygo.db.dto.response.fbs;
 
+import com.example.baygo.db.model.enums.OrderStatus;
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Builder
 public record OrdersResponse(
         Long id,
@@ -10,12 +13,14 @@ public record OrdersResponse(
         int barcode,
         int quantity,
         String name,
-        String articul,
+        String articulOfSeller,
         String brand,
         String size,
         String color,
+        BigDecimal price,
         String address,
-        LocalDate dateOfOrder
+        OrderStatus orderStatus,
+        LocalDateTime dateOfOrder
 
 ) {
 }

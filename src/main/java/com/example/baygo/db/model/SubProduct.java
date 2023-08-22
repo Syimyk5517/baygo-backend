@@ -27,7 +27,6 @@ public class SubProduct {
     private String mainImage;
     @ElementCollection
     private List<String> images;
-    private String mainImage;
     private BigDecimal price;
     @Column(length = 2000)
     private String description;
