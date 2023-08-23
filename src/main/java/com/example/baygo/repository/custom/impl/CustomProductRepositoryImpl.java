@@ -17,8 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
-    @PersistenceContext
-    private final EntityManager entityManager;
 
     @Override
     public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {

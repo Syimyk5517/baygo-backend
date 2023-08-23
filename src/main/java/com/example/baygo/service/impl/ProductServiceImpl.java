@@ -123,6 +123,11 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+    @Override
+    public List<ProductBuyerResponse> findAllSimilarProducts() {
+        return null;
+    }
+
     private List<String> getDefaultIfEmpty(List<String> list) {
         return (list == null || list.isEmpty()) ? List.of("") : list;
     }

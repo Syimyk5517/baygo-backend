@@ -1,5 +1,6 @@
 package com.example.baygo.repository;
 
+import com.example.baygo.db.dto.response.HomePageResponse;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.db.model.Product;
 import org.springframework.data.domain.Page;
@@ -49,4 +50,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                      BigDecimal maxPrice,
                                      String filterBy,
                                      Pageable pageable);
+    List<ProductBuyerResponse> findAllSimilarProducts(Long subProductId);
+
 }

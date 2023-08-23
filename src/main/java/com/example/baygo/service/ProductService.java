@@ -25,4 +25,5 @@ public interface ProductService {
                                                                              String sortBy,
                                                                              int page,
                                                                              int pageSize);
+    List<ProductBuyerResponse> findAllSimilarProducts();
 }
