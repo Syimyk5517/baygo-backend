@@ -6,13 +6,11 @@ import com.example.baygo.db.dto.request.SellerSizeRequest;
 import com.example.baygo.db.dto.request.SellerSubProductRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.Product;
-import com.example.baygo.db.model.Size;
-import com.example.baygo.db.model.SubCategory;
-import com.example.baygo.db.model.SubProduct;
+import com.example.baygo.db.model.*;
 import com.example.baygo.repository.ProductRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.SubCategoryRepository;
+import com.example.baygo.repository.UserRepository;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import com.example.baygo.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -20,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final JwtService jwtService;
     private final CustomProductRepository customProductRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
     public SimpleResponse saveProduct(SellerProductRequest request) {
@@ -99,6 +100,10 @@ public class ProductServiceImpl implements ProductService {
                                                                         String sortBy,
                                                                         int page,
                                                                         int pageSize) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        User user = userRepository.findByEmail(login).orElse(null);
+        Long buyerId = (user != null) ? user.getBuyer().getId() : null;
 
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(
                 sortBy == null || sortBy.isEmpty() ? Sort.Order.desc("rating") :
@@ -112,8 +117,8 @@ public class ProductServiceImpl implements ProductService {
         brands = getDefaultIfEmpty(brands);
         colors = getDefaultIfEmpty(colors);
 
-        Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord,sizes, compositions, brands, colors,
-                                                                    minPrice, maxPrice,filterBy, pageable);
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, keyWord, sizes, compositions, brands, colors,
+                                                                         minPrice, maxPrice, filterBy, pageable);
 
         return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
                 .currentPage(allProducts.getNumber() + 1)

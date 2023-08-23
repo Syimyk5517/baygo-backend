@@ -36,6 +36,7 @@ public class SubProduct {
     private int width;
     private int length;
     private double weight;
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;
@@ -50,4 +51,7 @@ public class SubProduct {
 
     @OneToMany(mappedBy = "subProduct", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+    @ManyToMany(mappedBy = "favorites", cascade = CascadeType.ALL)
+    private List<Buyer> buyers;
 }
