@@ -20,22 +20,24 @@ public class CustomAddToBasketRepositoryImpl implements CustomAddToBasketReposit
         String addToBasket = """
                 SELECT b.sub_products_size_id as sizeId,
                        sp.description as description,
-                       spi.images as images,
+                       s.size as size,
+                       sp.main_image as image,
                        d.percent as discount,
                        sp.price as cost
-                    FROM buyers_baskets b join sizes s on s.id = b.sub_products_size_id
-                    join sub_products sp on sp.id = s.sub_product_id 
+                    FROM buyers_baskets b
+                    join sizes s on s.id = b.sub_products_size_id
+                    join sub_products sp on sp.id = s.sub_product_id
                     join products p on p.id = sp.product_id
-                    join sub_product_images spi on sp.id = spi.sub_product_id 
-                    join discounts d on sp.discount_id = d.id 
+                    join discounts d on sp.discount_id = d.id
                     WHERE b.buyer_id =?
                 """;
         return jdbcTemplate.query(addToBasket, (resultSet,i)->
                 new ProductsInBasketResponse(resultSet.getLong("sizeId"),
                         resultSet.getString("description"),
-                        resultSet.getString("images"),
+                        resultSet.getString("size"),
+                        resultSet.getString("image"),
                         resultSet.getInt("discount"),
-                        resultSet.getInt("cost")),
+                        resultSet.getBigDecimal("cost")),
                         buyer.getId());
     }
 }

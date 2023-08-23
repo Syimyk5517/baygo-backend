@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -57,11 +57,10 @@ public class Buyer {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void addBasket(Size size) {
-        basket.add(size);
-    }
-
-    public void removeBasket(Size size) {
-        basket.remove(size);
+    public void addToBasket(Size size) {
+        if (this.basket == null){
+            this.basket = new ArrayList<>();
+        }
+        this.basket.add(size);
     }
 }
