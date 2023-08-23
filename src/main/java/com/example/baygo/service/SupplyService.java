@@ -37,7 +37,7 @@ public interface SupplyService {
     PaginationResponse<SupplySellerProductResponse> getSellerProducts(String searchWithBarcode, String category,
                                                                       String brand, int page, int pageSize);
 
-    List<WarehouseResponse> getAllWareHouses();
+    List<WarehouseResponse> getAllWarehouses();
 
     SimpleResponse createSupply(SupplyRequest supplyRequest);
 

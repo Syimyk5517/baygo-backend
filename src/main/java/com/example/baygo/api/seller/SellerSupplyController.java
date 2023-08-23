@@ -110,7 +110,7 @@ public class SellerSupplyController {
 
     @Operation(summary = "Get all warehouses", description = "This method returns all warehouses")
     @GetMapping("/all_warehouse")
-    List<WarehouseResponse> getAllWareHouses() {
+    List<WarehouseResponse> getAllWarehouses() {
         return service.getAllWareHouses();
     }
 

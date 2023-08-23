@@ -127,7 +127,7 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
     @Override
-    public List<WarehouseResponse> getAllWareHouses() {
+    public List<WarehouseResponse> getAllWarehouses() {
         return warehouseRepository.findAllWarehouses();
     }
 
