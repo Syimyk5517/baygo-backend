@@ -5,10 +5,12 @@ import com.example.baygo.db.dto.request.BuyerProfileImageRequest;
 import com.example.baygo.db.dto.request.BuyerProfileRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
+import com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Order;
 import com.example.baygo.db.model.SubProduct;
 import com.example.baygo.db.model.User;
+import com.example.baygo.repository.BuyerRepository;
 import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.repository.SubProductRepository;
 import com.example.baygo.service.BuyerProfileService;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BuyerProfileServiceImpl implements BuyerProfileService {
     private final JwtService jwtService;
+    private final BuyerRepository buyerRepository;
     private final PasswordEncoder encoder;
     private final OrderRepository orderRepository;
     private final JdbcTemplate jdbcTemplate;
@@ -79,39 +82,10 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
                 .build();
     }
 
-    @Transactional
     @Override
-    public SimpleResponse toggleFavorite(Long subProductId) {
-        Buyer buyer1 = jwtService.getAuthenticate().getBuyer();
-        SubProduct subProduct = subProductRepository.findById(subProductId).orElseThrow(
-                () -> new NotFoundException(String.format("Продукт %s не найден!", subProductId)));
-        if (buyer1.getFavorites().contains(subProduct)) {
-            buyer1.getFavorites().remove(subProduct);
-
-            return SimpleResponse.builder()
-                    .httpStatus(HttpStatus.OK)
-                    .message("Продукт успешно удален из избранного!")
-                    .build();
-        } else {
-            buyer1.getFavorites().add(subProduct);
-            return SimpleResponse.builder()
-                    .httpStatus(HttpStatus.OK)
-                    .message("Продукт успешно добавлен в избранное!")
-                    .build();
-        }
+    public BuyerProfileInfoResponse getProfileInfo(Long buyerId) {
+        return buyerRepository.getProfileInfo(buyerId);
     }
-
-    @Transactional
-    @Override
-    public SimpleResponse deleteFavor() {
-        Buyer buyer = jwtService.getAuthenticate().getBuyer();
-        buyer.getFavorites().clear();
-        return SimpleResponse.builder()
-                .httpStatus(HttpStatus.OK)
-                .message("Продукты успешно удалены из избранного!")
-                .build();
-    }
-
 }
 
 
