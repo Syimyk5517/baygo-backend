@@ -797,7 +797,7 @@ VALUES (1, 1),
        (2, 4),
        (2, 5);
 
-INSERT INTO warehouses(id, name, region, transit_cost)
+INSERT INTO warehouses(id, name, location, transit_cost)
 VALUES (1, 'БайGo', 'Бишкек', 1200.00),
        (2, 'Асман', 'Талас', 2300.00),
        (3, 'Аю Гранд', 'Чуй', 1200.00),
