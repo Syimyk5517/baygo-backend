@@ -13,7 +13,7 @@ public interface FBSSupplyService {
 
     List<GetAllFbsSupplies> getAllFbsSupplies();
 
-    GetSupplyWithOrders getSupplyByIdwithOrders(Long supplyId);
+    GetSupplyWithOrders getSupplyByIdWithOrders(Long supplyId);
 
     SimpleResponse saveAssemblyTask(SupplyOrderRequest supplyOrderRequest);
 }

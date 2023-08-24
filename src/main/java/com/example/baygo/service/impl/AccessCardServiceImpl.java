@@ -35,6 +35,4 @@ public class AccessCardServiceImpl implements AccessCardService {
 
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("поставщик успешно сохранено!!!").build();
     }
-
-
 }

@@ -9,7 +9,7 @@ import lombok.Builder;
 
 import java.util.List;
 @Builder
-public record WareHouseRequest(
+public record WarehouseRequest(
         @NotBlank(message = "Название склада не может быть пустым")
         String wareHouseName,
         @NotBlank(message = "Страна не может быть пустой")
@@ -31,6 +31,6 @@ public record WareHouseRequest(
         @Min(value = 1, message = "Время сборки должно быть больше нуля")
         int assemblyTime,
         @NotNull(message = "Идентификатор склада не может быть пустым")
-        Long wareHouseId
+        Long fbbWarehouseId
 ) {
 }

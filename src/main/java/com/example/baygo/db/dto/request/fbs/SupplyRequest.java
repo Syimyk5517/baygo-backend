@@ -10,6 +10,7 @@ import java.util.List;
 public record SupplyRequest(
         @NotNull(message = "Идентификатор склада не может быть пустым")
         Long wareHouseId,
-     @Valid List<SupplySizeQuantityRequest> supplySizeQuantityRequestList
+        @Valid
+        List<SupplySizeQuantityRequest> supplySizeQuantityRequestList
 ) {
 }

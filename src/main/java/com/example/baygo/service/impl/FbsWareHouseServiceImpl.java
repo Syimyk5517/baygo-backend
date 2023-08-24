@@ -2,7 +2,7 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.fbs.ShipmentRequest;
-import com.example.baygo.db.dto.request.fbs.WareHouseRequest;
+import com.example.baygo.db.dto.request.fbs.WarehouseRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.FbsWarehouse;
@@ -25,41 +25,35 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
     private final SellerRepository sellerRepository;
     private final JwtService jwtService;
 
-
     @Override
-    public SimpleResponse saveWarehouse(WareHouseRequest wareHouseRequest) {
+    public SimpleResponse saveWarehouse(WarehouseRequest warehouseRequest) {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
         FbsWarehouse fbsWarehouse = FbsWarehouse.builder()
-                .name(wareHouseRequest.wareHouseName())
-                .country(wareHouseRequest.country())
-                .city(wareHouseRequest.city())
-                .street(wareHouseRequest.street())
-                .indexOfCountry(wareHouseRequest.indexOfCountry())
-                .houseNumber(wareHouseRequest.houseNumber())
-                .phoneNumber(wareHouseRequest.phoneNumber())
-                .workingDay(wareHouseRequest.dayOfWeek())
-                .preparingSupply(wareHouseRequest.preparingSupply())
-                .assemblyTime(wareHouseRequest.assemblyTime())
+                .name(warehouseRequest.wareHouseName())
+                .country(warehouseRequest.country())
+                .city(warehouseRequest.city())
+                .street(warehouseRequest.street())
+                .indexOfCountry(warehouseRequest.indexOfCountry())
+                .houseNumber(warehouseRequest.houseNumber())
+                .phoneNumber(warehouseRequest.phoneNumber())
+                .workingDay(warehouseRequest.dayOfWeek())
+                .preparingSupply(warehouseRequest.preparingSupply())
+                .assemblyTime(warehouseRequest.assemblyTime())
                 .seller(seller).build();
         fbsWarehouseRepository.save(fbsWarehouse);
 
-        Long selectedWarehouseId = wareHouseRequest.wareHouseId();
-        Warehouse warehouse = warehouseRepository.findById(selectedWarehouseId).orElseThrow(
-                () -> new NotFoundException(String.format("Склад %s не найден", wareHouseRequest.wareHouseId())));
-        if (seller != null) {
+        Long fbbWarehouseId = warehouseRequest.fbbWarehouseId();
+        Warehouse warehouse = warehouseRepository.findById(fbbWarehouseId).orElseThrow(
+                () -> new NotFoundException(String.format("Склад %s не найден", fbbWarehouseId)));
             seller.setWarehouseOfReturns(warehouse);
             sellerRepository.save(seller);
-            return new SimpleResponse(HttpStatus.OK, String.format("Склад %s успешно сохранены", wareHouseRequest.wareHouseName()));
-        } else {
-            return new SimpleResponse(HttpStatus.BAD_REQUEST, "Продавец равен нулю");
-        }
 
+            return new SimpleResponse(HttpStatus.OK, String.format("Склад %s успешно сохранен", warehouseRequest.wareHouseName()));
     }
 
-
     @Override
-    public SimpleResponse saveShippMethod(ShipmentRequest shipmentRequest) {
+    public SimpleResponse saveShippingMethod(ShipmentRequest shipmentRequest) {
         FbsWarehouse existingWareHouse = fbsWarehouseRepository.findById(shipmentRequest.wareHouseId()).orElseThrow(
                 () -> new NotFoundException(String.format("Склад %s не найден", shipmentRequest.wareHouseId())));
         existingWareHouse.setTypeOfSupplier(shipmentRequest.typeOfSupplier());
@@ -69,4 +63,3 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
         return new SimpleResponse(HttpStatus.OK, "Метод отгрузки %s создан удачно");
     }
 }
-

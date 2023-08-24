@@ -47,7 +47,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
             Size size = sizeRepository.findById(sizeId)
                     .orElseThrow(() -> new NotFoundException(String.format("Размер с ID %s не найден", sizeId)));
 
-            warehouse.addProductQuantity(size.getId(), quantity);
+          //  warehouse.addProductQuantity(size.getId(), quantity);
         }
 
         fbsWarehouseRepository.save(warehouse);
@@ -60,11 +60,10 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
         return repository.getAllFbsSupplies(seller.getId());
-
     }
 
     @Override
-    public GetSupplyWithOrders getSupplyByIdwithOrders(Long supplyId) {
+    public GetSupplyWithOrders getSupplyByIdWithOrders(Long supplyId) {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
         GetSupplyWithOrders result = repository.getFbsSupplyById(supplyId, seller.getId());

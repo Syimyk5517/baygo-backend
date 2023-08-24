@@ -14,6 +14,7 @@ public record SupplyOrderRequest(
         String nameOfSupply,
         @NotNull(message = "Идентификатор склада не может быть пустым")
         Long wareHouseId,
-        @Valid AccessCardRequest accessCardRequest
+        @Valid
+        AccessCardRequest accessCardRequest
 ) {
 }

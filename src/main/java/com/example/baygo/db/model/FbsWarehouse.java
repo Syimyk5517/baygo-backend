@@ -46,17 +46,7 @@ public class FbsWarehouse {
     @JoinColumn(name = "seller_id")
     private Seller seller;
     @ManyToMany
-    private List<Size> sizes;
+    private List<SubProduct> subProducts;
 
-    public void addProductQuantity(Long sizeId, int quantity) {
-        for (Size size : sizes) {
-            if (size.getId().equals(sizeId)) {
-                size.setFbsQuantity(size.getFbsQuantity() + quantity);
-                return;
-            }
-        }
 
-        throw new NotFoundException("Размер с заданным идентификатором не найден");
-    }
 }
-

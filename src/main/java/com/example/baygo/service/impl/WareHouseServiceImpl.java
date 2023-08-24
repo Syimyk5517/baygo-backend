@@ -9,14 +9,14 @@ import com.example.baygo.db.model.Warehouse;
 import com.example.baygo.repository.AccessCardRepository;
 import com.example.baygo.repository.SupplyRepository;
 import com.example.baygo.repository.WarehouseRepository;
-import com.example.baygo.service.WareHouseService;
+import com.example.baygo.service.WarehouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WareHouseServiceImpl implements WareHouseService {
+public class WareHouseServiceImpl implements WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final AccessCardRepository accessCardRepository;
     private final SupplyRepository supplyRepository;

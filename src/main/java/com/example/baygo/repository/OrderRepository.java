@@ -59,7 +59,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("keyWord") String keyWord,
             @Param("orderStatus") OrderStatus orderStatus,
             Pageable pageable);
-
 }
 
 
