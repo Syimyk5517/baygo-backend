@@ -19,10 +19,10 @@ import java.util.List;
 public class BasketApi {
     private final BasketService basketService;
     @Operation(summary = "Add to basket or delete", description = "This method added or delete product to basket")
-    @PostMapping("{sizeId}")
+    @PostMapping("/{sizeId}")
     @PreAuthorize("hasAuthority('BUYER')")
-    public SimpleResponse addToBasketOrDelete(@PathVariable Long sizeId,@RequestParam boolean delete){
-        return basketService.addToBasketOrDelete(sizeId, delete);
+    public SimpleResponse addToBasketOrDelete(@PathVariable Long sizeId){
+        return basketService.addToBasketOrDelete(sizeId);
     }
     @GetMapping("/products")
     @Operation(summary = "Get all from basket", description = "This method get all products from basket")
