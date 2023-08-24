@@ -20,7 +20,7 @@ import static jakarta.persistence.CascadeType.*;
 public class SubProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_product_gen")
-    @SequenceGenerator(name = "sub_product_gen", sequenceName = "sub_product_seq", allocationSize = 1, initialValue = 31)
+    @SequenceGenerator(name = "sub_product_gen", sequenceName = "sub_product_seq", allocationSize = 1, initialValue = 33)
     private Long id;
     private String colorHexCode;
     private String color;
