@@ -12,10 +12,4 @@ public interface BuyerProfileService {
     SimpleResponse updateProfileImage(BuyerProfileImageRequest request);
 
     SimpleResponse deleteProfile();
-
-    SimpleResponse toggleFavorite(Long subProductId);
-
-    SimpleResponse deleteFavor();
-
-
 }
