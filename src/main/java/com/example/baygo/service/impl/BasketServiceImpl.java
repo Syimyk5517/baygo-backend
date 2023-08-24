@@ -23,7 +23,7 @@ public class BasketServiceImpl implements BasketService {
     private final JwtService jwtService;
     @Override
     @Transactional
-    public SimpleResponse addToBasketOrDelete(Long sizeId, boolean delete) {
+    public SimpleResponse addToBasketOrDelete(Long sizeId) {
         Size size = sizeRepository.findById(sizeId).orElseThrow(() -> new NotFoundException(sizeId + "Такой размер не найден"));
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         boolean isInBasket = buyer.getBasket().contains(size);
