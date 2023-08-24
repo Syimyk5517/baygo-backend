@@ -12,8 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
 public class FavoriteServiceImpl implements FavoriteService {
@@ -21,10 +19,10 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final JwtService jwtService;
 
     @Override
-    public PaginationResponse<FavoriteResponse> getAllFavorProduct(int page, int size, String search, LocalDate createDate) {
+    public PaginationResponse<FavoriteResponse> getAllFavorProduct(int page, int size, String search) {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<FavoriteResponse> favoriteResponses = sizeRepository.getBuyerFavorites(buyer.getId(), search, createDate, pageable);
+        Page<FavoriteResponse> favoriteResponses = sizeRepository.getBuyerFavorites(buyer.getId(), search, pageable);
 
         return new PaginationResponse<>(
                 favoriteResponses.getContent(),

@@ -17,5 +17,5 @@ public interface BuyerProfileService {
 
     SimpleResponse deleteFavor();
 
-    SimpleResponse removeProduct(Long subProductId);
+
 }

@@ -11,15 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-
 @RestController
 @RequestMapping("/api/favorites")
 @RequiredArgsConstructor
 @Tag(name = "Buyer favorites", description = "Favorites goods and brands")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('BUYER')")
-public class BuyerFavoriteApi {
+public class BuyerFavoriteController {
     private final FavoriteService favoriteService;
     private final BuyerProfileService buyerProfileService;
 
@@ -27,14 +25,13 @@ public class BuyerFavoriteApi {
     @Operation(summary = "Get favorites", description = "This method gets all favorites")
     public PaginationResponse<FavoriteResponse> getAllFavorites(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) LocalDate createDate,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return favoriteService.getAllFavorProduct(page, size, search, createDate);
+        return favoriteService.getAllFavorProduct(page, size, search);
     }
 
     @PostMapping("/toggle")
-    @Operation(summary = "Add product to favorite", description = "This method will add product to favorites")
+    @Operation(summary = "Add and delete product from favorite", description = "This method will add  and delete product from favorites")
     public SimpleResponse toggleFavorite(@RequestParam Long subProductId) {
         return buyerProfileService.toggleFavorite(subProductId);
 
@@ -46,9 +43,5 @@ public class BuyerFavoriteApi {
         return buyerProfileService.deleteFavor();
     }
 
-    @DeleteMapping("/{subProductId}")
-    @Operation(summary = "Remove product from favorites", description = "This method will cleear only one")
-    public SimpleResponse removeProduct(@PathVariable Long subProductId) {
-        return buyerProfileService.removeProduct(subProductId);
-    }
+
 }

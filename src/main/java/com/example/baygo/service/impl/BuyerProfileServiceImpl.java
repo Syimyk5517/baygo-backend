@@ -9,7 +9,6 @@ import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Order;
 import com.example.baygo.db.model.SubProduct;
 import com.example.baygo.db.model.User;
-import com.example.baygo.repository.BuyerRepository;
 import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.repository.SubProductRepository;
 import com.example.baygo.service.BuyerProfileService;
@@ -28,7 +27,6 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
     private final PasswordEncoder encoder;
     private final OrderRepository orderRepository;
     private final JdbcTemplate jdbcTemplate;
-    private final BuyerRepository buyerRepository;
     private final SubProductRepository subProductRepository;
 
     @Transactional
@@ -85,19 +83,17 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
     @Override
     public SimpleResponse toggleFavorite(Long subProductId) {
         Buyer buyer1 = jwtService.getAuthenticate().getBuyer();
-        Buyer buyer = buyerRepository.findById(buyer1.getId()).orElseThrow(
-                () -> new NotFoundException("Покупатель не найден"));
         SubProduct subProduct = subProductRepository.findById(subProductId).orElseThrow(
-                () -> new NotFoundException("Продукт не найден!"));
-        if (buyer.getFavorites().contains(subProduct)) {
-            buyer.getFavorites().remove(subProduct);
+                () -> new NotFoundException(String.format("Продукт %s не найден!", subProductId)));
+        if (buyer1.getFavorites().contains(subProduct)) {
+            buyer1.getFavorites().remove(subProduct);
 
             return SimpleResponse.builder()
                     .httpStatus(HttpStatus.OK)
                     .message("Продукт успешно удален из избранного!")
                     .build();
         } else {
-            buyer.getFavorites().add(subProduct);
+            buyer1.getFavorites().add(subProduct);
             return SimpleResponse.builder()
                     .httpStatus(HttpStatus.OK)
                     .message("Продукт успешно добавлен в избранное!")
@@ -112,23 +108,10 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         buyer.getFavorites().clear();
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
-                .message("Продукт успешно удален из избранного!")
+                .message("Продукты успешно удалены из избранного!")
                 .build();
     }
 
-    @Override
-    public SimpleResponse removeProduct(Long subProductId) {
-        Buyer buyer1 = jwtService.getAuthenticate().getBuyer();
-        Buyer buyer = buyerRepository.findById(buyer1.getId()).orElseThrow(
-                () -> new NotFoundException("Покупатель не найден"));
-        SubProduct subProduct = subProductRepository.findById(subProductId).orElseThrow(
-                () -> new NotFoundException("Продукт не найден!"));
-        buyer.getFavorites().remove(subProduct);
-        return SimpleResponse.builder()
-                .httpStatus(HttpStatus.OK)
-                .message("Продукт успешно удален из избранного!")
-                .build();
-    }
 }
 
 
