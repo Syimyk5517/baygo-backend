@@ -419,7 +419,7 @@ VALUES (1,
        (30,
         'https://ae04.alicdn.com/kf/S8c0b35df733d4f10a46df8f61d8f167dH.jpg_480x480.jpg');
 
-INSERT INTO sizes(id, barcode, quantity, size, sub_product_id)
+INSERT INTO sizes(id, barcode,quantity,size, sub_product_id)
 VALUES (1,
         1111, 100, 'M', 1),
        (2,
