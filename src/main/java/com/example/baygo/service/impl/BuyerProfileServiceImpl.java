@@ -8,11 +8,9 @@ import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Order;
-import com.example.baygo.db.model.SubProduct;
 import com.example.baygo.db.model.User;
 import com.example.baygo.repository.BuyerRepository;
 import com.example.baygo.repository.OrderRepository;
-import com.example.baygo.repository.SubProductRepository;
 import com.example.baygo.service.BuyerProfileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +28,6 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
     private final PasswordEncoder encoder;
     private final OrderRepository orderRepository;
     private final JdbcTemplate jdbcTemplate;
-    private final SubProductRepository subProductRepository;
 
     @Transactional
     @Override
@@ -87,6 +84,3 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         return buyerRepository.getProfileInfo(buyerId);
     }
 }
-
-
-
