@@ -59,6 +59,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            JOIN Size s ON s.subProduct.id = sp.id
            JOIN OrderSize os ON os.size.id = s.id
              WHERE os.orderStatus <> 'CANCELED'
+             AND os.order.dateOfOrder >= CURRENT_DATE - 15
              GROUP BY p.id, sp.id, s.id
              ORDER BY SUM(os.quantity) DESC
              LIMIT 8
