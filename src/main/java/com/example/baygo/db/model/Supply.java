@@ -33,7 +33,7 @@ public class Supply {
     private LocalDate changedAt;
     private int quantityOfProducts;
     private int acceptedProducts;
-    private BigDecimal commission;
+    private String commission;
     private BigDecimal supplyCost;
     private LocalDate plannedDate;
     private LocalDate actualDate;

@@ -1,6 +1,7 @@
 package com.example.baygo.db.dto.response;
 
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.db.model.enums.SupplyType;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -10,11 +11,11 @@ import java.time.LocalDate;
 public record SuppliesResponse(
         Long id,
         String supplyNumber,
-        String supplyType,
+        SupplyType supplyType,
         LocalDate createdAt,
         int quantityOfProducts,
         int acceptedProducts,
-        int commission,
+        String commission,
         BigDecimal supplyCost,
         LocalDate plannedDate,
         LocalDate actualDate,
