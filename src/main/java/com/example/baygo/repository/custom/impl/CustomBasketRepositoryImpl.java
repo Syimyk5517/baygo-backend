@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 @RequiredArgsConstructor
-public class CustomAddToBasketRepositoryImpl implements CustomAddToBasketRepository {
+public class CustomBasketRepositoryImpl implements CustomAddToBasketRepository {
     private final JdbcTemplate jdbcTemplate;
     private final JwtService jwtService;
     @Override

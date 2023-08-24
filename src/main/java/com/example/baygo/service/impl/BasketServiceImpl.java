@@ -7,7 +7,7 @@ import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Size;
 import com.example.baygo.repository.SizeRepository;
-import com.example.baygo.repository.custom.impl.CustomAddToBasketRepositoryImpl;
+import com.example.baygo.repository.custom.impl.CustomBasketRepositoryImpl;
 import com.example.baygo.service.BasketService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BasketServiceImpl implements BasketService {
     private final SizeRepository sizeRepository;
-    private final CustomAddToBasketRepositoryImpl customAddToBasketRepository;
+    private final CustomBasketRepositoryImpl customBasketRepositoryImpl;
     private final JwtService jwtService;
     @Override
     @Transactional
@@ -44,7 +44,7 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public List<ProductsInBasketResponse> getAllProductsFromBasket() {
-        return customAddToBasketRepository.getAllProductFromBasket();
+        return customBasketRepositoryImpl.getAllProductFromBasket();
     }
 
     @Override

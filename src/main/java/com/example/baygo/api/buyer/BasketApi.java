@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/add_basket")
+@RequestMapping("/api/basket")
 @RequiredArgsConstructor
 @Tag(name = "Add Basket API")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,13 +24,13 @@ public class BasketApi {
     public SimpleResponse addToBasketOrDelete(@PathVariable Long sizeId,@RequestParam boolean delete){
         return basketService.addToBasketOrDelete(sizeId, delete);
     }
-    @GetMapping("/get_all_products")
+    @GetMapping("/products")
     @Operation(summary = "Get all from basket", description = "This method get all products from basket")
     @PreAuthorize("hasAnyAuthority('BUYER')")
     public List<ProductsInBasketResponse> getAllProductsFromBasket(){
         return basketService.getAllProductsFromBasket();
     }
-    @DeleteMapping()
+    @DeleteMapping
     @Operation(summary = "Delete all from basket", description = "This method delete all products from basket")
     @PreAuthorize("hasAnyAuthority('BUYER')")
     public SimpleResponse deleteAllFromBasket(){
