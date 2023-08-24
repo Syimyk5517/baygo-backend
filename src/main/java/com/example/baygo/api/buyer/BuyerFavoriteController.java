@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('BUYER')")
 public class BuyerFavoriteController {
+
     private final FavoriteService favoriteService;
 
     @GetMapping
