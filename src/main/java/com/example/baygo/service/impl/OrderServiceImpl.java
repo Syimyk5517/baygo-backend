@@ -1,7 +1,8 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.response.*;
+import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
@@ -49,13 +50,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus status) {
+    public PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus orderStatus) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "dateOfOrder"));
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<OrderResponse> orderResponses = orderRepository.getAllOrders(sellerId, keyword, status, pageable);
+        Page<OrderResponse> orderResponses = orderRepository.getAllOrders(sellerId, keyword, orderStatus, pageable);
         return new PaginationResponse<>(orderResponses.getContent(),
                 orderResponses.getNumber() + 1,
                 orderResponses.getTotalPages());
     }
+
+    @Override
+    public PaginationResponse<OrdersResponse> getAllFbsOrders(int page, int size, String keyword, OrderStatus orderStatus) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        Page<OrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, orderStatus, pageable);
+        return new PaginationResponse<>(orderResponses.getContent(),
+                orderResponses.getNumber() + 1,
+                orderResponses.getTotalPages());
+
+
+    }
 }
+
+
+
 

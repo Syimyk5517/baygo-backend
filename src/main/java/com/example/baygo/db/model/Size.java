@@ -21,8 +21,8 @@ public class Size {
     private Long id;
     private String size;
     private int barcode;
-    private int quantity;
-
+    private int fbbQuantity;
+    private int fbsQuantity;
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "sub_product_id")
     private SubProduct subProduct;
