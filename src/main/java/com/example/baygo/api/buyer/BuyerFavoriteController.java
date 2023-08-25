@@ -25,7 +25,7 @@ public class BuyerFavoriteController {
     public PaginationResponse<FavoriteResponse> getAllFavorites(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         return favoriteService.getAllFavorProduct(page, size, search);
     }
 
