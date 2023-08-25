@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,4 +58,10 @@ public class Buyer {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public void addToBasket(Size size) {
+        if (this.basket == null){
+            this.basket = new ArrayList<>();
+        }
+        this.basket.add(size);
+    }
 }
