@@ -36,6 +36,7 @@ public class SubProduct {
     private int width;
     private int length;
     private double weight;
+    private boolean isFashion;
     private Boolean isDelete;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
