@@ -47,4 +47,10 @@ public class SellerProductController {
             @RequestParam(defaultValue = "11") int size) {
         return productService.findAll(categoryId, keyWord, sortBy, ascending, page, size);
     }
+
+    @Operation(summary = "Delete product with product id.", description = "This method delete product with product id.")
+    @DeleteMapping()
+    public SimpleResponse deleteProduct(@RequestParam Long subProductId) {
+        return productService.deleteProduct(subProductId);
+    }
 }
