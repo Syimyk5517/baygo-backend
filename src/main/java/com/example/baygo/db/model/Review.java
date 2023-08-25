@@ -1,5 +1,4 @@
 package com.example.baygo.db.model;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -39,9 +39,10 @@ public class SellerSupplyController {
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller
             (@RequestParam(required = false) String supplyNumber,
              @RequestParam(required = false) SupplyStatus status,
+             @RequestParam(defaultValue = "false") Boolean isAscending,
              @RequestParam(defaultValue = "1") int page,
              @RequestParam(defaultValue = "15") int pageSize) {
-        return service.getAllSuppliesOfSeller(supplyNumber, status, page, pageSize);
+        return service.getAllSuppliesOfSeller(supplyNumber, status,isAscending, page, pageSize);
     }
 
     @Operation(summary = "Get all supply products", description = "This method to get all and search supply products")

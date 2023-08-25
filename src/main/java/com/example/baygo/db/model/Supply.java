@@ -51,8 +51,8 @@ public class Supply {
     @OneToMany(mappedBy = "supply", cascade = ALL)
     private List<SupplyProduct> supplyProduct;
 
-    @OneToOne(cascade = ALL)
-    private Supplier supplier;
+    @OneToOne
+    private AccessCard accessCard;
     private Boolean isDraft;
 
     public void addSupplyProduct(SupplyProduct supplyProduct) {
@@ -61,5 +61,4 @@ public class Supply {
         }
         this.supplyProduct.add(supplyProduct);
     }
-
 }

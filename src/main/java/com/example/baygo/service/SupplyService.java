@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 public interface SupplyService {
-    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize);
+    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status,Boolean isAscending, int page, int pageSize);
 
     PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
 
@@ -29,6 +29,8 @@ public interface SupplyService {
     List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
 
     List<SupplyLandingPage> getAllSupplyForLanding();
+
+
 
     PaginationResponse<DeliveryDraftResponse> getDeliveryDrafts(int pageSize, int page);
 
