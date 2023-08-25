@@ -84,7 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
         buyer.setUser(user);
 
-        emailService.sendSellerConfirmationEmail(request.email(), String.valueOf(confirmationCode));
+        confirmCodeSending(confirmationCode, user.getEmail());
 
         buyerRepository.save(buyer);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
@@ -130,7 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         sellerRepository.save(seller);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
 
-        emailService.sendSellerConfirmationEmail(request.email(), String.valueOf(confirmationCode));
+        confirmCodeSending(confirmationCode, user.getEmail());
 
         return AuthenticationResponse.builder()
                 .message("теперь вы должны пройти проверку")
@@ -185,6 +185,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String resetPasswordLink = "http://localhost:3000/reset-password?token=" + token;
 
         Context context = new Context();
+        context.setVariable("baygo", "https://baygo.s3.us-east-2.amazonaws.com/1692961926031Снимок экрана 2023-08-25 в 16.53.24.png");
         context.setVariable("title", "Восстановление пароля");
         context.setVariable("message", "Пожалуйста, нажмите на ссылку ниже для сброса пароля!");
         context.setVariable("token", resetPasswordLink);
@@ -264,6 +265,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(()-> new NotFoundException(String.format("Пользователь с адресом электронной почты %s не существует", email)));
 
         if (user.getConfirmCode() == code){
+
             user.setVerify(true);
             userRepository.save(user);
 
@@ -299,6 +301,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private int generateConfirmationCode() {
         Random random = new Random();
 
-        return random.nextInt(0, 9999);
+        return random.nextInt(1000, 9999);
+    }
+
+    private void confirmCodeSending(int code, String email){
+        String subject = "Письмо для подтверждения";
+
+        Context context = new Context();
+        context.setVariable("logo", "https://baygo.s3.us-east-2.amazonaws.com/1692961926031Снимок экрана 2023-08-25 в 16.53.24.png");
+        context.setVariable("text", "Это ваш проверочный код");
+        context.setVariable("password", code);
+
+        String htmlContent = templateEngine.process("message.html", context);
+
+        emailService.sendEmail(email, subject, htmlContent);
     }
 }
