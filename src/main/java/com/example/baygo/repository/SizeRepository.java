@@ -1,6 +1,8 @@
 package com.example.baygo.repository;
 
+import com.example.baygo.db.dto.response.buyer.FavoriteResponse;
 import com.example.baygo.db.model.Size;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
