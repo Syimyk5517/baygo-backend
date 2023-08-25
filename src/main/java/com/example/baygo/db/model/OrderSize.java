@@ -26,6 +26,7 @@ public class OrderSize {
     private OrderStatus orderStatus;
     private LocalDateTime dateOfReceived;
     private String qrCode;
+    private boolean isFbsOrder;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "order_id")

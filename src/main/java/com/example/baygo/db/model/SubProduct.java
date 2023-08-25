@@ -24,9 +24,9 @@ public class SubProduct {
     private Long id;
     private String colorHexCode;
     private String color;
+    private String mainImage;
     @ElementCollection
     private List<String> images;
-    private String mainImage;
     private BigDecimal price;
     @Column(length = 2000)
     private String description;
@@ -50,4 +50,8 @@ public class SubProduct {
 
     @OneToMany(mappedBy = "subProduct", cascade = CascadeType.ALL)
     private List<Review> reviews;
+    @ManyToMany(mappedBy = "subProducts")
+    private List<FbsWarehouse> fbsWarehouse;
+
+
 }
