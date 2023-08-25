@@ -23,9 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -103,9 +100,6 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
 
-
-
-
     @Override
     public PaginationResponse<DeliveryDraftResponse> getDeliveryDrafts(int pageSize, int page) {
         User user = jwtService.getAuthenticate();
@@ -133,7 +127,7 @@ public class SupplyServiceImpl implements SupplyService {
             String searchWithBarcode, String category, String brand, int page, int pageSize) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<SupplySellerProductResponse> productResponses = repository.getSellerProducts(sellerId, searchWithBarcode,category,brand,pageable);
+        Page<SupplySellerProductResponse> productResponses = repository.getSellerProducts(sellerId, searchWithBarcode, category, brand, pageable);
         return new PaginationResponse<>(productResponses.getContent(),
                 productResponses.getNumber() + 1,
                 productResponses.getTotalPages());
@@ -212,15 +206,15 @@ public class SupplyServiceImpl implements SupplyService {
             productPackages.setProductCounts(productCounts);
             productPackagesRepository.save(productPackages);
         }
-        Supplier supplier = Supplier.builder()
-                .deliverPass(supplyWrapperRequest.supplyDeliveryRequest().deliveryPass())
-                .nameOfSupplier(supplyWrapperRequest.supplyDeliveryRequest().driverName())
-                .surnameOfSupplier(supplyWrapperRequest.supplyDeliveryRequest().driverSurname())
-                .carNumber(supplyWrapperRequest.supplyDeliveryRequest().carNumber())
+        AccessCard accessCard = AccessCard.builder()
+                .deliveryPass(supplyWrapperRequest.supplyDeliveryRequest().deliveryPass())
+                .driverFirstName(supplyWrapperRequest.supplyDeliveryRequest().driverName())
+                .driverLastName(supplyWrapperRequest.supplyDeliveryRequest().driverSurname())
+                .numberOfCar(supplyWrapperRequest.supplyDeliveryRequest().carNumber())
                 .carBrand(supplyWrapperRequest.supplyDeliveryRequest().carBrand())
                 .supplyType(supplyWrapperRequest.supplyDeliveryRequest().supplyType())
                 .numberOfSeats(supplyWrapperRequest.supplyDeliveryRequest().numberOfSeats()).build();
-        supply.setSupplier(supplier);
+        supply.setAccessCard(accessCard);
         repository.save(supply);
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)

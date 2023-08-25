@@ -8,10 +8,7 @@ import com.example.baygo.db.model.Supply;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,7 +24,8 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
             "JOIN User u ON s2.user.id = u.id WHERE u.id = ?1 " +
             "AND (COALESCE(?2, '') = '' OR s.supplyNumber LIKE CONCAT('%', ?2)) " +
             "AND (?3 IS NULL OR s.status = ?3)")
-    Page<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status,Pageable pageable);
+    Page<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, Pageable pageable);
+
     @Query("SELECT NEW com.example.baygo.db.dto.response.supply.ProductBarcodeResponse(s2.barcode,p.name,p.composition)" +
             "FROM Supply s " +
             "JOIN SupplyProduct sp ON s.id = sp.supply.id " +

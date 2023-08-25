@@ -1,14 +1,12 @@
 package com.example.baygo.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.dto.response.SupplyLandingPage;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
+import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.SupplyTypeResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
-import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
-import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.repository.custom.SupplyCustomRepository;
@@ -28,7 +26,7 @@ import java.util.List;
 public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final JwtService jwtService;
+
 
     @Override
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size) {
@@ -208,72 +206,6 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
 
             return new SupplyLandingPage(supplyId, supplyNumber, createdAt, warehouseLocation, quantityOfProducts, status);
         }, sellerId);
-    }
-
-    @Override
-    public PaginationResponse<SupplySellerProductResponse> getSellerProducts(
-            Integer searchWithBarcode, String category, String brand, int page, int pageSize) {
-        User user = jwtService.getAuthenticate();
-
-        String sql = """
-                SELECT s.id as size_id, (SELECT i.images FROM sub_product_images i right join sub_products sp on sp.id = i.sub_product_id LIMIT 1) as image,
-                    sc.name as category, s.barcode as barcode, seller.vendor_number as vendor_number, prod.brand as brand, s.size as size, sub.color as colour
-                FROM products prod
-                    JOIN sub_products sub ON prod.id = sub.product_id
-                    LEFT JOIN sub_categories sc ON prod.sub_category_id = sc.id
-                    LEFT JOIN sizes s on sub.id = s.sub_product_id
-                    LEFT JOIN sellers seller on prod.seller_id = seller.id
-                WHERE prod.seller_id = ?
-                """;
-
-        List<Object> params = new ArrayList<>();
-        params.add(user.getSeller().getId());
-        if (searchWithBarcode != null) {
-            sql += " AND CAST(s.barcode AS TEXT) LIKE ?";
-            params.add(searchWithBarcode + "%");
-        }
-
-        if (category != null) {
-            sql += " AND sc.name=?";
-            params.add(category);
-        }
-
-        if (brand != null) {
-            sql += " AND prod.brand=?";
-            params.add(brand);
-        }
-
-        String countProducts = "SELECT COUNT(*) FROM (" + sql + ") AS count_query";
-        List<Integer> countList = jdbcTemplate.queryForList(countProducts, Integer.class, params.toArray());
-        int count = countList.get(0);
-
-        int totalPage = (int) Math.ceil((double) count / pageSize);
-
-        sql += " LIMIT ? OFFSET ?";
-        int offset = (page - 1) * pageSize;
-        params.add(pageSize);
-        params.add(offset);
-
-        List<SupplySellerProductResponse> supplyResponseList = jdbcTemplate.query(
-                sql,
-                params.toArray(),
-                (resultSet, item) -> SupplySellerProductResponse.builder()
-                        .productSizeId(resultSet.getLong("size_id"))
-                        .imageProduct(resultSet.getString("image"))
-                        .categoryProduct(resultSet.getString("category"))
-                        .barcodeProduct(resultSet.getInt("barcode"))
-                        .vendorCodeSeller(resultSet.getString("vendor_number"))
-                        .brandProduct(resultSet.getString("brand"))
-                        .sizeProduct(resultSet.getString("size"))
-                        .colorProduct(resultSet.getString("colour"))
-                        .build()
-        );
-
-        return PaginationResponse.<SupplySellerProductResponse>builder()
-                .totalPages(totalPage)
-                .currentPage(page)
-                .elements(supplyResponseList)
-                .build();
     }
 
     @Override
