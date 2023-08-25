@@ -11,6 +11,6 @@ public record SupplyRequest(
         @NotNull(message = "Идентификатор склада не может быть пустым")
         Long wareHouseId,
         @Valid
-        List<SupplySizeQuantityRequest> supplySizeQuantityRequestList
+        List<SupplySubProductQuantityRequest> supplySizeQuantityRequestList
 ) {
 }

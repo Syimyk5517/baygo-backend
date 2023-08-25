@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "FBS Orders")
 @PreAuthorize("hasAnyAuthority('SELLER')")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class FbsOrderController {
+public class FBSOrderController {
     private final OrderService orderService;
 
     @Operation(summary = "Get all fbs sellers orders", description = "All orders with search,filter and pagination")

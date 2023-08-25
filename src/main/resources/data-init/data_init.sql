@@ -797,7 +797,7 @@ VALUES (1, 1),
        (2, 4),
        (2, 5);
 
-INSERT INTO warehouses(id, name, region, transit_cost)
+INSERT INTO warehouses(id, name, location, transit_cost)
 VALUES (1, 'БайGo', 'Бишкек', 1200.00),
        (2, 'Асман', 'Талас', 2300.00),
        (3, 'Аю Гранд', 'Чуй', 1200.00),
@@ -831,7 +831,7 @@ VALUES (1, 'MONDAY'),
        (4, 'THURSDAY'),
        (5, 'SATURDAY');
 
-INSERT INTO fbs_warehouses_sizes(fbs_warehouse_id, sizes_id)
+INSERT INTO fbs_warehouses_sub_products(fbs_warehouse_id, sub_products_id)
 VALUES (1,1),
        (1,2),
        (1,3),
@@ -861,26 +861,8 @@ VALUES (1,1),
        (2,27),
        (2,28),
        (2,29),
-       (2,30),
-       (2,31),
-       (2,32),
-       (2,33),
-       (2,34),
-       (2,35),
-       (2,36),
-       (2,37),
-       (2,38),
-       (2,39),
-       (3,40),
-       (3,41),
-       (3,42),
-       (3,43),
-       (3,44),
-       (3,45),
-       (3,46),
-       (3,47),
-       (3,48),
-       (3,49);
+       (2,30);
+
 
 
 

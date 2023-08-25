@@ -48,7 +48,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN os.size s " +
             "JOIN s.subProduct sp " +
             "JOIN sp.product p " +
-            "JOIN s.fbsWarehouse fw " +
+            "JOIN sp.fbsWarehouse fw " +
             "JOIN fw.seller s2 " +
             "WHERE s2.id = :sellerId " +
             "AND os.isFbsOrder = true " +

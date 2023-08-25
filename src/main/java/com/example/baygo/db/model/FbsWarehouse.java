@@ -1,6 +1,5 @@
 package com.example.baygo.db.model;
 
-import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.enums.DayOfWeek;
 import com.example.baygo.db.model.enums.ShippingType;
 import com.example.baygo.db.model.enums.TypeOfProduct;
@@ -47,6 +46,7 @@ public class FbsWarehouse {
     private Seller seller;
     @ManyToMany
     private List<SubProduct> subProducts;
+
 
 
 }

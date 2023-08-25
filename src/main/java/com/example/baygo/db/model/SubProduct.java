@@ -50,4 +50,8 @@ public class SubProduct {
 
     @OneToMany(mappedBy = "subProduct", cascade = CascadeType.ALL)
     private List<Review> reviews;
+    @ManyToMany(mappedBy = "subProducts")
+    private List<FbsWarehouse> fbsWarehouse;
+
+
 }

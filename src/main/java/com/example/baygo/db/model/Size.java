@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 import static jakarta.persistence.CascadeType.*;
 
 @Getter
@@ -25,8 +23,6 @@ public class Size {
     private int barcode;
     private int fbbQuantity;
     private int fbsQuantity;
-    @ManyToMany(mappedBy = "sizes")
-    private List<FbsWarehouse> fbsWarehouse;
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "sub_product_id")
     private SubProduct subProduct;
