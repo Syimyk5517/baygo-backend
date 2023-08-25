@@ -39,6 +39,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -72,21 +73,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Buyer buyer = new Buyer();
         buyer.setFullName(request.fullName());
 
+        int confirmationCode = generateConfirmationCode();
+
         User user = User.builder()
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.BUYER)
+                .confirmCode(confirmationCode)
+                .isVerify(false)
                 .build();
         buyer.setUser(user);
 
+        emailService.sendSellerConfirmationEmail(request.email(), String.valueOf(confirmationCode));
+
         buyerRepository.save(buyer);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
-        String token = jwtService.generateToken(user);
 
         return AuthenticationResponse.builder()
-                .email(user.getEmail())
-                .role(user.getRole())
-                .token(token)
+                .message("теперь вы должны пройти проверку")
                 .build();
     }
 
@@ -100,10 +104,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (split.equals(request.password())) {
             throw new BadRequestException("Создайте более надежный пароль");
         }
+
+        int confirmationCode = generateConfirmationCode();
+
         User user = User.builder()
                 .email(request.email())
                 .phoneNumber(request.phoneNumber())
                 .password(passwordEncoder.encode(request.password()))
+                .isVerify(false)
+                .confirmCode(confirmationCode)
                 .role(Role.SELLER)
                 .build();
 
@@ -120,12 +129,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         sellerRepository.save(seller);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
-        String token = jwtService.generateToken(user);
+
+        emailService.sendSellerConfirmationEmail(request.email(), String.valueOf(confirmationCode));
 
         return AuthenticationResponse.builder()
-                .email(user.getEmail())
-                .role(user.getRole())
-                .token(token)
+                .message("теперь вы должны пройти проверку")
                 .build();
     }
 
@@ -141,19 +149,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("Пароль не подходит");
             throw new BadRequestException("Пароль не подходит");
         }
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
-        log.info(String.format("Пользователь %s успешно аутентифицирован", userInfo.getEmail()));
-        String token = jwtService.generateToken(userInfo);
 
+        if (userInfo.isVerify()){
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    )
+            );
+            log.info(String.format("Пользователь %s успешно аутентифицирован", userInfo.getEmail()));
+            String token = jwtService.generateToken(userInfo);
+
+            return AuthenticationResponse.builder()
+                    .email(userInfo.getEmail())
+                    .role(userInfo.getRole())
+                    .token(token)
+                    .build();
+        }
         return AuthenticationResponse.builder()
-                .email(userInfo.getEmail())
-                .role(userInfo.getRole())
-                .token(token)
+                .message(String.format("Пользователь с адресом электронной почты %s следует подтвердить учетную запись", request.email()))
                 .build();
     }
 
@@ -244,6 +258,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    @Override
+    public AuthenticationResponse confirmRegistration(String email, int code) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new NotFoundException(String.format("Пользователь с адресом электронной почты %s не существует", email)));
+
+        if (user.getConfirmCode() == code){
+            user.setVerify(true);
+            userRepository.save(user);
+
+            String jwtToken = jwtService.generateToken(user);
+
+            return AuthenticationResponse.builder()
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .token(jwtToken)
+                    .build();
+        }
+
+        return AuthenticationResponse.builder().message("неверный проверочный код").build();
+
+    }
+
     @PostConstruct
     void init() {
         try {
@@ -258,5 +294,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (IOException e) {
             log.error("IOException from firebase: " + e.getMessage());
         }
+    }
+
+    private int generateConfirmationCode() {
+        Random random = new Random();
+
+        return random.nextInt(0, 9999);
     }
 }

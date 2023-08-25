@@ -10,36 +10,42 @@ VALUES (1,
        (5,
         'https://marketplace.canva.com/EAFVHstxnwk/1/0/1600w/canva-beige-aesthetic-exclusive-fashion-wear-collection-clothing-banner-BZb4KkCdNP0.jpg');
 
-INSERT INTO users (id, email, password, phone_number, role)
+INSERT INTO users (id, email, password, is_verify, confirm_code, phone_number, role)
 VALUES
 --     пароль:Buyer123
 (1, 'buyer@gmail.com',
  '$2a$12$oU/NczE1jY6mFXp5hAvlCutEGhtEMs6EP3G5m/l9vpFc8TlTam3DS',
+ true , 1234,
  '+996702666357', 'BUYER'),
 
 --     пароль:Buyer00
 (2, 'bb@gmail.com',
  '$2a$12$OvPx7qpK9cO9JE6oTPfWBeQH/6WKZZub4oP76S7aX./CgSgpGUasK',
+ true, 1234,
  '+996702666357', 'BUYER'),
 
 --  пароль:Admin123
 (3, 'admin@gmail.com',
  '$2a$12$L67vHDQc6nq8XP.HfuIbBeK6f29ah2PpiEBSyjjBXifW4dFP8kDye',
+ true, 1234,
  '+996990128880', 'ADMIN'),
 
 -- пароль:Seller123
 (4, 'seller@gmail.com',
  '$2a$12$Q77myfBp/yyrW143tis01eZrSYL3CKhN9JxMBllslZNm56gyO14/i',
+ true, 1234,
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller00
 (5, 'ss@gmail.com',
  '$2a$12$NLvlWRZ0v4utE/cX2bbKtevG8T8sSHGubfQ2wrMABEeY1UNl0ngbW',
+ true, 1234,
  '+996550232345', 'SELLER'),
 
 -- пароль:Seller88
 (6, 'eliza@gmail.com',
  '$2a$12$IZQGU1pFgWxX5M1LHJVrI.0FeYWfw3j.DxWRjVjARLRViDFObuHF.',
+ true, 1234,
  '+996550232345', 'SELLER');
 
 INSERT INTO buyers(id, full_name, date_of_birth, user_id, address, gender)
@@ -797,7 +803,7 @@ VALUES (1, 1),
        (2, 4),
        (2, 5);
 
-INSERT INTO warehouses(id, name, region, transit_cost)
+INSERT INTO warehouses(id, name, location, transit_cost)
 VALUES (1, 'БайGo', 'Бишкек', 1200.00),
        (2, 'Асман', 'Талас', 2300.00),
        (3, 'Аю Гранд', 'Чуй', 1200.00),
