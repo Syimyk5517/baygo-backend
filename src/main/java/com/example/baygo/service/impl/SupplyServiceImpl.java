@@ -9,10 +9,13 @@ import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.repository.SupplyRepository;
 import com.example.baygo.repository.custom.SupplyCustomRepository;
 import com.example.baygo.service.SupplyService;
-import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,10 +30,15 @@ public class SupplyServiceImpl implements SupplyService {
     private final SupplyRepository repository;
     private final SupplyCustomRepository customRepository;
 
+
     @Override
-    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, int page, int pageSize) {
+    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, Boolean isAscending, int page, int pageSize) {
         Long currentUserId = jwtService.getAuthenticate().getId();
-        return customRepository.getAllSuppliesOfSeller(currentUserId, supplyNumber, status, page, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, isAscending ? Sort.Direction.ASC : Sort.Direction.DESC, "createdAt");
+        Page<SuppliesResponse> suppliesResponses = repository.getAllSuppliesOfSeller(currentUserId, supplyNumber, status, pageable);
+        return new PaginationResponse<>(suppliesResponses.getContent(),
+                suppliesResponses.getNumber() + 1,
+                suppliesResponses.getTotalPages());
     }
 
     @Override
@@ -74,4 +82,6 @@ public class SupplyServiceImpl implements SupplyService {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         return customRepository.getAllSupplyForLanding(sellerId);
     }
+
+
 }
