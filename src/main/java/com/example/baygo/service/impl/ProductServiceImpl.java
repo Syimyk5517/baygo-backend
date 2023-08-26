@@ -1,16 +1,11 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.SellerProductRequest;
-import com.example.baygo.db.dto.request.SellerSizeRequest;
-import com.example.baygo.db.dto.request.SellerSubProductRequest;
+import com.example.baygo.db.dto.request.*;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.Product;
-import com.example.baygo.db.model.Size;
-import com.example.baygo.db.model.SubCategory;
-import com.example.baygo.db.model.SubProduct;
+import com.example.baygo.db.model.*;
 import com.example.baygo.repository.*;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import com.example.baygo.service.ProductService;
@@ -32,16 +27,16 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class ProductServiceImpl implements ProductService {
+    private final SubProductRepository subProductRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final SizeRepository sizeRepository;
     private final JwtService jwtService;
-    private final SubProductRepository subProductRepository;
     private final CustomProductRepository customProductRepository;
     private final ProductRepository productRepository;
     private final BuyerRepository buyerRepository;
 
     @Override
-    public SimpleResponse saveProduct(SellerProductRequest request) {
+    public SimpleResponse saveProduct(SaveProductRequest request) {
         SubCategory subCategory = subCategoryRepository.findById(request.subCategoryId()).orElseThrow(() -> {
             throw new NotFoundException("Подкатегория с идентификатором: " + request.subCategoryId() + " не найдена!");
         });
@@ -56,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
         product.setSubCategory(subCategory);
         product.setSeller(jwtService.getAuthenticate().getSeller());
 
-        for (SellerSubProductRequest subProduct : request.subProducts()) {
+        for (SaveSubProductRequest subProduct : request.subProducts()) {
             SubProduct newSubProduct = new SubProduct();
             newSubProduct.setColorHexCode(subProduct.colorHexCode());
             newSubProduct.setColor(subProduct.color());
@@ -64,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setImages(subProduct.images());
             newSubProduct.setPrice(subProduct.price());
             newSubProduct.setDescription(subProduct.description());
-            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
+            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
             newSubProduct.setHeight(subProduct.height());
             newSubProduct.setWidth(subProduct.width());
@@ -73,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setProduct(product);
             newSubProduct.setIsDelete(true);
 
-            for (SellerSizeRequest size : subProduct.sizes()) {
+            for (SaveSizeRequest size : subProduct.sizes()) {
                 Size newSize = new Size();
                 newSize.setSize(size.size());
                 newSize.setBarcode(size.barcode());
@@ -158,4 +153,66 @@ public class ProductServiceImpl implements ProductService {
         return (list == null || list.isEmpty()) ? List.of("") : list;
     }
 
+    @Override
+    public UpdateProductDTO getById(Long productId) {
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException(String.format("Продукт с ID: %s не найден.", productId)));
+        if (!seller.getProducts().contains(product)) {
+            throw new BadRequestException(String.format("Продукт с ID: %s не найден в ваших продуктах.", productId));
+        }
+
+        UpdateProductDTO productDTO = productRepository.getProductById(productId);
+        List<UpdateSubProductDTO> subProductDTO = subProductRepository.getSubProductsByProductId(productId);
+        subProductDTO.forEach((x) -> x.setImages(subProductRepository.getImagesSubProductId(x.getSubProductId())));
+        subProductDTO.forEach((x) -> x.setSizes(sizeRepository.getSizesBySubProductId(x.getSubProductId())));
+        productDTO.setSubProducts(subProductDTO);
+        return productDTO;
+    }
+
+    @Override
+    public SimpleResponse updateProduct(UpdateProductDTO request) {
+        Product product = productRepository.findById(request.getProductId()).orElseThrow(
+                () -> new NotFoundException(String.format("Продукт с ID: %s не найден.", request.getProductId())));
+
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        if (!seller.getProducts().contains(product)) {
+            throw new BadRequestException(String.format("Продукт с ID: %s не найден в ваших продуктах.", request.getProductId()));
+        }
+        SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId()).orElseThrow(
+                () -> new NotFoundException(String.format("Под категория с ID: %s не найден.", request.getSubCategoryId())));
+        product.setManufacturer(request.getManufacturer());
+        product.setBrand(request.getBrand());
+        product.setName(request.getName());
+        product.setSeason(request.getSeason());
+        product.setComposition(request.getComposition());
+        product.setSubCategory(subCategory);
+        product.setDateOfChange(LocalDate.now());
+
+        for (UpdateSubProductDTO subProduct : request.getSubProducts()) {
+            SubProduct oldSubProduct = subProductRepository.findById(subProduct.getSubProductId()).orElseThrow(
+                    () -> new NotFoundException(String.format("Под продукт с ID: %s не найден в ваших продуктах.", subProduct.getSubProductId())));
+            oldSubProduct.setColorHexCode(subProduct.getColorHexCode());
+            oldSubProduct.setColor(subProduct.getColor());
+            oldSubProduct.setMainImage(subProduct.getMainImage());
+            oldSubProduct.setImages(subProduct.getImages());
+            oldSubProduct.setPrice(subProduct.getPrice());
+            oldSubProduct.setDescription(subProduct.getDescription());
+            oldSubProduct.setArticulOfSeller(subProduct.getArticulOfSeller());
+            oldSubProduct.setHeight(subProduct.getHeight());
+            oldSubProduct.setWidth(subProduct.getWidth());
+            oldSubProduct.setLength(subProduct.getLength());
+            oldSubProduct.setWeight(subProduct.getWeight());
+
+            for (UpdateSizeDTO size : subProduct.getSizes()) {
+                Size oldSize = sizeRepository.findById(size.sizeId()).orElseThrow(
+                        () -> new NotFoundException(String.format("Размер с ID: %s не найден", size.sizeId())));
+                oldSize.setSize(size.size());
+            }
+        }
+
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Продукт с ID: %s успешно обновлен.".formatted(product.getId()))
+                .build();
+    }
 }

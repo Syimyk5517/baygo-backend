@@ -1,5 +1,6 @@
 package com.example.baygo.repository;
 
+import com.example.baygo.db.dto.request.UpdateProductDTO;
 import com.example.baygo.db.dto.response.HomePageResponse;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.db.model.Product;
@@ -86,5 +87,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     List<HomePageResponse> getFashionProductsForHomePage(Pageable pageable);
 
+    @Query("""
+            SELECT NEW com.example.baygo.db.dto.request.UpdateProductDTO(
+            p.id, p.subCategory.id, p.manufacturer, p.brand, p.name, p.season, p.composition)
+            FROM Product p
+            WHERE p.id = ?1
+            """)
+    UpdateProductDTO getProductById(Long productId);
 
 }

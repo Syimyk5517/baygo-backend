@@ -1,6 +1,7 @@
 package com.example.baygo.service;
 
-import com.example.baygo.db.dto.request.SellerProductRequest;
+import com.example.baygo.db.dto.request.SaveProductRequest;
+import com.example.baygo.db.dto.request.UpdateProductDTO;
 import com.example.baygo.db.dto.response.*;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Service
 public interface ProductService {
-    SimpleResponse saveProduct(SellerProductRequest request);
+    SimpleResponse saveProduct(SaveProductRequest request);
 
     PaginationResponse<ProductResponseForSeller> findAll(Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size);
 
@@ -25,5 +26,10 @@ public interface ProductService {
                                                                              String sortBy,
                                                                              int page,
                                                                              int pageSize);
+
     SimpleResponse deleteProduct(Long subProductId);
+
+    UpdateProductDTO getById(Long productId);
+
+    SimpleResponse updateProduct(UpdateProductDTO request);
 }
