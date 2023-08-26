@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 
-public record SellerSizeRequest(
+public record SaveSizeRequest(
         @NotNull(message = "Размер должен быть указан!!!")
         String size,
         @Positive(message = "Баркод должен быть положительным !")
