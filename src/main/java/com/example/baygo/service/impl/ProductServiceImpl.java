@@ -127,6 +127,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public UpdateProductDTO getById(Long productId) {
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException(String.format("Продукт с ID: %s не найден.", productId)));
+        if (!seller.getProducts().contains(product)) {
+            throw new BadRequestException(String.format("Продукт с ID: %s не найден в ваших продуктах.", productId));
+        }
+
         UpdateProductDTO productDTO = productRepository.getProductById(productId);
         List<UpdateSubProductDTO> subProductDTO = subProductRepository.getSubProductsByProductId(productId);
         subProductDTO.forEach((x) -> x.setImages(subProductRepository.getImagesSubProductId(x.getSubProductId())));

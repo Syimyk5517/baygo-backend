@@ -54,7 +54,7 @@ public class SellerProductController {
     }
 
     @Operation(summary = "Update Product",
-            description = "Updates product information based on the provided data.")
+            description = "This method updates product information based on the provided data.")
     @PutMapping
     public SimpleResponse updateProduct(@RequestBody @Valid UpdateProductDTO request) {
         return productService.updateProduct(request);
