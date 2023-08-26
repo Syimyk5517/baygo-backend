@@ -27,7 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final BuyerRepository buyerRepository;
 
     @Override
-    public SimpleResponse sendNotificationToSeller(NotificationSendRequest notificationSendRequest) {
+    public SimpleResponse sendNotificationToBuyer(NotificationSendRequest notificationSendRequest) {
         Notification notification = new Notification();
         notification.setTittle(notificationSendRequest.notificationRequest().tittle());
         notification.setMessage(notificationSendRequest.notificationRequest().message());
@@ -35,7 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setRead(false);
         for (Long buyerId : notificationSendRequest.buyerIds()) {
             Buyer buyer = buyerRepository.findById(buyerId).orElseThrow(
-                    ()-> new NotFoundException("Buyer not found with id: " + buyerId));
+                    () -> new NotFoundException("Buyer not found with id: " + buyerId));
 
             buyer.addNotification(notification);
             buyerRepository.save(buyer);
@@ -65,7 +65,6 @@ public class NotificationServiceImpl implements NotificationService {
                     .build();
             notificationResponses.add(response);
         }
-
         return notificationResponses;
     }
 
@@ -75,7 +74,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(
                 () -> new NotFoundException("Notification not found with id: " + notificationId));
 
-        if (notification != null){
+        if (notification != null) {
             notification.setRead(true);
             notificationRepository.save(notification);
         }

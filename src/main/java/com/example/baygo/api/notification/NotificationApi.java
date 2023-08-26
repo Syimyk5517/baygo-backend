@@ -21,8 +21,8 @@ public class NotificationApi {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Send notification!", description = "This method for sending notification!")
     @PostMapping
-    public SimpleResponse sendNotificationToSellers(@RequestBody NotificationSendRequest notificationSendRequest){
-        return service.sendNotificationToSeller(notificationSendRequest);
+    public SimpleResponse sendNotificationToBuyers(@RequestBody NotificationSendRequest notificationSendRequest){
+        return service.sendNotificationToBuyer(notificationSendRequest);
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
