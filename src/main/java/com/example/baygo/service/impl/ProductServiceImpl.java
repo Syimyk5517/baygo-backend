@@ -5,11 +5,11 @@ import com.example.baygo.db.dto.request.*;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
-import com.example.baygo.db.model.*;
-import com.example.baygo.repository.ProductRepository;
-import com.example.baygo.repository.SizeRepository;
-import com.example.baygo.repository.SubCategoryRepository;
-import com.example.baygo.repository.SubProductRepository;
+import com.example.baygo.db.model.Product;
+import com.example.baygo.db.model.Size;
+import com.example.baygo.db.model.SubCategory;
+import com.example.baygo.db.model.SubProduct;
+import com.example.baygo.repository.*;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import com.example.baygo.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,8 +34,10 @@ public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
     private final SizeRepository sizeRepository;
     private final JwtService jwtService;
+    private final SubProductRepository subProductRepository;
     private final CustomProductRepository customProductRepository;
     private final ProductRepository productRepository;
+    private final BuyerRepository buyerRepository;
 
     @Override
     public SimpleResponse saveProduct(SaveProductRequest request) {
@@ -60,13 +63,14 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setImages(subProduct.images());
             newSubProduct.setPrice(subProduct.price());
             newSubProduct.setDescription(subProduct.description());
-            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
+            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
             newSubProduct.setHeight(subProduct.height());
             newSubProduct.setWidth(subProduct.width());
             newSubProduct.setLength(subProduct.length());
             newSubProduct.setWeight(subProduct.weight());
             newSubProduct.setProduct(product);
+            newSubProduct.setIsDelete(true);
 
             for (SaveSizeRequest size : subProduct.sizes()) {
                 Size newSize = new Size();
@@ -119,6 +123,34 @@ public class ProductServiceImpl implements ProductService {
                 .quantityOfProduct((int) allProducts.getTotalElements())
                 .elements(allProducts.getContent())
                 .build();
+    }
+
+    @Override
+    public SimpleResponse deleteProduct(Long subProductId) {
+        SubProduct subProduct = subProductRepository.findById(subProductId).orElseThrow(
+                () -> new NotFoundException(String.format("Продукт с идентификатором %s не найден.", subProductId)));
+        if (sizeRepository.isSupplyProduct(subProductId)) {
+            throw new BadRequestException("Вы не можете удалить этот продукт.Этот продукт доступен при доставке.");
+        }
+        if (sizeRepository.isOrderSize(subProductId)) {
+            subProduct.setIsDelete(false);
+            subProductRepository.save(subProduct);
+        } else {
+            List<Size> sizesToRemove = subProduct.getSizes();
+
+            if (!sizesToRemove.isEmpty()) {
+                for (Size size : sizesToRemove) {
+                    buyerRepository.removeSizeFromBaskets(size.getId());
+                }
+            }
+            buyerRepository.removeSizeFromLastViews(subProductId);
+            buyerRepository.removeSizeFromFavorites(subProductId);
+            subProductRepository.delete(subProduct);
+
+        }
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message(String.format("Продукт с идентификатором %s успешно удален.", subProductId)).build();
     }
 
     private List<String> getDefaultIfEmpty(List<String> list) {

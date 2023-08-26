@@ -27,8 +27,9 @@ public interface ProductService {
                                                                              int page,
                                                                              int pageSize);
 
+    SimpleResponse deleteProduct(Long subProductId);
+
     UpdateProductDTO getById(Long productId);
 
     SimpleResponse updateProduct(UpdateProductDTO request);
-
 }

@@ -1,7 +1,7 @@
 package com.example.baygo.db.model.enums;
 
 public enum OrderStatus {
-    ON_PENDING,
+    PENDING,
     ON_ASSEMBLY,
     ON_SUPPLY_DELIVERY,
     ON_WAREHOUSE,

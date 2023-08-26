@@ -1,6 +1,7 @@
 package com.example.baygo.repository;
 
 import com.example.baygo.db.dto.request.UpdateProductDTO;
+import com.example.baygo.db.dto.response.HomePageResponse;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.db.model.Product;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,41 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                      BigDecimal maxPrice,
                                      String filterBy,
                                      Pageable pageable);
+    @Query("""
+           SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+           p.id, sp.id, p.name, sp.mainImage
+           )
+           FROM Product p
+           JOIN SubProduct sp ON sp.product.id = p.id
+           JOIN Size s ON s.subProduct.id = sp.id
+           JOIN OrderSize os ON os.size.id = s.id
+             WHERE os.orderStatus <> 'CANCELED'
+             AND os.order.dateOfOrder >= CURRENT_DATE - 15
+             GROUP BY p.id, sp.id, s.id
+             ORDER BY SUM(os.quantity) DESC
+             LIMIT 8
+            """)
+    List<HomePageResponse> getBestSellersForHomePage();
+    @Query("""
+            SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+           p.id, sp.id, p.name, sp.mainImage
+           )
+           FROM Product p
+           JOIN SubProduct sp ON sp.product.id = p.id
+           JOIN Discount d ON sp.discount.id = d.id
+           ORDER BY d.percent DESC
+           LIMIT 8
+            """)
+    List<HomePageResponse> getHotSalesForHomePage();
+      @Query("""
+            SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+           p.id, sp.id, p.name, sp.mainImage
+           )
+           FROM Product p
+           JOIN SubProduct sp ON sp.product.id = p.id
+           WHERE sp.isFashion = TRUE
+            """)
+    List<HomePageResponse> getFashionProductsForHomePage(Pageable pageable);
 
     @Query("""
             SELECT NEW com.example.baygo.db.dto.request.UpdateProductDTO(
@@ -58,4 +94,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             WHERE p.id = ?1
             """)
     UpdateProductDTO getProductById(Long productId);
+
 }

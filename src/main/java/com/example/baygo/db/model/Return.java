@@ -23,6 +23,7 @@ public class Return {
     private String reason;
     @ElementCollection
     @CollectionTable(name = "return_images", joinColumns = @JoinColumn(name = "return_id"))
+    @Column(length = 10000)
     private List<String> images;
     private String country;
     private String city;

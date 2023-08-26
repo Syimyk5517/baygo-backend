@@ -46,6 +46,12 @@ public class SellerProductController {
         return productService.findAll(categoryId, keyWord, sortBy, ascending, page, size);
     }
 
+    @Operation(summary = "Delete product with product id.", description = "This method delete product with product id.")
+    @DeleteMapping()
+    public SimpleResponse deleteProduct(@RequestParam Long subProductId) {
+        return productService.deleteProduct(subProductId);
+    }
+
     @GetMapping("/{productId}")
     @Operation(summary = "Get product by id",
             description = "Retrieves detailed information about a product based on the provided ID.")
