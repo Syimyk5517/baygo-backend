@@ -1,5 +1,6 @@
 package com.example.baygo.repository;
 
+import com.example.baygo.db.dto.request.UpdateSizeDTO;
 import com.example.baygo.db.dto.response.buyer.FavoriteResponse;
 import com.example.baygo.db.model.Size;
 import org.springframework.data.domain.Page;
@@ -37,8 +38,6 @@ public interface SizeRepository extends JpaRepository<Size, Long> {
             "JOIN s.subProduct sub " +
             "WHERE sub.id = ?1")
     Boolean isOrderSize(Long subProductId);
-
-}
 
     @Query("SELECT NEW com.example.baygo.db.dto.request.UpdateSizeDTO(s.id, s.size) FROM SubProduct sp JOIN sp.sizes s WHERE sp.id = ?1")
     List<UpdateSizeDTO> getSizesBySubProductId(Long subProductId);
