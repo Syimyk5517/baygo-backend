@@ -28,6 +28,8 @@ public class Seller {
     private String BIC;
     private String aboutStore;
     private String vendorNumber;
+    private String addressOfStore;
+    private int checkingCheck;
 
     @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;

@@ -2,6 +2,7 @@ package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.SellerProfileRequest;
 import com.example.baygo.db.dto.request.SellerStoreInfoRequest;
+import com.example.baygo.db.dto.response.SellerProfileResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.SellerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAuthority('SELLER')")
 public class SellerProfileController {
     private final SellerService service;
+
+    @Operation(summary = "Get seller profile", description = "This is get seller profile method")
+    @GetMapping
+    public SellerProfileResponse getSellerProfile() {
+        return service.getSellerProfile();
+    }
 
     @Operation(summary = "Update seller profile", description = "This is update seller profile method")
     @PutMapping

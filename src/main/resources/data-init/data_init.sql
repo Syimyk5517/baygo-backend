@@ -52,23 +52,23 @@ VALUES (1, 'Kanykei Askarbekova',
 
 INSERT INTO sellers(id, first_name, last_name, bic, itn, about_store, address,
                     name_of_store, store_logo,
-                    vendor_number, user_id)
+                    vendor_number, address_of_store, checking_check, user_id)
 VALUES (1, 'Jiydegul', 'Jalilova', 'DEUTDEFF', '765-43-2109', 'Fashion Haven - ваш источник стильной и модной одежды',
         'ТЦ ГУМ, город Бишкек',
         'Fashion Haven',
         'https://s.tmimgcdn.com/scr/800x500/183700/modern-shopping-business-logo-template_183766-original.jpg',
-        'VND12345', 4),
+        'VND12345','ТЦ ГУМ, город Бишкек', 34567, 4),
        (2, 'Aiperi', 'Toktosunova', 'UBSWCHZH80A', '987-65-4321',
         'Trendy Threads - магазин для тех, кто следит за модой',
         'ТЦ ЦУМ, город Ош',
         'Trendy Threads',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwhRFf7FljIdmi9O3IJF7w438B_ljoSVtmyA&usqp=CAU',
-        'SPLR789', 5),
+        'SPLR789', 'ТЦ ЦУМ, город Ош', 23456, 5),
        (3, 'Eliza', 'Ashyralieva', 'KASITHBK', '444-44-4444',
         'Classic Elegance - магазин, где классика встречает элегантность',
         'ТЦ Asia Mall, город Бишкек', 'Classic Elegance',
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSALIXFTV7zON37JghAVcdd6f_a1b-o9atknA&usqp=CAU',
-        'PVDR7890', 6);
+        'PVDR7890', 'ТЦ Asia Mall, город Бишкек', 12345, 6);
 
 INSERT INTO customers(id, first_name, last_name,
                       address, city, country, email,

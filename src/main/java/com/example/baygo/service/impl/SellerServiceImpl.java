@@ -3,6 +3,7 @@ package com.example.baygo.service.impl;
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.SellerProfileRequest;
 import com.example.baygo.db.dto.request.SellerStoreInfoRequest;
+import com.example.baygo.db.dto.response.SellerProfileResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.model.Seller;
@@ -19,6 +20,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SellerServiceImpl implements SellerService {
     private final JwtService jwtService;
+
+    @Override
+    public SellerProfileResponse getSellerProfile() {
+        Seller seller = jwtService.getAuthenticate().getSeller();
+
+        return SellerProfileResponse
+                .builder()
+                .firstName(seller.getFirstName())
+                .lastName(seller.getLastName())
+                .email(seller.getUser().getEmail())
+                .phoneNumber(seller.getUser().getPhoneNumber())
+                .address(seller.getAddress())
+                .nameOfStore(seller.getNameOfStore())
+                .storeAddress(seller.getAddressOfStore())
+                .ITN(seller.getITN())
+                .storeLogo(seller.getStoreLogo())
+                .checkingCheck(seller.getCheckingCheck())
+                .BIC(seller.getBIC())
+                .aboutStore(seller.getAboutStore())
+                .build();
+    }
 
     @Transactional
     @Override
@@ -41,8 +63,7 @@ public class SellerServiceImpl implements SellerService {
     public SimpleResponse updateSellerStoreInfo(SellerStoreInfoRequest request) {
         Seller seller = jwtService.getAuthenticate().getSeller();
         seller.setNameOfStore(request.getNameOfStore());
-        seller.getUser().setEmail(request.getStoreEmail());
-        seller.setAddress(request.getStoreAddress());
+        seller.setAddressOfStore(request.getStoreAddress());
         seller.setITN(request.getITN());
         seller.setStoreLogo(request.getStoreLogo());
         seller.setBIC(request.getBIC());
