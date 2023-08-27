@@ -7,7 +7,6 @@ import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.repository.*;
-import com.example.baygo.db.model.*;
 import com.example.baygo.repository.ProductRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.SubCategoryRepository;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final BuyerRepository buyerRepository;
 
     @Override
     public SimpleResponse saveProduct(SaveProductRequest request) {
@@ -66,14 +65,14 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setImages(subProduct.images());
             newSubProduct.setPrice(subProduct.price());
             newSubProduct.setDescription(subProduct.description());
-            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
+            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
             newSubProduct.setHeight(subProduct.height());
             newSubProduct.setWidth(subProduct.width());
             newSubProduct.setLength(subProduct.length());
             newSubProduct.setWeight(subProduct.weight());
             newSubProduct.setProduct(product);
-            newSubProduct.setIsDelete(true);
+            newSubProduct.setDeleted(false);
 
             for (SaveSizeRequest size : subProduct.sizes()) {
                 Size newSize = new Size();
@@ -122,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
         colors = getDefaultIfEmpty(colors);
 
         Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, keyWord, sizes, compositions, brands, colors,
-                                                                         minPrice, maxPrice, filterBy, pageable);
+                minPrice, maxPrice, filterBy, pageable);
 
         return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
                 .currentPage(allProducts.getNumber() + 1)
@@ -130,6 +129,10 @@ public class ProductServiceImpl implements ProductService {
                 .quantityOfProduct((int) allProducts.getTotalElements())
                 .elements(allProducts.getContent())
                 .build();
+    }
+
+    private List<String> getDefaultIfEmpty(List<String> list) {
+        return (list == null || list.isEmpty()) ? List.of("") : list;
     }
 
     @Override
@@ -140,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Вы не можете удалить этот продукт.Этот продукт доступен при доставке.");
         }
         if (sizeRepository.isOrderSize(subProductId)) {
-            subProduct.setIsDelete(false);
+            subProduct.setDeleted(true);
             subProductRepository.save(subProduct);
         } else {
             List<Size> sizesToRemove = subProduct.getSizes();
@@ -158,10 +161,6 @@ public class ProductServiceImpl implements ProductService {
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("Продукт с идентификатором %s успешно удален.", subProductId)).build();
-    }
-
-    private List<String> getDefaultIfEmpty(List<String> list) {
-        return (list == null || list.isEmpty()) ? List.of("") : list;
     }
 
     @Override

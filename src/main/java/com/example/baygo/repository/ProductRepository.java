@@ -70,6 +70,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                      BigDecimal maxPrice,
                                      String filterBy,
                                      Pageable pageable);
+
     @Query("""
            SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
            p.id, sp.id, p.name, sp.mainImage
@@ -85,6 +86,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
              LIMIT 8
             """)
     List<HomePageResponse> getBestSellersForHomePage();
+
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
            p.id, sp.id, p.name, sp.mainImage
@@ -96,6 +98,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            LIMIT 8
             """)
     List<HomePageResponse> getHotSalesForHomePage();
+
       @Query("""
             SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
            p.id, sp.id, p.name, sp.mainImage
