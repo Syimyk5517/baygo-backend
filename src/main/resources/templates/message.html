@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-container {
+            text-align: center;
+        }
+
+        .round-image {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-top: 10%;
+        }
+
+        .text {
+            margin-top: 10px;
+            font-size: 30px;
+            font-family: sans-serif;
+        }
+
+        .text2 {
+            margin-top: 20px;
+            font-size: 30px;
+            font-family: sans-serif;
+        }
+
+        .password {
+            margin-top: 15px;
+            font-size: 50px;
+            font-family: sans-serif;
+            background-color: #dff2ee;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="image-container">
+    <img th:src="${logo}"
+         alt="Круглое изображение" class="round-image">
+    <div th:text="${text}" class="text">Text</div>
+    <div class="text2"> КОД ПОДТВЕРЖДЕНИЯ </div>
+    <div th:text="${password}" class="password">Password</div>
+</div>
+</body>
+</html>

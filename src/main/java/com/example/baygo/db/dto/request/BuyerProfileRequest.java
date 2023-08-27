@@ -6,9 +6,10 @@ import com.example.baygo.validations.PhoneNumberValid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.time.LocalDate;
-
+@Builder
 public record BuyerProfileRequest(
         @NotBlank(message = "Необходимо указать имя.")
         @Size(min = 2, max = 50, message = "Ф.И.О должно содержать от 2 до 50 символов.")
