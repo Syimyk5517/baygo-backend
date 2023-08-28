@@ -41,7 +41,7 @@ public class BuyerProfileController {
 
     @GetMapping
     @Operation(summary="Get buyer profile information",description = "This method will get buyer profile information")
-    public BuyerProfileInfoResponse getBuyerInfo(Long buyerId){
-        return buyerProfileService.getProfileInfo(buyerId);
+    public BuyerProfileInfoResponse getBuyerInfo(){
+        return buyerProfileService.getProfileInfo();
     }
 }
