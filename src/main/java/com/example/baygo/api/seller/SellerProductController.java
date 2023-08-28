@@ -1,10 +1,8 @@
 package com.example.baygo.api.seller;
 
-import com.example.baygo.db.dto.request.SellerProductRequest;
-import com.example.baygo.db.dto.response.ColorResponse;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.ProductResponseForSeller;
-import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.request.SaveProductRequest;
+import com.example.baygo.db.dto.request.UpdateProductDTO;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +24,7 @@ public class SellerProductController {
 
     @Operation(summary = "Save the product", description = "This method saves the product")
     @PostMapping
-    public SimpleResponse saveProduct(@RequestBody @Valid SellerProductRequest productRequest) {
+    public SimpleResponse saveProduct(@RequestBody @Valid SaveProductRequest productRequest) {
         return productService.saveProduct(productRequest);
     }
 
@@ -52,5 +50,19 @@ public class SellerProductController {
     @DeleteMapping()
     public SimpleResponse deleteProduct(@RequestParam Long subProductId) {
         return productService.deleteProduct(subProductId);
+    }
+
+    @GetMapping("/{productId}")
+    @Operation(summary = "Get product by id",
+            description = "Retrieves detailed information about a product based on the provided ID.")
+    public UpdateProductDTO getById(@PathVariable Long productId) {
+        return productService.getById(productId);
+    }
+
+    @Operation(summary = "Update Product",
+            description = "This method updates product information based on the provided data.")
+    @PutMapping
+    public SimpleResponse updateProduct(@RequestBody @Valid UpdateProductDTO request) {
+        return productService.updateProduct(request);
     }
 }
