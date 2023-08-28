@@ -1,7 +1,7 @@
 package com.example.baygo.service;
 
-import com.example.baygo.db.dto.request.supply.SupplyRequest;
-import com.example.baygo.db.dto.request.supply.SupplyWrapperRequest;
+import com.example.baygo.db.dto.request.fbb.FBBSupplyRequest;
+import com.example.baygo.db.dto.request.fbb.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 public interface SupplyService {
-    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status,Boolean isAscending, int page, int pageSize);
+    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, Boolean isAscending, int page, int pageSize);
 
     PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
 
@@ -31,7 +31,6 @@ public interface SupplyService {
     List<SupplyLandingPage> getAllSupplyForLanding();
 
 
-
     PaginationResponse<DeliveryDraftResponse> getDeliveryDrafts(int pageSize, int page);
 
     SimpleResponse deleteDeliveryDraft(Long supplyId);
@@ -41,12 +40,13 @@ public interface SupplyService {
 
     List<WarehouseResponse> getAllWarehouses();
 
-    SimpleResponse createSupply(SupplyRequest supplyRequest);
+    SimpleResponse createSupply(FBBSupplyRequest supplyRequest);
 
     List<WarehouseCostResponse> getAllWarehouseCost(Long warehouseId, SupplyType supplyType);
 
     List<ProductBarcodeResponse> getAllBarcodeProducts(Long supplyId);
 
     SimpleResponse willCompleteTheDelivery(SupplyWrapperRequest supplyWrapperRequest);
+
 
 }

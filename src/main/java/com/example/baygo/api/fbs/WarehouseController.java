@@ -43,7 +43,7 @@ public class WarehouseController {
     }
 
     @Operation(summary = "Get all products of warehouse", description = "The method will get all products")
-    @GetMapping("/{wareHouseId}")
+    @GetMapping("/wareHouseId")
     public List<ProductGetAllResponse> getAllProduct(@RequestParam Long wareHouseId) {
         return wareHouseService.getAllProduct(wareHouseId);
     }

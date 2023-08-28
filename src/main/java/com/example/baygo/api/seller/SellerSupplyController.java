@@ -1,8 +1,8 @@
 package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.PackingRequest;
-import com.example.baygo.db.dto.request.supply.SupplyRequest;
-import com.example.baygo.db.dto.request.supply.SupplyWrapperRequest;
+import com.example.baygo.db.dto.request.fbb.FBBSupplyRequest;
+import com.example.baygo.db.dto.request.fbb.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
@@ -16,6 +16,7 @@ import com.example.baygo.service.PackingService;
 import com.example.baygo.service.SupplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class SellerSupplyController {
              @RequestParam(defaultValue = "false") Boolean isAscending,
              @RequestParam(defaultValue = "1") int page,
              @RequestParam(defaultValue = "15") int pageSize) {
-        return service.getAllSuppliesOfSeller(supplyNumber, status,isAscending, page, pageSize);
+        return service.getAllSuppliesOfSeller(supplyNumber, status, isAscending, page, pageSize);
     }
 
     @Operation(summary = "Get all supply products", description = "This method to get all and search supply products")
@@ -119,7 +120,7 @@ public class SellerSupplyController {
     @Operation(summary = "Choose products",
             description = "This method is for choosing products to send it to warehouse")
     @PostMapping("/new_supply")
-    public SimpleResponse postToSupplyProducts(@RequestBody SupplyRequest supplyRequest) {
+    public SimpleResponse postToSupplyProducts(@RequestBody @Valid FBBSupplyRequest supplyRequest) {
         return service.createSupply(supplyRequest);
     }
 
@@ -139,7 +140,7 @@ public class SellerSupplyController {
 
     @Operation(summary = "Save and complete delivery", description = "This method saves and completes the supply")
     @PostMapping("/complete_the_delivery")
-    SimpleResponse willCompleteTheDelivery(@RequestBody SupplyWrapperRequest supplyWrapperRequest) {
+    SimpleResponse willCompleteTheDelivery(@RequestBody @Valid SupplyWrapperRequest supplyWrapperRequest) {
         return service.willCompleteTheDelivery(supplyWrapperRequest);
     }
 

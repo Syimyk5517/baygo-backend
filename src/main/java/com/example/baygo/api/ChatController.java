@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Chat")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class ChatApi {
+public class ChatController {
     private final ChatService chatService;
 
     @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")

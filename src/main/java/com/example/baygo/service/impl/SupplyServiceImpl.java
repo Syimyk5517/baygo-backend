@@ -1,7 +1,7 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.supply.*;
+import com.example.baygo.db.dto.request.fbb.*;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
@@ -139,28 +139,32 @@ public class SupplyServiceImpl implements SupplyService {
     }
 
     @Override
-    public SimpleResponse createSupply(SupplyRequest supplyRequest) {
+    public SimpleResponse createSupply(FBBSupplyRequest supplyRequest) {
         User user = jwtService.getAuthenticate();
+        Warehouse warehouse = warehouseRepository.findById(supplyRequest.warehouseId()).orElseThrow(
+                () -> new NotFoundException(String.format("Склад c идентикатом %s не найден.", supplyRequest.warehouseId())));
         Supply supply = new Supply();
         int quantityOfProducts = 0;
         for (SupplyChooseRequest chooseRequest : supplyRequest.supplyChooseRequests()) {
             Size size = sizeRepository.findById(chooseRequest.sizeId()).orElseThrow(
                     () -> new NotFoundException("Продукт не найден"));
             quantityOfProducts += chooseRequest.quantityProduct();
+
             SupplyProduct supplyProducts = SupplyProduct.builder()
                     .size(size)
                     .supply(supply)
                     .quantity(chooseRequest.quantityProduct()).build();
             supply.addSupplyProduct(supplyProducts);
         }
+
         UUID uuid = UUID.randomUUID();
-        long leastSignificantBits = uuid.getLeastSignificantBits();
-        long positiveValue = Math.abs(leastSignificantBits);
-        String supplyNumber = String.format("%08d", positiveValue % 100000000);
+        long positiveValue = Math.abs(uuid.getLeastSignificantBits()) % 100000000;
+        String supplyNumber = String.format("%08d", positiveValue);
+
         supply.setQuantityOfProducts(quantityOfProducts);
         supply.setSeller(user.getSeller());
         supply.setIsDraft(true);
-        supply.setWarehouse(warehouseRepository.findById(supplyRequest.warehouseId()).orElseThrow());
+        supply.setWarehouse(warehouse);
         supply.setPlannedDate(supplyRequest.plannedDate());
         supply.setSupplyType(supplyRequest.supplyType());
         supply.setCreatedAt(LocalDate.now());
@@ -197,8 +201,8 @@ public class SupplyServiceImpl implements SupplyService {
         for (ProductPackagesRequest packagesRequest : supplyWrapperRequest.productPackagesRequests()) {
             Map<SupplyProduct, Integer> productCounts = new HashMap<>();
             for (NumberOfProductsRequest numberOfProductsRequest : packagesRequest.numberOfProductsRequests()) {
-                SupplyProduct supplyProduct = supplyProductRepository.findBySupplyProductWithBarcode(numberOfProductsRequest.barcodeProduct()).orElseThrow(
-                        () -> new NotFoundException("Товар с таким баркодом не найден"));
+                SupplyProduct supplyProduct = supplyProductRepository.findBySupplyProductWithBarcode(numberOfProductsRequest.barcodeProduct(), supply.getId()).orElseThrow(
+                        () -> new NotFoundException("Товар с таким баркодом и в этом поставке не найден."));
                 productCounts.put(supplyProduct, numberOfProductsRequest.quantityProduct());
             }
             ProductPackages productPackages = new ProductPackages();
@@ -213,6 +217,7 @@ public class SupplyServiceImpl implements SupplyService {
                 .numberOfCar(supplyWrapperRequest.supplyDeliveryRequest().carNumber())
                 .carBrand(supplyWrapperRequest.supplyDeliveryRequest().carBrand())
                 .supplyType(supplyWrapperRequest.supplyDeliveryRequest().supplyType())
+                .supply(supply)
                 .numberOfSeats(supplyWrapperRequest.supplyDeliveryRequest().numberOfSeats()).build();
         supply.setAccessCard(accessCard);
         repository.save(supply);
@@ -220,4 +225,6 @@ public class SupplyServiceImpl implements SupplyService {
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("Поставка с идентификатором %s успешно сохранено!!!", supply.getId())).build();
     }
+
+
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Survey API")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class SurveyApi {
+public class SurveyController {
     private final SurveyService surveyService;
     @Operation(summary = "Create survey ", description = "This method create survey.")
     @PostMapping
