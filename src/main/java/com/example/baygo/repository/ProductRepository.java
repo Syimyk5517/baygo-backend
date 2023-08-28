@@ -51,41 +51,60 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                      BigDecimal maxPrice,
                                      String filterBy,
                                      Pageable pageable);
+
     @Query("""
-           SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
-           p.id, sp.id, p.name, sp.mainImage
-           )
-           FROM Product p
-           JOIN SubProduct sp ON sp.product.id = p.id
-           JOIN Size s ON s.subProduct.id = sp.id
-           JOIN OrderSize os ON os.size.id = s.id
-             WHERE os.orderStatus <> 'CANCELED'
-             AND os.order.dateOfOrder >= CURRENT_DATE - 15
-             GROUP BY p.id, sp.id, s.id
-             ORDER BY SUM(os.quantity) DESC
-             LIMIT 8
-            """)
+            SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+            p.id, sp.id, p.name, sp.mainImage
+            )
+            FROM Product p
+            JOIN SubProduct sp ON sp.product.id = p.id
+            JOIN Size s ON s.subProduct.id = sp.id
+            JOIN OrderSize os ON os.size.id = s.id
+              WHERE os.orderStatus <> 'CANCELED'
+              AND os.order.dateOfOrder >= CURRENT_DATE - 15
+              GROUP BY p.id, sp.id, s.id
+              ORDER BY SUM(os.quantity) DESC
+              LIMIT 8
+             """)
     List<HomePageResponse> getBestSellersForHomePage();
+
     @Query("""
-            SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
-           p.id, sp.id, p.name, sp.mainImage
-           )
-           FROM Product p
-           JOIN SubProduct sp ON sp.product.id = p.id
-           JOIN Discount d ON sp.discount.id = d.id
-           ORDER BY d.percent DESC
-           LIMIT 8
-            """)
+             SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+            p.id, sp.id, p.name, sp.mainImage
+            )
+            FROM Product p
+            JOIN SubProduct sp ON sp.product.id = p.id
+            JOIN Discount d ON sp.discount.id = d.id
+            ORDER BY d.percent DESC
+            LIMIT 8
+             """)
     List<HomePageResponse> getHotSalesForHomePage();
-      @Query("""
-            SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
-           p.id, sp.id, p.name, sp.mainImage
-           )
-           FROM Product p
-           JOIN SubProduct sp ON sp.product.id = p.id
-           WHERE sp.isFashion = TRUE
-            """)
+
+    @Query("""
+             SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+            p.id, sp.id, p.name, sp.mainImage
+            )
+            FROM Product p
+            JOIN SubProduct sp ON sp.product.id = p.id
+            WHERE sp.isFashion = TRUE
+             """)
     List<HomePageResponse> getFashionProductsForHomePage(Pageable pageable);
+
+    @Query("""
+                SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
+                    p.id, sp.id, p.brand, sp.mainImage
+                )
+                FROM Product p
+                JOIN SubProduct sp ON sp.product.id = p.id
+                WHERE (p.brand, sp.id) IN (
+                    SELECT p3.brand, MAX(sp2.id) AS max_subproduct_id
+                    FROM Product p3
+                    JOIN SubProduct sp2 ON sp2.product.id = p3.id
+                    GROUP BY p3.brand
+                )
+                ORDER BY (SELECT COUNT(*) FROM Product p4 WHERE p4.brand = p.brand) DESC, p.brand, sp.mainImage DESC
+            """)
+    List<HomePageResponse> getPopularBrandsForHomePage(Pageable pageable);
 
     @Query("""
             SELECT NEW com.example.baygo.db.dto.request.UpdateProductDTO(
