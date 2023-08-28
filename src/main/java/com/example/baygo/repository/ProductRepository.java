@@ -56,7 +56,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                 )
                             )
                          OR (:filterBy IS NULL))
-                        AND (sp.isDeleted = TRUE )
+                        AND (sp.isDeleted = FALSE )
                        GROUP BY s.id, sp.id, s.id, p.id, p.name, sp.description, p.rating, sp.price, coalesce(d.percent, 0), f.id
             """)
     @PreAuthorize("hasRole('BUYER') or permitAll()")
@@ -81,6 +81,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             JOIN OrderSize os ON os.size.id = s.id
               WHERE os.orderStatus <> 'CANCELED'
               AND os.order.dateOfOrder >= CURRENT_DATE - 15
+              AND (sp.isDeleted = FALSE )
               GROUP BY p.id, sp.id, s.id
               ORDER BY SUM(os.quantity) DESC
               LIMIT 8
@@ -94,6 +95,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             FROM Product p
             JOIN SubProduct sp ON sp.product.id = p.id
             JOIN Discount d ON sp.discount.id = d.id
+            WHERE (sp.isDeleted = FALSE )
             ORDER BY d.percent DESC
             LIMIT 8
              """)
@@ -105,6 +107,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             FROM Product p
             JOIN SubProduct sp ON sp.product.id = p.id
             WHERE sp.isFashion = TRUE
+            AND (sp.isDeleted = FALSE )
              """)
     List<HomePageResponse> getFashionProductsForHomePage(Pageable pageable);
 
@@ -120,6 +123,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     JOIN SubProduct sp2 ON sp2.product.id = p3.id
                     GROUP BY p3.brand
                 )
+                AND (sp.isDeleted = FALSE )
                 ORDER BY (SELECT COUNT(*) FROM Product p4 WHERE p4.brand = p.brand) DESC, p.brand, sp.mainImage DESC
             """)
     List<HomePageResponse> getPopularBrandsForHomePage(Pageable pageable);
@@ -128,7 +132,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             SELECT NEW com.example.baygo.db.dto.request.UpdateProductDTO(
             p.id, p.subCategory.id, p.manufacturer, p.brand, p.name, p.season, p.composition)
             FROM Product p
+            JOIN SubProduct sp ON sp.product.id = p.id
             WHERE p.id = ?1
+            AND (sp.isDeleted = FALSE )
             """)
     UpdateProductDTO getProductById(Long productId);
 
