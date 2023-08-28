@@ -48,13 +48,13 @@ VALUES
  true, 1234,
  '+996550232345', 'SELLER');
 
-INSERT INTO buyers(id, full_name, date_of_birth, user_id, address, gender)
+INSERT INTO buyers(id, full_name, date_of_birth, user_id, address, gender, photo)
 VALUES (1, 'Kanykei Askarbekova',
         '2003-03-18', 1,
-        'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10', 'FEMALE'),
+        'Область Чуй,город Бишкек,мкр Кок Жар,улица Молдокулова 10,подъезд 3, кв 10', 'FEMALE', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'),
        (2, 'Baiysh Orozaliev',
         '1990-10-23', 2,
-        'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE');
+        'Область Баткен,город Кадамжай,улица Ауэзова 200,подъезд 7,кв 46 ', 'MALE', 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60');
 
 INSERT INTO sellers(id, first_name, last_name, bic, itn, about_store, address,
                     name_of_store, store_logo,
