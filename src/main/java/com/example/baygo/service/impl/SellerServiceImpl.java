@@ -65,7 +65,6 @@ public class SellerServiceImpl implements SellerService {
         seller.setNameOfStore(request.getNameOfStore());
         seller.setAddressOfStore(request.getStoreAddress());
         seller.setITN(request.getITN());
-        seller.setStoreLogo(request.getStoreLogo());
         seller.setBIC(request.getBIC());
         seller.setAboutStore(request.getAboutStore());
 

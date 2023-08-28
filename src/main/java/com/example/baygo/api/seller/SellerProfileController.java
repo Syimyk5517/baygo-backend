@@ -7,6 +7,7 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.SellerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,13 @@ public class SellerProfileController {
 
     @Operation(summary = "Update seller profile", description = "This is update seller profile method")
     @PutMapping
-    public SimpleResponse updateSellerProfile(@RequestBody SellerProfileRequest request) {
+    public SimpleResponse updateSellerProfile(@RequestBody @Valid SellerProfileRequest request) {
         return service.updateSellerProfile((request));
     }
 
     @Operation(summary = "Update seller store profile", description = "This is update seller store profile method")
     @PutMapping("/store")
-    public SimpleResponse updateSellerStoreProfile(@RequestBody SellerStoreInfoRequest request) {
+    public SimpleResponse updateSellerStoreProfile(@RequestBody @Valid SellerStoreInfoRequest request) {
         return service.updateSellerStoreInfo(request);
     }
 
