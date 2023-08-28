@@ -64,9 +64,15 @@ public class SupplyServiceImpl implements SupplyService {
     @Override
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        return customRepository.getSupplyProducts(sellerId, supplyId, keyWord, page, size);
-    }
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<SupplyProductResponse> supplyProductPage = repository.getSupplyProducts(sellerId, supplyId, keyWord,pageable);
 
+        return PaginationResponse.<SupplyProductResponse>builder()
+                .elements(supplyProductPage.getContent())
+                .currentPage(supplyProductPage.getNumber() + 1)
+                .totalPages(supplyProductPage.getTotalPages())
+                .build();
+    }
     @Override
     public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
         return customRepository.findAllDeliveryFactor(keyword, date, size, page);

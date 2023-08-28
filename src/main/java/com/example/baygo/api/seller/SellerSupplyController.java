@@ -44,7 +44,7 @@ public class SellerSupplyController {
             @RequestParam(required = false) String keyWord,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        return service.getSupplyProducts(supplyId, keyWord, page, size);
+        return service.getSupplyProducts(supplyId, keyWord,page, size);
     }
 
     @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
