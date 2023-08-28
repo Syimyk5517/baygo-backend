@@ -36,11 +36,9 @@ public class NotificationServiceImpl implements NotificationService {
         for (Long buyerId : notificationSendRequest.buyerIds()) {
             Buyer buyer = buyerRepository.findById(buyerId).orElseThrow(
                     () -> new NotFoundException("Buyer not found with id: " + buyerId));
-
-            buyer.addNotification(notification);
-            buyerRepository.save(buyer);
-
+            notification.addBuyer(buyer);
         }
+        notificationRepository.save(notification);
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Successfully saved!!!").build();
     }
 
@@ -50,7 +48,6 @@ public class NotificationServiceImpl implements NotificationService {
         User user = (User) authentication.getPrincipal();
 
         Buyer buyer = buyerRepository.getBuyerByUserId(user.getId());
-
         List<Notification> notificationByBuyerId = notificationRepository.getNotificationByBuyerId(buyer.getId());
 
         List<NotificationResponse> notificationResponses = new ArrayList<>();

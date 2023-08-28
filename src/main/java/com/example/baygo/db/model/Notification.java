@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,17 @@ public class Notification {
     private String message;
     private LocalDateTime createAt;
     private Boolean read;
-    @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST})
-    @JoinColumn(name = "buyer_id")
-    private Buyer buyer;
+    @ManyToMany(cascade = {MERGE, REFRESH, DETACH, PERSIST})
+    @JoinTable(name = "notifications_buyers",
+            joinColumns = @JoinColumn(name = "notification_id"),
+            inverseJoinColumns = @JoinColumn(name = "buyer_id"))
+    private List<Buyer> buyers;
+
+    public void  addBuyer(Buyer buyer){
+        if (this.buyers == null){
+            this.buyers = new ArrayList<>();
+        }
+        this.buyers.add(buyer);
+    }
 
 }

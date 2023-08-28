@@ -65,10 +65,7 @@ public class Buyer {
         this.basket.add(size);
     }
 
-    @OneToMany(mappedBy = "buyer", cascade = {ALL})
-    private List<Notification> notifications = new ArrayList<>();
-    public void  addNotification(Notification notification){
-        notifications.add(notification);
-        notification.setBuyer(this);
-    }
+    @ManyToMany(mappedBy = "buyers",cascade = {ALL})
+    private List<Notification> notifications;
+
 }
