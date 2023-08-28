@@ -61,4 +61,10 @@ public class AuthenticationApi {
     public AuthenticationResponse google(@RequestParam String tokenId) throws FirebaseAuthException {
         return authenticationService.authWithGoogle(tokenId);
     }
+
+    @Operation(summary = "Confirm", description = "This method for confirm code checking method")
+    @PostMapping("/confirm")
+    AuthenticationResponse confirmRegistration(String email, int code){
+        return authenticationService.confirmRegistration(email, code);
+    }
 }
