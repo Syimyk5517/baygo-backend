@@ -1,6 +1,7 @@
 package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.DiscountRequest;
+import com.example.baygo.db.dto.request.DiscountRequestForCancel;
 import com.example.baygo.db.dto.response.CalendarActionResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.DiscountService;
@@ -34,5 +35,12 @@ public class SellerDiscountController {
     @PreAuthorize("hasAuthority('SELLER')")
     public List<CalendarActionResponse> getAllDiscount(@RequestParam(required = false) LocalDate date) {
         return discountService.getAllDiscount(date);
+    }
+    
+    @Operation(summary = "Cancellation of discount by subProducts id!", description = "This method cancelled of discount by subProducts id!")
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('SELLER')")
+    public SimpleResponse cancellationOfDiscount(@RequestBody @Valid DiscountRequestForCancel request){
+        return discountService.cancellationOfDiscount(request);
     }
 }

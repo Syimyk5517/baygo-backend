@@ -11,6 +11,7 @@ public record ProductBuyerResponse(
      double rating,
      Long quantityOfRating,
      BigDecimal price,
-     int percentOfDiscount
+     int percentOfDiscount,
+     boolean inFavourite
 ) {
 }
