@@ -7,6 +7,10 @@ import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.repository.*;
+import com.example.baygo.repository.ProductRepository;
+import com.example.baygo.repository.SizeRepository;
+import com.example.baygo.repository.SubCategoryRepository;
+import com.example.baygo.repository.UserRepository;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import com.example.baygo.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -14,11 +18,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
     private final JwtService jwtService;
     private final CustomProductRepository customProductRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     private final BuyerRepository buyerRepository;
 
     @Override
@@ -59,14 +65,14 @@ public class ProductServiceImpl implements ProductService {
             newSubProduct.setImages(subProduct.images());
             newSubProduct.setPrice(subProduct.price());
             newSubProduct.setDescription(subProduct.description());
-            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,8)));
+            newSubProduct.setArticulBG(Integer.parseInt(UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8)));
             newSubProduct.setArticulOfSeller(subProduct.articulOfSeller());
             newSubProduct.setHeight(subProduct.height());
             newSubProduct.setWidth(subProduct.width());
             newSubProduct.setLength(subProduct.length());
             newSubProduct.setWeight(subProduct.weight());
             newSubProduct.setProduct(product);
-            newSubProduct.setIsDelete(true);
+            newSubProduct.setDeleted(false);
 
             for (SaveSizeRequest size : subProduct.sizes()) {
                 Size newSize = new Size();
@@ -97,6 +103,10 @@ public class ProductServiceImpl implements ProductService {
                                                                                     String sortBy,
                                                                                     int page,
                                                                                     int pageSize) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        User user = userRepository.findByEmail(login).orElse(null);
+        Long buyerId = (user != null) ? user.getBuyer().getId() : null;
 
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(
                 sortBy == null || sortBy.isEmpty() ? Sort.Order.desc("rating") :
@@ -110,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
         brands = getDefaultIfEmpty(brands);
         colors = getDefaultIfEmpty(colors);
 
-        Page<ProductBuyerResponse> allProducts = productRepository.finds(keyWord, sizes, compositions, brands, colors,
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, keyWord, sizes, compositions, brands, colors,
                 minPrice, maxPrice, filterBy, pageable);
 
         return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
@@ -121,6 +131,10 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+    private List<String> getDefaultIfEmpty(List<String> list) {
+        return (list == null || list.isEmpty()) ? List.of("") : list;
+    }
+
     @Override
     public SimpleResponse deleteProduct(Long subProductId) {
         SubProduct subProduct = subProductRepository.findById(subProductId).orElseThrow(
@@ -129,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Вы не можете удалить этот продукт.Этот продукт доступен при доставке.");
         }
         if (sizeRepository.isOrderSize(subProductId)) {
-            subProduct.setIsDelete(false);
+            subProduct.setDeleted(true);
             subProductRepository.save(subProduct);
         } else {
             List<Size> sizesToRemove = subProduct.getSizes();
@@ -147,10 +161,6 @@ public class ProductServiceImpl implements ProductService {
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("Продукт с идентификатором %s успешно удален.", subProductId)).build();
-    }
-
-    private List<String> getDefaultIfEmpty(List<String> list) {
-        return (list == null || list.isEmpty()) ? List.of("") : list;
     }
 
     @Override
