@@ -37,7 +37,7 @@ public class SubProduct {
     private int length;
     private double weight;
     private boolean isFashion;
-    private Boolean isDelete;
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;
