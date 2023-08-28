@@ -1,16 +1,15 @@
 package com.example.baygo.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.SuppliesResponse;
 import com.example.baygo.db.dto.response.SupplyLandingPage;
 import com.example.baygo.db.dto.response.SupplyProductResponse;
+import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.SupplyTypeResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.repository.custom.SupplyCustomRepository;
-import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -27,53 +27,6 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Override
-    public PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(Long currentUserId, String supplyNumber, SupplyStatus status, int page, int pageSize) {
-
-        String sql = """
-                SELECT s.id , s.supply_number, s.supply_type, s.created_at, s.quantity_of_products, s.accepted_products,
-                s.commission, s.supply_cost, s.planned_date, s.actual_date, u.phone_number, s.status
-                FROM supplies s
-                JOIN sellers s2 on s.seller_id = s2.id
-                JOIN users u on s2.user_id = u.id
-                WHERE u.id =""" + currentUserId;
-
-        if (supplyNumber != null && !supplyNumber.isEmpty()) {
-            sql += " AND s.supply_number iLIKE '" + supplyNumber + "%'";
-        }
-
-        if (status != null && status.describeConstable().isPresent()) {
-            sql += " AND s.status = '" + status + "'";
-        }
-
-        sql += " ORDER BY s.created_at DESC ";
-
-        int totalCount = totalCount(sql, pageSize);
-
-        int offset = (page - 1) * pageSize;
-        sql += " LIMIT " + pageSize + " OFFSET " + offset;
-
-        List<SuppliesResponse> suppliesResponses = jdbcTemplate.query(sql, (rs, rowNum) ->
-                SuppliesResponse.builder()
-                        .id(rs.getLong("id"))
-                        .supplyNumber(rs.getString("supply_number"))
-                        .supplyType(rs.getString("supply_type"))
-                        .createdAt(rs.getDate("created_at").toLocalDate())
-                        .quantityOfProducts(rs.getInt("quantity_of_products"))
-                        .acceptedProducts(rs.getInt("accepted_products"))
-                        .commission(rs.getInt("commission"))
-                        .supplyCost(rs.getBigDecimal("supply_cost"))
-                        .plannedDate(rs.getDate("planned_date").toLocalDate())
-                        .actualDate(rs.getDate("actual_date").toLocalDate())
-                        .user(rs.getString("phone_number"))
-                        .status(SupplyStatus.valueOf(rs.getString("status")))
-                        .build());
-        return PaginationResponse.<SuppliesResponse>builder()
-                .elements(suppliesResponses)
-                .currentPage(page)
-                .totalPages(totalCount)
-                .build();
-    }
 
     @Override
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size) {
@@ -201,33 +154,6 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                 .build();
     }
 
-    private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {
-        String sql = """
-                    SELECT s.planned_date AS planned_date
-                    FROM supplies s
-                    WHERE s.warehouse_id = ? AND s.supply_type = ? AND s.planned_date = ?
-                """;
-
-        List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {
-            WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
-            warehouseCostResponse.setDate(innermostResult.getDate("planned_date").toLocalDate());
-            return warehouseCostResponse;
-        }, warehouseId, deliveryType.name(), date);
-        WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
-        warehouseCostResponse.setDate(date);
-        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
-        warehouseCostResponse.setGoodsPayment(warehouseCostResponses.size() < 11 ? "Бесплатный" : "x" + warehouseCostResponses.size() / 10);
-        return warehouseCostResponse;
-
-    }
-
-    private int totalCount(String sql, int size) {
-        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
-        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
-        int count = countResult != null ? countResult : 0;
-        return (int) Math.ceil((double) count / size);
-    }
-
     @Override
     public List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse) {
         String transitDirectionQuery = """
@@ -281,4 +207,45 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
             return new SupplyLandingPage(supplyId, supplyNumber, createdAt, warehouseLocation, quantityOfProducts, status);
         }, sellerId);
     }
+
+    @Override
+    public List<WarehouseCostResponse> getAllWarehouseCostResponse(Long warehouseId, SupplyType supplyType) {
+        LocalDate currenDate = LocalDate.now();
+        List<WarehouseCostResponse> warehouseCostResponses = new ArrayList<>();
+        for (int i = 0; i <= 13; i++) {
+            LocalDate futureDate = currenDate.plusDays(i);
+            WarehouseCostResponse warehouseCostResponse =
+                    warehouseCost(warehouseId, supplyType, futureDate);
+            warehouseCostResponses.add(warehouseCostResponse);
+        }
+        return warehouseCostResponses;
+    }
+
+    private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {
+        String sql = """
+                    SELECT s.planned_date AS planned_date
+                    FROM supplies s
+                    WHERE s.warehouse_id = ? AND s.supply_type = ? AND s.planned_date = ?
+                """;
+
+        List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {
+            WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+            warehouseCostResponse.setDate(innermostResult.getDate("planned_date").toLocalDate());
+            return warehouseCostResponse;
+        }, warehouseId, deliveryType.name(), date);
+        WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+        warehouseCostResponse.setDate(date);
+        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
+        warehouseCostResponse.setGoodsPayment(warehouseCostResponses.size() < 11 ? "Бесплатный" : "x" + warehouseCostResponses.size() / 10);
+        return warehouseCostResponse;
+
+    }
+
+    private int totalCount(String sql, int size) {
+        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
+        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
+        int count = countResult != null ? countResult : 0;
+        return (int) Math.ceil((double) count / size);
+    }
+
 }

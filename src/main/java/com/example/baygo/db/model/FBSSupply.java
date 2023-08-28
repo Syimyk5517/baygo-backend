@@ -2,10 +2,7 @@ package com.example.baygo.db.model;
 
 import com.example.baygo.db.model.enums.FBSSupplyStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
 @Table(name = "fbs_supplies")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FBSSupply {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fbs_supply_gen")
@@ -36,4 +34,9 @@ public class FBSSupply {
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "seller_id")
     private Seller seller;
+    @OneToOne
+    private AccessCard accessCard;
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "warehouse_id")
+    private Warehouse warehouse;
 }

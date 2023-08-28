@@ -7,7 +7,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -57,6 +57,13 @@ public class Buyer {
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void addToBasket(Size size) {
+        if (this.basket == null){
+            this.basket = new ArrayList<>();
+        }
+        this.basket.add(size);
+    }
 
     @OneToMany(mappedBy = "buyer", cascade = {ALL})
     private List<Notification> notifications = new ArrayList<>();

@@ -18,13 +18,11 @@ public class CustomAnswerOfSellerRepositoryImpl implements CustomAnswerOfSellerR
         String getAllQuestion = """
                 select
                     bq.id as id,
-                    (select spi.images
-                    from sup_product_images
-                    where spi.sub_product_id = sp.id limit 1) as productPhoto,
+                    sp.main_image as productPhoto,
                     bq.question as description,
                     bq.created_at as createAt
                 from buyer_questions bq
-                    join sub_products sp on bq.product_id = sp.product_id
+                    join sub_products sp on bq.sub_product_id = sp.id
                     join products p on sp.product_id = p.id
                 where p.seller_id = ?
                 order by bq.created_at desc limit 4

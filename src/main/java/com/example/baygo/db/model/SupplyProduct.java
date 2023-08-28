@@ -1,10 +1,7 @@
 package com.example.baygo.db.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -12,6 +9,7 @@ import static jakarta.persistence.CascadeType.*;
 @Setter
 @Entity
 @Table(name = "supply_products")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SupplyProduct {
@@ -26,4 +24,5 @@ public class SupplyProduct {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "size_id")
     private Size size;
+
 }

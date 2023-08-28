@@ -1,10 +1,7 @@
 package com.example.baygo.db.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -14,6 +11,7 @@ import static jakarta.persistence.CascadeType.*;
 @Table(name = "appeals")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Appeal {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appeal_gen")
