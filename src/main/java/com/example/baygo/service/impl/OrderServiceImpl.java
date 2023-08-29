@@ -1,12 +1,17 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
+import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
+import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
+import com.example.baygo.db.exceptions.NotFoundException;
+import com.example.baygo.db.model.Buyer;
+import com.example.baygo.db.model.Order;
 import com.example.baygo.db.model.Seller;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.OrderStatus;
@@ -69,6 +74,26 @@ public class OrderServiceImpl implements OrderService {
                 orderResponses.getTotalPages());
 
 
+    }
+
+    @Override
+    public List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder() {
+        Buyer buyer = jwtService.getAuthenticate().getBuyer();
+        List<BuyerOrdersHistoryResponse> orders = orderRepository.getAllHistoryOfOrder(buyer.getId());
+        for (BuyerOrdersHistoryResponse order : orders) {
+            order.addToProduct(orderRepository.getProductOfOrderByOrderId(order.getOrderId()));
+        }
+        return orders;
+    }
+
+    @Override
+    public BuyerOrderHistoryDetailResponse getOrderById(Long orderId) {
+        Buyer buyer = jwtService.getAuthenticate().getBuyer();
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ с идентификатором: " + orderId + " не найден!"));
+        if (buyer.getOrders().contains(order)) {
+            return orderRepository.getHistoryOfOrderById(orderId);
+        }
+        return null;
     }
 }
 

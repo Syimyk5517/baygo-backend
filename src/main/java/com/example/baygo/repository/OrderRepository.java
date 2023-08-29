@@ -1,5 +1,8 @@
 package com.example.baygo.repository;
 
+import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
+import com.example.baygo.db.dto.response.BuyerOrderProductsResponse;
+import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
 import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
@@ -17,7 +20,6 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
     @Modifying
     @Query("DELETE FROM Order o WHERE o.id = :orderId ")
     void deleteById(@Param("orderId") Long orderId);
@@ -59,6 +61,34 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("keyWord") String keyWord,
             @Param("orderStatus") OrderStatus orderStatus,
             Pageable pageable);
+
+    @Query("""
+            SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(
+              o.id, o.dateOfOrder, o.orderNumber, os.quantity, o.resultPrice
+              )
+              FROM Order o
+              JOIN OrderSize os ON os.order.id = o.id
+              WHERE o.buyer.id =: buyerId
+              """)
+    List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(Long buyerId);
+
+    @Query("""
+             SELECT new com.example.baygo.db.dto.response.BuyerOrderProductsResponse(
+                          os.size.id, os.quantity, os.orderStatus, os.dateOfReceived, os.qrCode
+                                    )
+                               FROM OrderSize os
+                               WHERE os.order.id = :orderId
+            """)
+    List<BuyerOrderProductsResponse> getProductOfOrderByOrderId(Long orderId);
+
+    @Query("""
+            SELECT new com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse(
+            o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice, o.discountPrice, o.resultPrice
+            )
+            FROM Order o
+            WHERE o.id = :orderId
+            """)
+    BuyerOrderHistoryDetailResponse getHistoryOfOrderById(Long orderId);
 }
 
 

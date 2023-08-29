@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Add Basket API")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class BasketApi {
+public class BuyerBasketController {
     private final BasketService basketService;
     @Operation(summary = "Add to basket or delete", description = "This method added or delete product to basket")
     @PostMapping("/{sizeId}")

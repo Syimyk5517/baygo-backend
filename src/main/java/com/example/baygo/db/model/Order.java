@@ -26,6 +26,8 @@ public class Order {
     private Long id;
     private LocalDateTime dateOfOrder;
     private BigDecimal totalPrice;
+    private BigDecimal discountPrice;
+    private BigDecimal resultPrice;
     private boolean withDelivery;
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
