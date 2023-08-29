@@ -2,15 +2,20 @@ package com.example.baygo.db.dto.response;
 
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record ReviewResponse(
-        Long id,
-        String reviewImage,
+        Long reviewId,
+        Long subProductId,
+        String productImage,
         String productName,
-        String articul,
-        String subCategory,
-        String productBrand,
+        String comment,
         int grade,
-        String dateTime
+        String articulOfSeller,
+        int articulBG,
+        String dateAndTime,
+        String answer,
+        List<String> reviewImages
 ) {
 }

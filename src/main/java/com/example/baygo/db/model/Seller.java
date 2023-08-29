@@ -28,14 +28,30 @@ public class Seller {
     private String BIC;
     private String aboutStore;
     private String vendorNumber;
+    private String addressOfStore;
+    private int checkingCheck;
 
     @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Supply> supplies;
 
-    @OneToMany(mappedBy = "seller",cascade = ALL)
+    @OneToMany(mappedBy = "seller", cascade = ALL)
     private List<Product> products;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne(cascade = ALL)
+    private Chat chat;
+
+    @OneToMany(mappedBy = "seller", cascade = ALL)
+    private List<FBSSupply> fbsSupplies;
+
+
+   @OneToMany(mappedBy = "seller", cascade = ALL)
+    private List<FbsWarehouse> fbsWarehouse;
+
+   @ManyToOne
+   @JoinColumn(name = "warehouse_of_returns_id")
+   private Warehouse warehouseOfReturns;
 }

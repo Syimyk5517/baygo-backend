@@ -20,13 +20,24 @@ import static jakarta.persistence.CascadeType.*;
 public class SubProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sub_product_gen")
-    @SequenceGenerator(name = "sub_product_gen", sequenceName = "sub_product_seq", allocationSize = 1, initialValue = 31)
+    @SequenceGenerator(name = "sub_product_gen", sequenceName = "sub_product_seq", allocationSize = 1, initialValue = 33)
     private Long id;
     private String colorHexCode;
     private String color;
+    private String mainImage;
     @ElementCollection
     private List<String> images;
     private BigDecimal price;
+    @Column(length = 2000)
+    private String description;
+    private int articulBG;
+    private String articulOfSeller;
+    private int height;
+    private int width;
+    private int length;
+    private double weight;
+    private boolean isFashion;
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "subProduct", cascade = ALL)
     private List<Size> sizes;
@@ -38,4 +49,13 @@ public class SubProduct {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "discount_id")
     private Discount discount;
+
+    @OneToMany(mappedBy = "subProduct", cascade = ALL)
+    private List<Review> reviews;
+
+    @ManyToMany(mappedBy = "favorites", cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    private List<Buyer> buyers;
+
+    @ManyToMany(mappedBy = "subProducts")
+    private List<FbsWarehouse> fbsWarehouse;
 }

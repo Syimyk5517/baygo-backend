@@ -53,8 +53,8 @@ public class PackingServiceImpl implements PackingService {
         for (SupplyProduct existingSupplyProduct : existingSupply.getSupplyProduct()) {
             String barcode = existingSupplyProduct.getSize().getBarcode();
             if (barcodeToQuantityMap.containsKey(barcode)) {
-                int newQuantity = existingSupplyProduct.getSize().getQuantity() + barcodeToQuantityMap.get(barcode);
-                existingSupplyProduct.getSize().setQuantity(newQuantity);
+                int newQuantity = existingSupplyProduct.getSize().getFbbQuantity() + barcodeToQuantityMap.get(barcode);
+                existingSupplyProduct.getSize().setFbbQuantity(newQuantity);
 
                 SupplyProduct newSupplyProduct = new SupplyProduct();
                 newSupplyProduct.setSize(existingSupplyProduct.getSize());
