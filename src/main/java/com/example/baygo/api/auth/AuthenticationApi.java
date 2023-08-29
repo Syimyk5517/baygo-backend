@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthenticationApi {
+
     private final AuthenticationService authenticationService;
 
     @Operation(summary = "Register a new buyer", description = "This method validates the request and creates a new buyer.")
