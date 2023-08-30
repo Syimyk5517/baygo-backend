@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,6 +27,8 @@ public class OrderSize {
     private OrderStatus orderStatus;
     private LocalDateTime dateOfReceived;
     private String qrCode;
+    private BigDecimal price;
+    private int percentOfDiscount;
     private boolean isFbsOrder;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})

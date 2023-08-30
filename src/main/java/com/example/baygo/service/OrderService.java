@@ -27,6 +27,8 @@ public interface OrderService {
     PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus status);
 
     PaginationResponse<OrdersResponse> getAllFbsOrders(int page, int size, String keyword, OrderStatus orderStatus);
-    List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder();
+
+    List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(String keyWord);
+
     BuyerOrderHistoryDetailResponse getOrderById(Long orderId);
 }

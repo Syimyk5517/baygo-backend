@@ -9,6 +9,7 @@ import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.OrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
+import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Order;
@@ -77,26 +78,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder() {
+    public List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(String keyWord) {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
-        List<BuyerOrdersHistoryResponse> orders = orderRepository.getAllHistoryOfOrder(buyer.getId());
-        for (BuyerOrdersHistoryResponse order : orders) {
-            order.addToProduct(orderRepository.getProductOfOrderByOrderId(order.getOrderId()));
-        }
-        return orders;
+        return orderRepository.getAllHistoryOfOrder(buyer.getId(), keyWord);
     }
 
     @Override
     public BuyerOrderHistoryDetailResponse getOrderById(Long orderId) {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ с идентификатором: " + orderId + " не найден!"));
-        if (buyer.getOrders().contains(order)) {
-            return orderRepository.getHistoryOfOrderById(orderId);
+        if (!buyer.getOrders().contains(order)) {
+            throw new BadRequestException("Заказ с идентификатором: " + orderId + " не пренадлежит вам!");
         }
-        return null;
+        BuyerOrderHistoryDetailResponse orderHistory = orderRepository.getHistoryOfOrderById(orderId);
+        orderHistory.addToProduct(orderRepository.getProductOfOrderByOrderId(orderId));
+        return orderHistory;
     }
 }
-
-
-
-

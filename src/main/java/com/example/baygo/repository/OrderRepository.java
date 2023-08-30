@@ -64,39 +64,38 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(
-              o.id, o.dateOfOrder, o.orderNumber, os.quantity, o.resultPrice
-              )
-              FROM Order o
-              JOIN OrderSize os ON os.order.id = o.id
-              WHERE o.buyer.id =: buyerId
-              """)
-    List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(Long buyerId);
+              o.id, o.dateOfOrder, o.orderNumber, cast(sum(os.quantity) as int), o.totalPrice
+            )
+            FROM Order o
+            JOIN OrderSize os ON os.order.id = o.id
+            WHERE o.buyer.id = :buyerId
+            AND (:keyWord IS NULL
+                OR o.orderNumber iLIKE CONCAT("%", :keyWord, "%")
+                OR os.size.subProduct.product.name iLIKE CONCAT("%", :keyWord, "%") )
+            GROUP BY o.id, o.dateOfOrder, o.orderNumber, o.totalPrice
+            ORDER BY o.dateOfOrder DESC
+            """)
+    List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(Long buyerId,
+                                                          String keyWord);
 
     @Query("""
              SELECT new com.example.baygo.db.dto.response.BuyerOrderProductsResponse(
-                          os.size.id, os.quantity, os.orderStatus, os.dateOfReceived, os.qrCode
-                                    )
-                               FROM OrderSize os
-                               WHERE os.order.id = :orderId
+                          os.size.id, os.quantity, os.orderStatus, os.dateOfReceived, os.qrCode, os.percentOfDiscount,
+                          os.price, os.size.subProduct.mainImage, os.size.subProduct.product.name, os.size.size
+            )
+            FROM OrderSize os
+            WHERE os.order.id = :orderId
             """)
     List<BuyerOrderProductsResponse> getProductOfOrderByOrderId(Long orderId);
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse(
-            o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice, o.discountPrice, o.resultPrice
+            o.dateOfOrder, o.orderNumber, o.withDelivery, sum(os.price), cast(sum(os.price * (os.percentOfDiscount / 100.0)) as bigdecimal ), o.totalPrice
             )
             FROM Order o
+            JOIN OrderSize os ON os.order.id = o.id
             WHERE o.id = :orderId
+            GROUP BY o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice
             """)
     BuyerOrderHistoryDetailResponse getHistoryOfOrderById(Long orderId);
 }
-
-
-
-
-
-
-
-
-
-

@@ -19,13 +19,13 @@ import java.util.List;
 public class BuyerOrderController {
     private final OrderService orderService;
     @Operation(summary = "Get all history of order!", description = "This method gets all history of order!")
-    @GetMapping("/get_all")
+    @GetMapping
     @PreAuthorize("hasAuthority('BUYER')")
-    public List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(){
-        return orderService.getAllHistoryOfOrder();
+    public List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(@RequestParam(required = false) String keyWord){
+        return orderService.getAllHistoryOfOrder(keyWord);
     }
 
-    @Operation(summary = "Get all history of order!", description = "This method gets all history of order!")
+    @Operation(summary = "Get history detail of order by id!", description = "This method gets history detail of order by order id!")
     @GetMapping("/{orderId}")
     @PreAuthorize("hasAuthority('BUYER')")
     public BuyerOrderHistoryDetailResponse getHistoryOfOrderByOrderId(@PathVariable Long orderId){

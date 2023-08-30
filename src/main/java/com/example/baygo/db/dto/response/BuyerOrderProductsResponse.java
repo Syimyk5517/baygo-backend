@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
@@ -15,6 +16,9 @@ public class BuyerOrderProductsResponse{
         private OrderStatus orderStatus;
         private LocalDateTime dateOfReceived;
         private String QRCode;
-
-
+        private int percentOfDiscount;
+        private BigDecimal price;
+        private String mainImage;
+        private String name;
+        private String size;
 }

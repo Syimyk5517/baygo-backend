@@ -615,15 +615,15 @@ VALUES (1, 'T-shirt', NOW(), NOW(), 100, '123456', 'RECEIVED', 1),
        (15, 'Cap', now(), now(), 123, '098432', 'ACCEPTED', 1);
 
 
-INSERT INTO orders_sizes (id, quantity, order_status, date_of_received, qr_code, order_id, size_id, fbs_supply_id, is_fbs_order)
-VALUES (1, 2, 'PENDING', NOW(), '456789', 1, 1, 1, TRUE),
-       (2, 3, 'ON_ASSEMBLY', now(), '123452', 2, 2, 2, TRUE),
-       (3, 4, 'ON_SUPPLY_DELIVERY', now(), '343543', 3, 3, 3, TRUE),
-       (4, 5, 'ON_WAREHOUSE', now(), '674321', 4, 4, 2, FALSE),
-       (5, 6, 'ON_PIO', now(), '234132', 5, 5, 3, FALSE),
-       (6, 7, 'COURIER_ON_THE_WAY', now(), '543454', 6, 6, 1, TRUE),
-       (7, 8, 'DELIVERED', now(), '980765', 7, 7, 2, FALSE),
-       (8, 9, 'CANCELED', now(), '876578', 8, 8, 1, TRUE);
+INSERT INTO orders_sizes (id, quantity, order_status, percent_of_discount, price, date_of_received, qr_code, order_id, size_id, fbs_supply_id, is_fbs_order)
+VALUES (1, 2, 'PENDING', 12, 4500, NOW(), '456789', 1, 1, 1, TRUE),
+       (2, 3, 'ON_ASSEMBLY', 5, 4000, now(), '123452', 2, 2, 2, TRUE),
+       (3, 4, 'ON_SUPPLY_DELIVERY', 7, 2900, now(), '343543', 3, 3, 3, TRUE),
+       (4, 5, 'ON_WAREHOUSE', 32, 5500, now(), '674321', 4, 4, 2, FALSE),
+       (5, 6, 'ON_PIO', 10, 2200, now(), '234132', 5, 5, 3, FALSE),
+       (6, 7, 'COURIER_ON_THE_WAY', 22, 3400, now(), '543454', 6, 6, 1, TRUE),
+       (7, 8, 'DELIVERED', 33, 4800, now(), '980765', 7, 7, 2, FALSE),
+       (8, 9, 'CANCELED', 50, 8000, now(), '876578', 8, 8, 1, TRUE);
 
 INSERT INTO returns (id, reason, country, city, address, postal_code, phone_number, date_of_return)
 VALUES (1, 'Product damaged', 'USA', 'New York', '123 Main St', 10001, '555-1234', '2023-08-16 10:00:00'),
