@@ -1,5 +1,6 @@
 package com.example.baygo.api.seller;
 
+import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
 import com.example.baygo.service.BarcodeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/barcode")
@@ -32,9 +31,9 @@ public class SellerBarcodeController {
 
     private final BarcodeService barcodeService;
 
-    @GetMapping(value = "/barcode/{barcodeValue}", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] generateBarcode(@PathVariable int barcodeValue) {
-        return barcodeService.generateBarcode(barcodeValue);
+    @GetMapping
+    public BufferedImage generateBarcode(@RequestParam int quantity) {
+        return barcodeService.getBarcodesWithImage(quantity);
     }
 
     @GetMapping(value = "/ean13/{barcode}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
