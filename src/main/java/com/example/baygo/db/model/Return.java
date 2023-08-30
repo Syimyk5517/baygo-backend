@@ -1,5 +1,6 @@
 package com.example.baygo.db.model;
 
+import com.example.baygo.db.model.enums.ReturnStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static jakarta.persistence.CascadeType.*;
 
 @Getter
 @Setter
@@ -31,4 +34,10 @@ public class Return {
     private int postalCode;
     private String phoneNumber;
     private LocalDateTime dateOfReturn;
+    private int productQuantity;
+    private Boolean withDelivery;
+    @Enumerated(EnumType.STRING)
+    private ReturnStatus returnStatus;
+    @ManyToOne(cascade = {PERSIST,MERGE,REFRESH,DETACH})
+    private OrderSize orderSize;
 }
