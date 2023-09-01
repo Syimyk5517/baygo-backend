@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface NotificationService {
     SimpleResponse sendNotificationToBuyer(NotificationSendRequest notificationSendRequest);
-    List<NotificationResponse> getMyNotifications(Authentication authentication);
+    List<NotificationResponse> getMyNotifications();
     NotificationResponse getById(Long notificationId);
 
 }

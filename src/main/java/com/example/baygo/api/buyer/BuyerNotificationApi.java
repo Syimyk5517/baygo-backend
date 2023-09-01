@@ -20,10 +20,10 @@ public class BuyerNotificationApi {
     private final NotificationService service;
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @Operation(summary = "Get all", description = "This method for get all my notifications")
+    @Operation(summary = "Get all", description = "This method for gets all buyer notifications")
     @GetMapping
-    public List<NotificationResponse> getMyNotifications(Authentication authentication) {
-        return service.getMyNotifications(authentication);
+    public List<NotificationResponse> getBuyerNotifications() {
+        return service.getMyNotifications();
     }
 
     @PreAuthorize("hasAuthority('BUYER')")

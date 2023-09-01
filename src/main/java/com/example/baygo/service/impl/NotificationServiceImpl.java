@@ -1,5 +1,6 @@
 package com.example.baygo.service.impl;
 
+import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.NotificationSendRequest;
 import com.example.baygo.db.dto.response.NotificationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
@@ -25,6 +26,7 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final BuyerRepository buyerRepository;
+    private final JwtService jwtService;
 
     @Override
     public SimpleResponse sendNotificationToBuyer(NotificationSendRequest notificationSendRequest) {
@@ -43,15 +45,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponse> getMyNotifications(Authentication authentication) {
-
-        User user = (User) authentication.getPrincipal();
-
-        Buyer buyer = buyerRepository.getBuyerByUserId(user.getId());
+    public List<NotificationResponse> getMyNotifications() {
+        Buyer buyer = jwtService.getAuthenticate().getBuyer();
         List<Notification> notificationByBuyerId = notificationRepository.getNotificationByBuyerId(buyer.getId());
 
         List<NotificationResponse> notificationResponses = new ArrayList<>();
-
         for (Notification notification : notificationByBuyerId) {
             NotificationResponse response = NotificationResponse.builder()
                     .id(notification.getId())
