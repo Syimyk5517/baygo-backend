@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import static jakarta.persistence.CascadeType.*;
 @Table(name = "supplies")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Supply {
+public class Supply  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_gen")
     @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1, initialValue = 11)
@@ -61,4 +62,5 @@ public class Supply {
         }
         this.supplyProduct.add(supplyProduct);
     }
+
 }
