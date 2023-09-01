@@ -39,6 +39,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -72,21 +73,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Buyer buyer = new Buyer();
         buyer.setFullName(request.fullName());
 
+        int confirmationCode = generateConfirmationCode();
+
         User user = User.builder()
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.BUYER)
+                .confirmCode(confirmationCode)
+                .isVerify(false)
                 .build();
         buyer.setUser(user);
 
+        confirmCodeSending(confirmationCode, user.getEmail());
+
         buyerRepository.save(buyer);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
-        String token = jwtService.generateToken(user);
 
         return AuthenticationResponse.builder()
-                .email(user.getEmail())
-                .role(user.getRole())
-                .token(token)
+                .message("теперь вы должны пройти проверку")
                 .build();
     }
 
@@ -100,10 +104,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (split.equals(request.password())) {
             throw new BadRequestException("Создайте более надежный пароль");
         }
+
+        int confirmationCode = generateConfirmationCode();
+
         User user = User.builder()
                 .email(request.email())
                 .phoneNumber(request.phoneNumber())
                 .password(passwordEncoder.encode(request.password()))
+                .isVerify(false)
+                .confirmCode(confirmationCode)
                 .role(Role.SELLER)
                 .build();
 
@@ -120,12 +129,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         sellerRepository.save(seller);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
-        String token = jwtService.generateToken(user);
+
+        confirmCodeSending(confirmationCode, user.getEmail());
 
         return AuthenticationResponse.builder()
-                .email(user.getEmail())
-                .role(user.getRole())
-                .token(token)
+                .message("теперь вы должны пройти проверку")
                 .build();
     }
 
@@ -141,19 +149,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("Пароль не подходит");
             throw new BadRequestException("Пароль не подходит");
         }
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
-        log.info(String.format("Пользователь %s успешно аутентифицирован", userInfo.getEmail()));
-        String token = jwtService.generateToken(userInfo);
 
+        if (userInfo.isVerify()){
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    )
+            );
+            log.info(String.format("Пользователь %s успешно аутентифицирован", userInfo.getEmail()));
+            String token = jwtService.generateToken(userInfo);
+
+            return AuthenticationResponse.builder()
+                    .email(userInfo.getEmail())
+                    .role(userInfo.getRole())
+                    .token(token)
+                    .build();
+        }
         return AuthenticationResponse.builder()
-                .email(userInfo.getEmail())
-                .role(userInfo.getRole())
-                .token(token)
+                .message(String.format("Пользователь с адресом электронной почты %s следует подтвердить учетную запись", request.email()))
                 .build();
     }
 
@@ -171,6 +185,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String resetPasswordLink = "http://localhost:3000/reset-password?token=" + token;
 
         Context context = new Context();
+        context.setVariable("baygo", "https://baygo.s3.us-east-2.amazonaws.com/1692961926031Снимок экрана 2023-08-25 в 16.53.24.png");
         context.setVariable("title", "Восстановление пароля");
         context.setVariable("message", "Пожалуйста, нажмите на ссылку ниже для сброса пароля!");
         context.setVariable("token", resetPasswordLink);
@@ -244,6 +259,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    @Override
+    public AuthenticationResponse confirmRegistration(String email, int code) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new NotFoundException(String.format("Пользователь с адресом электронной почты %s не существует", email)));
+
+        if (user.getConfirmCode() == code){
+
+            user.setVerify(true);
+            userRepository.save(user);
+
+            String jwtToken = jwtService.generateToken(user);
+
+            return AuthenticationResponse.builder()
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .token(jwtToken)
+                    .build();
+        }
+
+        return AuthenticationResponse.builder().message("неверный проверочный код").build();
+
+    }
+
     @PostConstruct
     void init() {
         try {
@@ -258,5 +296,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (IOException e) {
             log.error("IOException from firebase: " + e.getMessage());
         }
+    }
+
+    private int generateConfirmationCode() {
+        Random random = new Random();
+
+        return random.nextInt(1000, 9999);
+    }
+
+    private void confirmCodeSending(int code, String email){
+        String subject = "Письмо для подтверждения";
+
+        Context context = new Context();
+        context.setVariable("logo", "https://baygo.s3.us-east-2.amazonaws.com/1692961926031Снимок экрана 2023-08-25 в 16.53.24.png");
+        context.setVariable("text", "Это ваш проверочный код");
+        context.setVariable("password", code);
+
+        String htmlContent = templateEngine.process("message.html", context);
+
+        emailService.sendEmail(email, subject, htmlContent);
     }
 }

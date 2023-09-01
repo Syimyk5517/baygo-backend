@@ -15,13 +15,13 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
-
     @Override
     public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
         int offset = (page - 1) * size;
@@ -81,33 +81,6 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                 .build();
     }
 
-    private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {
-        String sql = """
-                    SELECT s.planned_date AS planned_date
-                    FROM supplies s
-                    WHERE s.warehouse_id = ? AND s.supply_type = ? AND s.planned_date = ?
-                """;
-
-        List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {
-            WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
-            warehouseCostResponse.setDate(innermostResult.getDate("planned_date").toLocalDate());
-            return warehouseCostResponse;
-        }, warehouseId, deliveryType.name(), date);
-        WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
-        warehouseCostResponse.setDate(date);
-        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
-        warehouseCostResponse.setGoodsPayment(warehouseCostResponses.size() < 11 ? "Бесплатный" : "x" + warehouseCostResponses.size() / 10);
-        return warehouseCostResponse;
-
-    }
-
-    private int totalCount(String sql, int size) {
-        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
-        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
-        int count = countResult != null ? countResult : 0;
-        return (int) Math.ceil((double) count / size);
-    }
-
     @Override
     public List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse) {
         String transitDirectionQuery = """
@@ -161,4 +134,45 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
             return new SupplyLandingPage(supplyId, supplyNumber, createdAt, warehouseLocation, quantityOfProducts, status);
         }, sellerId);
     }
+
+    @Override
+    public List<WarehouseCostResponse> getAllWarehouseCostResponse(Long warehouseId, SupplyType supplyType) {
+        LocalDate currenDate = LocalDate.now();
+        List<WarehouseCostResponse> warehouseCostResponses = new ArrayList<>();
+        for (int i = 0; i <= 13; i++) {
+            LocalDate futureDate = currenDate.plusDays(i);
+            WarehouseCostResponse warehouseCostResponse =
+                    warehouseCost(warehouseId, supplyType, futureDate);
+            warehouseCostResponses.add(warehouseCostResponse);
+        }
+        return warehouseCostResponses;
+    }
+
+    private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {
+        String sql = """
+                    SELECT s.planned_date AS planned_date
+                    FROM supplies s
+                    WHERE s.warehouse_id = ? AND s.supply_type = ? AND s.planned_date = ?
+                """;
+
+        List<WarehouseCostResponse> warehouseCostResponses = jdbcTemplate.query(sql, (innermostResult, d) -> {
+            WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+            warehouseCostResponse.setDate(innermostResult.getDate("planned_date").toLocalDate());
+            return warehouseCostResponse;
+        }, warehouseId, deliveryType.name(), date);
+        WarehouseCostResponse warehouseCostResponse = new WarehouseCostResponse();
+        warehouseCostResponse.setDate(date);
+        warehouseCostResponse.setWarehouseCost(BigDecimal.valueOf(warehouseCostResponses.size() / 10 * 2000L));
+        warehouseCostResponse.setGoodsPayment(warehouseCostResponses.size() < 11 ? "Бесплатный" : "x" + warehouseCostResponses.size() / 10);
+        return warehouseCostResponse;
+
+    }
+
+    private int totalCount(String sql, int size) {
+        String countSql = "SELECT COUNT(*) FROM (" + sql + ") as count_query";
+        Integer countResult = jdbcTemplate.queryForObject(countSql, Integer.class);
+        int count = countResult != null ? countResult : 0;
+        return (int) Math.ceil((double) count / size);
+    }
+
 }

@@ -29,6 +29,8 @@ public class User implements UserDetails {
     private String password;
     private String phoneNumber;
     private String resetPasswordToken;
+    private int confirmCode;
+    private boolean isVerify;
     @Enumerated(EnumType.STRING)
     private Role role;
 

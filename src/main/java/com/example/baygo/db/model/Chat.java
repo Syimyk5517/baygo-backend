@@ -1,7 +1,5 @@
 package com.example.baygo.db.model;
 
-import com.example.baygo.db.model.Message;
-import com.example.baygo.db.model.Seller;
 import jakarta.persistence.*;
 import lombok.*;
 
