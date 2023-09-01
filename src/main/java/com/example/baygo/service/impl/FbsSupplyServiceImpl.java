@@ -19,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +30,6 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     private final SizeRepository sizeRepository;
     private final FBSSupplyRepository fbsSupplyRepository;
     private final OrderSizeRepository orderSizeRepository;
-    private final FBSSupplyRepository repository;
     private final AccessCardRepository accessCardRepository;
     private final JwtService jwtService;
 
@@ -97,15 +93,15 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     public List<GetAllFbsSupplies> getAllFbsSupplies() {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
-        return repository.getAllFbsSupplies(seller.getId());
+        return fbsSupplyRepository.getAllFbsSupplies(seller.getId());
     }
 
     @Override
     public GetSupplyWithOrders getSupplyByIdWithOrders(Long supplyId) {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
-        GetSupplyWithOrders result = repository.getFbsSupplyById(supplyId, seller.getId());
-        result.setOrders(repository.getAllFbsOrdersBySupplyId(supplyId, seller.getId()));
+        GetSupplyWithOrders result = fbsSupplyRepository.getFbsSupplyById(supplyId, seller.getId());
+        result.setOrders(fbsSupplyRepository.getAllFbsOrdersBySupplyId(supplyId, seller.getId()));
         return result;
     }
 
@@ -151,5 +147,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
 
         return new SimpleResponse(HttpStatus.OK, String.format("%s сборочная задание успешно сохранен", supplyOrderRequest.nameOfSupply()));
     }
+
+
 }
 

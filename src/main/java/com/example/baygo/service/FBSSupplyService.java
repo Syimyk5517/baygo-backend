@@ -16,4 +16,6 @@ public interface FBSSupplyService {
     GetSupplyWithOrders getSupplyByIdWithOrders(Long supplyId);
 
     SimpleResponse saveAssemblyTask(SupplyOrderRequest supplyOrderRequest);
+
+
 }
