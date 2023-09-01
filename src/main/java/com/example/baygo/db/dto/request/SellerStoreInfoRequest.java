@@ -19,8 +19,6 @@ public class SellerStoreInfoRequest {
     @NotBlank(message = "ИНН не должен быть пустым")
     @Pattern(regexp = "\\d{10}|\\d{14}", message = "Некоррекный  INN")
     private String ITN;
-    @NotBlank(message = "Лого магазина не должен быть пустым")
-    private String storeLogo;
     @NotBlank(message = "Расчетный счет не должен быть пустым")
     private int checkingCheck;
     @NotBlank(message = "BIC не должен быть пустым")

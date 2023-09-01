@@ -1,8 +1,8 @@
 package com.example.baygo.api.buyer;
 
-import com.example.baygo.db.dto.request.ReviewByBuyerRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.service.ReviewByBuyerService;
+import com.example.baygo.db.dto.response.buyer.AppealResponse;
+import com.example.baygo.service.AppealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -11,17 +11,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/buyer/reviews")
+@RequestMapping("/api/buyer/appeal")
 @RequiredArgsConstructor
-@Tag(name = "Review Buyer API")
+@Tag(name = "Buyer appeal API")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class ReviewByBuyerApi {
-    private final ReviewByBuyerService service;
-
-    @Operation(summary = "Save Review",description = "This method saves reviews which written by Buyer!")
+public class BuyerAppealController {
+    private final AppealService appealService;
+    @Operation(summary = "Save the appeal of buyer", description = "This method saves the appeals")
     @PostMapping
     @PreAuthorize("hasAuthority('BUYER')")
-    public SimpleResponse saveReview(@RequestBody @Valid ReviewByBuyerRequest request){
-        return service.saveReview(request);
+    SimpleResponse saveAppeal(@RequestBody @Valid AppealResponse appealResponse){
+        return appealService.saveAppeal(appealResponse);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Question Buyer API")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class QuestionOfBuyerApi {
+public class BuyerQuestionController {
     private final QuestionOfBuyerService service;
 
     @Operation(summary = "Save Question",description = "This method saves questions which written by Buyer!")
