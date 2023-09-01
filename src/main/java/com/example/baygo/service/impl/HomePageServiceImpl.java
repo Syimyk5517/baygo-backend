@@ -26,4 +26,9 @@ public class HomePageServiceImpl implements HomePageService {
     public List<HomePageResponse> getFashionProductsForHomePage() {
         return productRepository.getFashionProductsForHomePage(PageRequest.of(0, 8));
     }
+
+    @Override
+    public List<HomePageResponse> getPopularBrandsForHomePage() {
+        return productRepository.getPopularBrandsForHomePage(PageRequest.of(0, 8));
+    }
 }
