@@ -51,7 +51,7 @@ public class Buyer {
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> lastViews;
 
-    @OneToMany(mappedBy = "buyer",cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    @OneToMany(mappedBy = "buyer", cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<Order> orders;
 
     @OneToOne(cascade = ALL)
@@ -64,4 +64,8 @@ public class Buyer {
         }
         this.basket.add(size);
     }
+
+    @ManyToMany(mappedBy = "buyers",cascade = {ALL})
+    private List<Notification> notifications;
+
 }

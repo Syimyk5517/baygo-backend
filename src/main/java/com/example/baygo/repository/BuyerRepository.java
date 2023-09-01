@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BuyerRepository extends JpaRepository<Buyer, Long> {
+    Buyer getBuyerByUserId (Long userId);
     @Query("SELECT NEW com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse(b.photo, b.fullName, b.dateOfBirth, b.gender, b.address, u.email, u.phoneNumber ) " +
             "FROM Buyer b " +
             " join b.user u " +
