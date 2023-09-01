@@ -23,10 +23,12 @@ import static jakarta.persistence.CascadeType.*;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_seq")
-    @SequenceGenerator(name = "notification_seq", allocationSize = 1, initialValue = 1)
+    @SequenceGenerator(name = "notification_seq", allocationSize = 1, initialValue = 6)
     @Column(name = "id", nullable = false)
     private Long id;
     private String tittle;
+
+    @Column(length = 2000)
     private String message;
     private LocalDateTime createAt;
     private Boolean read;

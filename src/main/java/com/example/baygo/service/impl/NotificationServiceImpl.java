@@ -45,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponse> getMyNotifications() {
+    public List<NotificationResponse> getBuyerNotifications() {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         List<Notification> notificationByBuyerId = notificationRepository.getNotificationByBuyerId(buyer.getId());
 
