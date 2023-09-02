@@ -2,6 +2,7 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
 import com.example.baygo.service.BarcodeService;
+import com.example.baygo.service.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,16 +12,20 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class BarcodeServiceImpl implements BarcodeService {
+    private final S3Service s3Service;
 
-    public BufferedImage getBarcodesWithImage(int quantity) {
+    public List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity) {
         BitmapCanvasProvider canvas = new BitmapCanvasProvider(
                 160,
                 BufferedImage.TYPE_BYTE_BINARY,
@@ -28,12 +33,19 @@ public class BarcodeServiceImpl implements BarcodeService {
                 0
         );
 
+        List<BarcodeWithImageResponse> responses = new ArrayList<>();
         for (String barcode : generateProductBarcode(quantity)) {
-            EAN13Bean barcodeGenerator = new EAN13Bean();
-            barcodeGenerator.generateBarcode(canvas, barcode);
+            try {
+                EAN13Bean barcodeGenerator = new EAN13Bean();
+                barcodeGenerator.generateBarcode(canvas, barcode);
 
+                responses.add(new BarcodeWithImageResponse(barcode,
+                        s3Service.uploadImage(canvas.getBufferedImage(), barcode)));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return canvas.getBufferedImage();
+        return responses;
     }
 
 //    @Override

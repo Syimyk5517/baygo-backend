@@ -32,7 +32,7 @@ public class SellerBarcodeController {
     private final BarcodeService barcodeService;
 
     @GetMapping
-    public BufferedImage generateBarcode(@RequestParam int quantity) {
+    public List<BarcodeWithImageResponse> generateBarcode(@RequestParam int quantity) {
         return barcodeService.getBarcodesWithImage(quantity);
     }
 
