@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface QuestionOfBuyerRepository extends JpaRepository<BuyerQuestion, Long> {
     @Query("""
@@ -46,5 +48,7 @@ public interface QuestionOfBuyerRepository extends JpaRepository<BuyerQuestion, 
                                                 boolean isAnswered,
                                                 String keyWord,
                                                 Pageable pageable);
+    @Query("SELECT b FROM BuyerQuestion b WHERE b.subProduct.id = ?1")
+    List<BuyerQuestion> findAllQuestionsBySubProductId(Long subProductId);
 
 }

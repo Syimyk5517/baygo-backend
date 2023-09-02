@@ -10,12 +10,14 @@ import com.example.baygo.service.PackingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,48 +28,35 @@ public class PackingServiceImpl implements PackingService {
 
     @Override
     public SimpleResponse repacking(Long supplyId, List<PackingRequest> packingRequests) {
-        Supply existingSupply = supplyRepository.findById(supplyId).orElseThrow(() ->
-                new NotFoundException("Подкатегория с идентификатором: " + supplyId + " не найдена!"));
+        Supply existingSupply = supplyRepository.findById(supplyId)
+                .orElseThrow(() -> new NotFoundException("Подкатегория с идентификатором: " + supplyId + " не найдена!"));
 
-        Map<Integer, Integer> barcodeToQuantityMap = new HashMap<>();
-
-        for (PackingRequest packingRequest : packingRequests) {
-            barcodeToQuantityMap.put(packingRequest.barcode(), packingRequest.quantity());
-        }
+        Map<Integer, Integer> barcodeToQuantityMap = packingRequests.stream()
+                .collect(Collectors.toMap(PackingRequest::barcode, PackingRequest::quantity));
 
         Supply newSupply = new Supply();
-        newSupply.setSupplyNumber(existingSupply.getSupplyNumber());
-        newSupply.setSupplyType(existingSupply.getSupplyType());
-        newSupply.setCreatedAt(existingSupply.getCreatedAt());
-        newSupply.setQuantityOfProducts(existingSupply.getQuantityOfProducts());
-        newSupply.setAcceptedProducts(existingSupply.getAcceptedProducts());
-        newSupply.setCommission(existingSupply.getCommission());
-        newSupply.setSupplyCost(existingSupply.getSupplyCost());
-        newSupply.setPlannedDate(existingSupply.getPlannedDate());
-        newSupply.setActualDate(existingSupply.getActualDate());
-        newSupply.setStatus(existingSupply.getStatus());
-        newSupply.setSeller(existingSupply.getSeller());
-        newSupply.setWarehouse(existingSupply.getWarehouse());
+        BeanUtils.copyProperties(existingSupply, newSupply);
 
-        List<SupplyProduct> newSupplyProducts = new ArrayList<>();
-        for (SupplyProduct existingSupplyProduct : existingSupply.getSupplyProduct()) {
-            int barcode = existingSupplyProduct.getSize().getBarcode();
-            if (barcodeToQuantityMap.containsKey(barcode)) {
-                int newQuantity = existingSupplyProduct.getSize().getFbbQuantity() + barcodeToQuantityMap.get(barcode);
-                existingSupplyProduct.getSize().setFbbQuantity(newQuantity);
+        List<SupplyProduct> newSupplyProducts = existingSupply.getSupplyProduct().stream()
+                .map(existingSupplyProduct -> {
+                    int barcode = existingSupplyProduct.getSize().getBarcode();
+                    if (barcodeToQuantityMap.containsKey(barcode)) {
+                        int newQuantity = existingSupplyProduct.getSize().getFbbQuantity() + barcodeToQuantityMap.get(barcode);
+                        existingSupplyProduct.getSize().setFbbQuantity(newQuantity);
 
-                SupplyProduct newSupplyProduct = new SupplyProduct();
-                newSupplyProduct.setSize(existingSupplyProduct.getSize());
-                newSupplyProduct.setSupply(newSupply);
-                newSupplyProducts.add(newSupplyProduct);
-            } else {
-                newSupplyProducts.add(existingSupplyProduct);
-            }
-        }
+                        SupplyProduct newSupplyProduct = new SupplyProduct();
+                        BeanUtils.copyProperties(existingSupplyProduct, newSupplyProduct, "id");
+                        newSupplyProduct.setSupply(newSupply);
+                        return newSupplyProduct;
+                    }
+                    return existingSupplyProduct;
+                })
+                .collect(Collectors.toList());
 
         newSupply.setSupplyProduct(newSupplyProducts);
         supplyRepository.save(newSupply);
 
-        return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Repacking successful").build();
+
+        return null;
     }
 }
