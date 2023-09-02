@@ -28,9 +28,9 @@ public class SellerCategoryController {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/sub-categories")
     @Operation(summary = "Get all sub categories!", description = "This method gets all subCategories!!!")
-    public List<SubCategoryResponse> getAllSubCategories(@PathVariable Long categoryId) {
+    public List<SubCategoryResponse> getAllSubCategories(@RequestParam(required = false) Long categoryId) {
         return subCategoryService.getAllSubCategories(categoryId);
     }
 }

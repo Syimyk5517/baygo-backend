@@ -103,11 +103,10 @@ public class SellerSupplyController {
     @Operation(summary = "Get Seller's All Products with size", description = "This method is used to get all seller's products with size from db")
     @GetMapping("/product-size")
     public PaginationResponse<SupplySellerProductResponse> getAllSellerProducts(@RequestParam(required = false) String searchWithBarcode,
-                                                                                @RequestParam(required = false) String category,
-                                                                                @RequestParam(required = false) String brand,
+                                                                                @RequestParam(required = false) Long subCategoryId,
                                                                                 @RequestParam(defaultValue = "1") int page,
                                                                                 @RequestParam(defaultValue = "7") int pageSize) {
-        return service.getSellerProducts(searchWithBarcode, category, brand, page, pageSize);
+        return service.getSellerProducts(searchWithBarcode, subCategoryId, page, pageSize);
     }
 
     @Operation(summary = "Get all warehouses", description = "This method returns all warehouses")

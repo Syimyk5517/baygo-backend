@@ -84,13 +84,12 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
                         WHERE seller.id = :sellerId
                         AND (CAST(s.barcode AS string ) iLIKE CONCAT("%",:searchWithBarcode)
                         OR (:searchWithBarcode IS NULL ))
-                        AND (:category IS NULL OR sc.name = :category)
-                        AND (:brand IS NULL OR p.brand = :brand)
+                        AND (:subCategoryId IS NULL OR sc.id = :subCategoryId)
             """)
     Page<SupplySellerProductResponse> getSellerProducts(
             @Param("sellerId") Long sellerId,
             @Param("searchWithBarcode") String searchWithBarcode,
-            @Param("category") String category,
-            @Param("brand") String brand, Pageable pageable);
+            @Param("subCategoryId") Long subCategoryId,
+            Pageable pageable);
 
 }
