@@ -23,9 +23,9 @@ public interface BuyerRepository extends JpaRepository<Buyer, Long> {
 
     @Modifying
     @Query(value = "delete from buyers_last_views bb where bb.sub_products_id = :subProductId", nativeQuery = true)
-    void removeSizeFromLastViews(Long subProductId);
+    void removeSubProductFromLastViews(Long subProductId);
 
     @Modifying
     @Query(value = "delete from buyers_favorites bb where bb.sub_products_id = :subProductId", nativeQuery = true)
-    void removeSizeFromFavorites(Long subProductId);
+    void removeSubProductFromFavorites(Long subProductId);
 }

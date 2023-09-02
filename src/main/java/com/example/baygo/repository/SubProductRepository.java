@@ -2,7 +2,9 @@ package com.example.baygo.repository;
 
 import com.example.baygo.db.dto.request.UpdateSubProductDTO;
 import com.example.baygo.db.model.SubProduct;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +23,5 @@ public interface SubProductRepository extends JpaRepository<SubProduct, Long> {
 
     @Query("SELECT sp.images FROM SubProduct sp WHERE sp.id = ?1")
     List<String> getImagesSubProductId(Long subProductId);
+
 }

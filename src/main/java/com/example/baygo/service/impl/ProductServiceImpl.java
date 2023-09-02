@@ -40,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final BuyerRepository buyerRepository;
+    private final QuestionOfBuyerRepository questionOfBuyerRepository;
 
     @Override
     public SimpleResponse saveProduct(SaveProductRequest request) {
@@ -153,8 +154,12 @@ public class ProductServiceImpl implements ProductService {
                     buyerRepository.removeSizeFromBaskets(size.getId());
                 }
             }
-            buyerRepository.removeSizeFromLastViews(subProductId);
-            buyerRepository.removeSizeFromFavorites(subProductId);
+            buyerRepository.removeSubProductFromLastViews(subProductId);
+            buyerRepository.removeSubProductFromFavorites(subProductId);
+            List<BuyerQuestion> questions = questionOfBuyerRepository.findAllQuestionsBySubProductId(subProductId);
+            if (!questions.isEmpty()) {
+                questionOfBuyerRepository.deleteAll(questions);
+            }
             subProductRepository.delete(subProduct);
 
         }
