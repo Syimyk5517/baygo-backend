@@ -142,11 +142,11 @@ VALUES (1, 'Курстан', 'Эркинбаев',
         'timur@gmail.com',
         '+996700987654', '715010');
 
-INSERT INTO appeals(id, title, divide, detailed_appeal, buyer_id)
+INSERT INTO appeals(id, title, detailed_appeal, buyer_id)
 VALUES (1,
-        'Жалоба', 'Жалоба', 'Жалоба на качество услуг', 1),
+        'Жалоба', 'Жалоба на качество услуг', 1),
        (2,
-        'Запрос', 'Запрос', 'Запрос на получение информации', 1);
+        'Запрос', 'Запрос на получение информации', 1);
 
 INSERT INTO categories(id, name)
 VALUES (1,

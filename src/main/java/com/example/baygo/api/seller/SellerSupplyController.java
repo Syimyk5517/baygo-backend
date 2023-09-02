@@ -100,8 +100,8 @@ public class SellerSupplyController {
         return service.deleteDeliveryDraft(supplyId);
     }
 
-    @Operation(summary = "Get Seller's All Products", description = "This method is used to get all seller's products from db")
-    @GetMapping("/all-supplies")
+    @Operation(summary = "Get Seller's All Products with size", description = "This method is used to get all seller's products with size from db")
+    @GetMapping("/product-size")
     public PaginationResponse<SupplySellerProductResponse> getAllSellerProducts(@RequestParam(required = false) String searchWithBarcode,
                                                                                 @RequestParam(required = false) String category,
                                                                                 @RequestParam(required = false) String brand,
@@ -115,7 +115,6 @@ public class SellerSupplyController {
     List<WarehouseResponse> getAllWarehouses() {
         return service.getAllWarehouses();
     }
-
 
     @Operation(summary = "Choose products",
             description = "This method is for choosing products to send it to warehouse")

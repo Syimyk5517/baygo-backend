@@ -28,7 +28,6 @@ public class AppealServiceImpl implements AppealService {
         }
         Appeal appeal = Appeal.builder()
                 .title(appealResponse.title())
-                .divide(appealResponse.divide())
                 .detailedAppeal(appealResponse.detailOfAppeal())
                 .buyer(buyer)
                 .build();

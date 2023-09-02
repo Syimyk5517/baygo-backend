@@ -45,7 +45,7 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
 
     @Query("""
               SELECT NEW com.example.baygo.db.dto.response.supply.SupplySellerProductResponse(
-                        s.id, sub.mainImage, sc.name, s.barcode, seller.vendorNumber, p.brand, s.size, sub.color)
+                        s.id, sub.mainImage, sc.name, s.barcode, sub.articulOfSeller, sub.articulBG, p.brand, s.size, sub.color)
                         FROM Product p
                         JOIN SubProduct sub ON p.id = sub.product.id
                         JOIN SubCategory sc ON p.subCategory.id = sc.id
