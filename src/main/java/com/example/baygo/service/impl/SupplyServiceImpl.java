@@ -130,10 +130,10 @@ public class SupplyServiceImpl implements SupplyService {
 
     @Override
     public PaginationResponse<SupplySellerProductResponse> getSellerProducts(
-            String searchWithBarcode, String category, String brand, int page, int pageSize) {
+            String searchWithBarcode, Long subCategoryId, int page, int pageSize) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<SupplySellerProductResponse> productResponses = repository.getSellerProducts(sellerId, searchWithBarcode, category, brand, pageable);
+        Page<SupplySellerProductResponse> productResponses = repository.getSellerProducts(sellerId, searchWithBarcode, subCategoryId, pageable);
         return new PaginationResponse<>(productResponses.getContent(),
                 productResponses.getNumber() + 1,
                 productResponses.getTotalPages());

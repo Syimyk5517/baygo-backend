@@ -12,7 +12,7 @@ import java.util.List;
 public interface SubCategoryRepository extends JpaRepository<SubCategory, Long> {
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.SubCategoryResponse(sc.id, sc.name)
-            FROM SubCategory sc where sc.category.id = :categoryId
+            FROM SubCategory sc where :categoryId is null or sc.category.id = :categoryId
             """)
     List<SubCategoryResponse> getAllSubCategories(Long categoryId);
 }
