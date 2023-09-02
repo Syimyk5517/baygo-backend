@@ -14,13 +14,12 @@ import java.util.List;
 @Repository
 public interface SupplyCustomRepository {
 
-     PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size);
-
     PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
 
     List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
 
     List<SupplyLandingPage> getAllSupplyForLanding(Long sellerId);
+
     List<WarehouseCostResponse> getAllWarehouseCostResponse(Long warehouseId, SupplyType supplyType);
 
 }
