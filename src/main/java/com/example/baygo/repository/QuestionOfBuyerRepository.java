@@ -5,6 +5,7 @@ import com.example.baygo.db.model.BuyerQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -48,7 +49,7 @@ public interface QuestionOfBuyerRepository extends JpaRepository<BuyerQuestion, 
                                                 boolean isAnswered,
                                                 String keyWord,
                                                 Pageable pageable);
-    @Query("SELECT b FROM BuyerQuestion b WHERE b.subProduct.id = ?1")
-    List<BuyerQuestion> findAllQuestionsBySubProductId(Long subProductId);
+
+    List<BuyerQuestion> deleteBuyerQuestionBySubProductId(Long subProductId);
 
 }

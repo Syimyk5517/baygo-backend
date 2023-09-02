@@ -32,6 +32,7 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class ProductServiceImpl implements ProductService {
+    private final FbsWarehouseRepository fbsWarehouseRepository;
     private final SubProductRepository subProductRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final SizeRepository sizeRepository;
@@ -156,10 +157,8 @@ public class ProductServiceImpl implements ProductService {
             }
             buyerRepository.removeSubProductFromLastViews(subProductId);
             buyerRepository.removeSubProductFromFavorites(subProductId);
-            List<BuyerQuestion> questions = questionOfBuyerRepository.findAllQuestionsBySubProductId(subProductId);
-            if (!questions.isEmpty()) {
-                questionOfBuyerRepository.deleteAll(questions);
-            }
+            questionOfBuyerRepository.deleteBuyerQuestionBySubProductId(subProductId);
+            fbsWarehouseRepository.removeSubProductFromWarehouse(subProductId);
             subProductRepository.delete(subProduct);
 
         }

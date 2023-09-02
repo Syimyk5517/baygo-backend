@@ -142,6 +142,4 @@ public class SellerSupplyController {
     SimpleResponse willCompleteTheDelivery(@RequestBody @Valid SupplyWrapperRequest supplyWrapperRequest) {
         return service.willCompleteTheDelivery(supplyWrapperRequest);
     }
-
-
 }
