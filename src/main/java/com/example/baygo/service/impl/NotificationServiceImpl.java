@@ -53,7 +53,8 @@ public class NotificationServiceImpl implements NotificationService {
         for (Notification notification : notificationByBuyerId) {
             NotificationResponse response = NotificationResponse.builder()
                     .id(notification.getId())
-                    .creatAt(notification.getCreateAt())
+                    .creatAtDate(notification.getCreateAt().toLocalDate())
+                    .createAtTime(notification.getCreateAt().toLocalTime())
                     .read(notification.getRead())
                     .tittle(notification.getTittle())
                     .message(notification.getMessage())
@@ -80,7 +81,8 @@ public class NotificationServiceImpl implements NotificationService {
                 .read(notification.getRead())
                 .tittle(notification.getTittle())
                 .message(notification.getMessage())
-                .creatAt(notification.getCreateAt())
+                .creatAtDate(notification.getCreateAt().toLocalDate())
+                .createAtTime(notification.getCreateAt().toLocalTime())
                 .build();
     }
 }
