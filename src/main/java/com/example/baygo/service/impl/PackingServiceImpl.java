@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +54,8 @@ public class PackingServiceImpl implements PackingService {
         for (SupplyProduct existingSupplyProduct : existingSupply.getSupplyProduct()) {
             int barcode = existingSupplyProduct.getSize().getBarcode();
             if (barcodeToQuantityMap.containsKey(barcode)) {
-                int newQuantity = existingSupplyProduct.getSize().getQuantity() + barcodeToQuantityMap.get(barcode);
-                existingSupplyProduct.getSize().setQuantity(newQuantity);
+                int newQuantity = existingSupplyProduct.getSize().getFbbQuantity() + barcodeToQuantityMap.get(barcode);
+                existingSupplyProduct.getSize().setFbbQuantity(newQuantity);
 
                 SupplyProduct newSupplyProduct = new SupplyProduct();
                 newSupplyProduct.setSize(existingSupplyProduct.getSize());

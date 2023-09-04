@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -50,10 +51,21 @@ public class Buyer {
             inverseJoinColumns = @JoinColumn(name = "sub_products_id"))
     private List<SubProduct> lastViews;
 
-    @OneToMany(mappedBy = "buyer",cascade = {PERSIST, MERGE, REFRESH, DETACH})
+    @OneToMany(mappedBy = "buyer", cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<Order> orders;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void addToBasket(Size size) {
+        if (this.basket == null){
+            this.basket = new ArrayList<>();
+        }
+        this.basket.add(size);
+    }
+
+    @ManyToMany(mappedBy = "buyers",cascade = {ALL})
+    private List<Notification> notifications;
+
 }

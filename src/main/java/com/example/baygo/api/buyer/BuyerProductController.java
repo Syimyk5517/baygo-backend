@@ -1,6 +1,5 @@
 package com.example.baygo.api.buyer;
 
-import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.PaginationResponseWithQuantity;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.service.ProductService;

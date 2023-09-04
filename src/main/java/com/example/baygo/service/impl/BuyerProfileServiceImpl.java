@@ -4,9 +4,11 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.BuyerProfileImageRequest;
 import com.example.baygo.db.dto.request.BuyerProfileRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Order;
 import com.example.baygo.db.model.User;
+import com.example.baygo.repository.BuyerRepository;
 import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.service.BuyerProfileService;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BuyerProfileServiceImpl implements BuyerProfileService {
     private final JwtService jwtService;
+    private final BuyerRepository buyerRepository;
     private final PasswordEncoder encoder;
     private final OrderRepository orderRepository;
     private final JdbcTemplate jdbcTemplate;
@@ -73,5 +76,11 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
                 .httpStatus(HttpStatus.OK)
                 .message("Ваш аккаунт успешно удален!!!")
                 .build();
+    }
+
+    @Override
+    public BuyerProfileInfoResponse getProfileInfo() {
+        Long buyerId = jwtService.getAuthenticate().getBuyer().getId();
+        return buyerRepository.getProfileInfo(buyerId);
     }
 }

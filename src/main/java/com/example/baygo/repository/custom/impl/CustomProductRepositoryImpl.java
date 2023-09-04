@@ -4,8 +4,6 @@ import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.ProductResponseForSeller;
 import com.example.baygo.db.dto.response.SizeSellerResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -42,7 +40,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                            sp.color as color,
                            (select s.size from sizes s where s.sub_product_id = sp.id limit 1) as size,
                            (select s.barcode from sizes s where s.sub_product_id = sp.id limit 1) as barcode,
-                           (select s.quantity from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
+                           (select (s.fbb_quantity + s.fbs_quantity)  from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
@@ -58,7 +56,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                    s.id,
                    s.size,
                    s.barcode,
-                   s.quantity
+                   (s.fbs_quantity + s.fbb_quantity) as quantity
                 from sizes s
                 where s.sub_product_id = ?
                 """;
