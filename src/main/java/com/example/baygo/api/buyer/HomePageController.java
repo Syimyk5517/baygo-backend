@@ -48,4 +48,10 @@ public class HomePageController {
     public List<HomePageResponse> getPopularBrandsForHomePage() {
         return homePageService.getPopularBrandsForHomePage();
     }
+    @Operation(summary = "Find all favorite products",description = "This method find all favorite products ")
+    @GetMapping("/favorite_products")
+    @PermitAll
+    public List<HomePageResponse> findAllFavoriteItems(){
+        return homePageService.findAllFavoriteItems();
+    }
 }
