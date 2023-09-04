@@ -20,7 +20,7 @@ public class Size {
     @SequenceGenerator(name = "size_gen", sequenceName = "size_seq", allocationSize = 1, initialValue = 71)
     private Long id;
     private String size;
-    private int barcode;
+    private String barcode;
     private int fbbQuantity;
     private int fbsQuantity;
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})

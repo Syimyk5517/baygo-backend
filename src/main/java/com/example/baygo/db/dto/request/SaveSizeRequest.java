@@ -8,6 +8,6 @@ public record SaveSizeRequest(
         @NotNull(message = "Размер должен быть указан!!!")
         String size,
         @Positive(message = "Баркод должен быть положительным !")
-        int barcode
+        String barcode
 ) {
 }

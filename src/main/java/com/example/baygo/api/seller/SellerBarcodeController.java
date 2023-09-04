@@ -33,13 +33,13 @@ public class SellerBarcodeController {
     private final BarcodeService barcodeService;
 
     @Operation(summary = "Generate barcodes for sizes", description = "This method to generate barcodes for saving sizes")
-    @GetMapping
+    @GetMapping("/generate")
     public List<String> generateProductBarcode(@RequestParam int quantity) {
         return barcodeService.generateProductBarcode(quantity);
     }
 
     @Operation(summary = "Generate barcodes with image", description = "This method to generate barcodes with image for supply box, for access card and ...")
-    @GetMapping("/image-barcode")
+    @GetMapping("/generate-image-barcode")
     public List<BarcodeWithImageResponse> generateBarcodeWithImage(@RequestParam int quantity) {
         return barcodeService.getBarcodesWithImage(quantity);
     }
