@@ -18,7 +18,6 @@ public class Appeal {
     @SequenceGenerator(name = "appeal_gen", sequenceName = "appeal_seq", allocationSize = 1, initialValue = 3)
     private Long id;
     private String title;
-    private String divide;
     private String detailedAppeal;
 
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})

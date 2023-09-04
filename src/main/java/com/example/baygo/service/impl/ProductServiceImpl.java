@@ -32,6 +32,7 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class ProductServiceImpl implements ProductService {
+    private final FbsWarehouseRepository fbsWarehouseRepository;
     private final SubProductRepository subProductRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final SizeRepository sizeRepository;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final BuyerRepository buyerRepository;
+    private final QuestionOfBuyerRepository questionOfBuyerRepository;
 
     @Override
     public SimpleResponse saveProduct(SaveProductRequest request) {
@@ -153,8 +155,10 @@ public class ProductServiceImpl implements ProductService {
                     buyerRepository.removeSizeFromBaskets(size.getId());
                 }
             }
-            buyerRepository.removeSizeFromLastViews(subProductId);
-            buyerRepository.removeSizeFromFavorites(subProductId);
+            buyerRepository.removeSubProductFromLastViews(subProductId);
+            buyerRepository.removeSubProductFromFavorites(subProductId);
+            questionOfBuyerRepository.deleteBuyerQuestionBySubProductId(subProductId);
+            fbsWarehouseRepository.removeSubProductFromWarehouse(subProductId);
             subProductRepository.delete(subProduct);
 
         }

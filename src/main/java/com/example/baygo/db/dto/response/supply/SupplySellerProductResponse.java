@@ -9,10 +9,10 @@ public record SupplySellerProductResponse(
         String imageProduct,
         String categoryProduct,
         int barcodeProduct,
-        String vendorCodeSeller,
+        String acticulOfSeller,
+        int acticulBG,
         String brandProduct,
         String sizeProduct,
         String colorProduct
-
 ) {
 }

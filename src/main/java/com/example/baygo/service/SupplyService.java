@@ -35,8 +35,7 @@ public interface SupplyService {
 
     SimpleResponse deleteDeliveryDraft(Long supplyId);
 
-    PaginationResponse<SupplySellerProductResponse> getSellerProducts(String searchWithBarcode, String category,
-                                                                      String brand, int page, int pageSize);
+    PaginationResponse<SupplySellerProductResponse> getSellerProducts(String searchWithBarcode, Long subCategoryId, int page, int pageSize);
 
     List<WarehouseResponse> getAllWarehouses();
 

@@ -53,7 +53,7 @@ public class SellerSupplyController {
             @RequestParam(required = false) String keyWord,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        return service.getSupplyProducts(supplyId, keyWord, page, size);
+        return service.getSupplyProducts(supplyId, keyWord,page, size);
     }
 
     @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
@@ -100,14 +100,13 @@ public class SellerSupplyController {
         return service.deleteDeliveryDraft(supplyId);
     }
 
-    @Operation(summary = "Get Seller's All Products", description = "This method is used to get all seller's products from db")
-    @GetMapping("/all-supplies")
+    @Operation(summary = "Get Seller's All Products with size", description = "This method is used to get all seller's products with size from db")
+    @GetMapping("/product-size")
     public PaginationResponse<SupplySellerProductResponse> getAllSellerProducts(@RequestParam(required = false) String searchWithBarcode,
-                                                                                @RequestParam(required = false) String category,
-                                                                                @RequestParam(required = false) String brand,
+                                                                                @RequestParam(required = false) Long subCategoryId,
                                                                                 @RequestParam(defaultValue = "1") int page,
                                                                                 @RequestParam(defaultValue = "7") int pageSize) {
-        return service.getSellerProducts(searchWithBarcode, category, brand, page, pageSize);
+        return service.getSellerProducts(searchWithBarcode, subCategoryId, page, pageSize);
     }
 
     @Operation(summary = "Get all warehouses", description = "This method returns all warehouses")
@@ -115,7 +114,6 @@ public class SellerSupplyController {
     List<WarehouseResponse> getAllWarehouses() {
         return service.getAllWarehouses();
     }
-
 
     @Operation(summary = "Choose products",
             description = "This method is for choosing products to send it to warehouse")
@@ -143,6 +141,4 @@ public class SellerSupplyController {
     SimpleResponse willCompleteTheDelivery(@RequestBody @Valid SupplyWrapperRequest supplyWrapperRequest) {
         return service.willCompleteTheDelivery(supplyWrapperRequest);
     }
-
-
 }
