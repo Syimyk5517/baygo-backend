@@ -25,7 +25,7 @@ public class FBSSupplyController {
     private final FBSSupplyService supplyService;
 
     @Operation(summary = "Add quantity to product", description = "This method will add quantity to product")
-    @PostMapping("/add_quantity")
+    @PostMapping("/add-quantity")
     public SimpleResponse saveSupply(@RequestBody @Valid SupplyRequest supplyRequest) {
         return supplyService.saveSupply(supplyRequest);
     }

@@ -10,7 +10,5 @@ import java.util.List;
 public interface BarcodeService {
     List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity);
 
-    List<BufferedImage> generateEAN13BarcodeImage(String barcode);
-
     List<String> generateProductBarcode(int quantity);
 }
