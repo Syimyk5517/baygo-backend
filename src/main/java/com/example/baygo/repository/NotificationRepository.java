@@ -1,6 +1,5 @@
 package com.example.baygo.repository;
 
-import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
