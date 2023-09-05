@@ -10,7 +10,7 @@ public class SupplyProductResponse {
     private Long subProductId;
     private Long sizeId;
     private String image;
-    private int barcode;
+    private String barcode;
     private int quantity;
     private String name;
     private String vendorNumber;
@@ -18,7 +18,7 @@ public class SupplyProductResponse {
     private String sizes;
     private String color;
 
-    public SupplyProductResponse(Long productId, Long subProductId, Long sizeId, String image, int barcode, int quantity, String name, String vendorNumber, String brand, String sizes, String color) {
+    public SupplyProductResponse(Long productId, Long subProductId, Long sizeId, String image, String barcode, int quantity, String name, String vendorNumber, String brand, String sizes, String color) {
         this.productId = productId;
         this.subProductId = subProductId;
         this.sizeId = sizeId;

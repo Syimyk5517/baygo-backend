@@ -23,7 +23,9 @@ public class ProductPackages {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_packages_gen")
     @SequenceGenerator(name = "product_packages_gen", sequenceName = "product_packages_seq", allocationSize = 1, initialValue = 16)
     private Long id;
-    private int packageNumber;
+    private String packageBarcode;
+    @Column(length = 1000)
+    private String packageBarcodeImage;
     @ElementCollection
     @JoinTable(name = "supply_products_product_packages",
             joinColumns = @JoinColumn(name = "product_package_id"))

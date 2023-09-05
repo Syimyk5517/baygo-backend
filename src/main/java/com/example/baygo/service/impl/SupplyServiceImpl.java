@@ -171,7 +171,6 @@ public class SupplyServiceImpl implements SupplyService {
         supply.setSeller(user.getSeller());
         supply.setIsDraft(true);
         supply.setWarehouse(warehouse);
-        supply.setPlannedDate(supplyRequest.plannedDate());
         supply.setSupplyType(supplyRequest.supplyType());
         supply.setCreatedAt(LocalDate.now());
         supply.setChangedAt(LocalDate.now());
@@ -203,6 +202,7 @@ public class SupplyServiceImpl implements SupplyService {
         supply.setCommission(supplyWrapperRequest.commission());
         supply.setStatus(SupplyStatus.PLANNED);
         supply.setPlannedDate(supplyWrapperRequest.plannedDate());
+        supply.setChangedAt(LocalDate.now());
         supply.setIsDraft(false);
         for (ProductPackagesRequest packagesRequest : supplyWrapperRequest.productPackagesRequests()) {
             Map<SupplyProduct, Integer> productCounts = new HashMap<>();
@@ -212,12 +212,14 @@ public class SupplyServiceImpl implements SupplyService {
                 productCounts.put(supplyProduct, numberOfProductsRequest.quantityProduct());
             }
             ProductPackages productPackages = new ProductPackages();
-            productPackages.setPackageNumber(packagesRequest.packageNumber());
+            productPackages.setPackageBarcode(packagesRequest.packageBarcode());
+            productPackages.setPackageBarcodeImage(packagesRequest.packageBarcodeImage());
             productPackages.setProductCounts(productCounts);
             productPackagesRepository.save(productPackages);
         }
         AccessCard accessCard = AccessCard.builder()
-                .deliveryPass(supplyWrapperRequest.supplyDeliveryRequest().deliveryPass())
+                .barcode(supplyWrapperRequest.supplyDeliveryRequest().barcode())
+                .barcodeImage(supplyWrapperRequest.supplyDeliveryRequest().barcodeImage())
                 .driverFirstName(supplyWrapperRequest.supplyDeliveryRequest().driverName())
                 .driverLastName(supplyWrapperRequest.supplyDeliveryRequest().driverSurname())
                 .numberOfCar(supplyWrapperRequest.supplyDeliveryRequest().carNumber())

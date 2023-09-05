@@ -11,4 +11,6 @@ public interface HomePageService {
      List<HomePageResponse> getHotSalesForHomePage();
      List<HomePageResponse> getFashionProductsForHomePage();
      List<HomePageResponse> getPopularBrandsForHomePage();
+
+     List<HomePageResponse> findAllFavoriteItems();
 }
