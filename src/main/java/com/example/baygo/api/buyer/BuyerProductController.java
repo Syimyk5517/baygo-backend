@@ -36,4 +36,10 @@ public class BuyerProductController {
                                                                        @RequestParam(required = false, defaultValue = "16") int pageSize) {
         return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors,filterBy, sortBy, page, pageSize);
     }
+    @Operation(summary = "Find all similar products",description = "This method find all similar products with brand.")
+    @GetMapping("/similar_product")
+    @PermitAll
+    List<ProductBuyerResponse> findAllSimilarProducts(){
+        return null;
+    }
 }

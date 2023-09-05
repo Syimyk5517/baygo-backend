@@ -100,6 +100,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             LIMIT 8
              """)
     List<HomePageResponse> getHotSalesForHomePage();
+
     @Query("""
              SELECT NEW com.example.baygo.db.dto.response.HomePageResponse(
             p.id, sp.id, p.name, sp.mainImage
@@ -108,7 +109,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             JOIN SubProduct sp ON sp.product.id = p.id
             WHERE sp.isFashion = TRUE
             AND (sp.isDeleted = FALSE )
-             """)
+            """)
     List<HomePageResponse> getFashionProductsForHomePage(Pageable pageable);
 
     @Query("""
