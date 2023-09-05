@@ -18,7 +18,8 @@ public class AccessCard {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_card_gen")
     @SequenceGenerator(name = "access_card_gen", sequenceName = "access_card_seq", allocationSize = 1, initialValue = 3)
     private Long id;
-    private String deliveryPass;
+    private String barcode;
+    private String barcodeImage;
     private String driverFirstName;
     private String driverLastName;
     private String carBrand;
