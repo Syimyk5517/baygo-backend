@@ -2,6 +2,7 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.response.HomePageResponse;
 import com.example.baygo.repository.ProductRepository;
+import com.example.baygo.repository.custom.CustomFavoriteProductRepository;
 import com.example.baygo.service.HomePageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomePageServiceImpl implements HomePageService {
     private final ProductRepository productRepository;
+    private final CustomFavoriteProductRepository customFavoriteProductRepository;
     @Override
     public List<HomePageResponse> getBestsellersForHomePage() {
         return productRepository.getBestSellersForHomePage();
@@ -30,5 +32,10 @@ public class HomePageServiceImpl implements HomePageService {
     @Override
     public List<HomePageResponse> getPopularBrandsForHomePage() {
         return productRepository.getPopularBrandsForHomePage(PageRequest.of(0, 8));
+
+    }
+    @Override
+    public List<HomePageResponse> findAllFavoriteItems() {
+        return customFavoriteProductRepository.findAllFavoriteItems();
     }
 }
