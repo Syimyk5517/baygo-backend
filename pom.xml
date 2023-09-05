@@ -110,13 +110,7 @@
             <artifactId>firebase-admin</artifactId>
             <version>9.1.1</version>
         </dependency>
-
-                      <!-- barcode -->
-<!--        <dependency>-->
-<!--            <groupId>net.sourceforge.barbecue</groupId>-->
-<!--            <artifactId>barbecue</artifactId>-->
-<!--            <version>1.5-beta1</version>-->
-<!--        </dependency>-->
+                   <!-- barcode -->
         <dependency>
             <groupId>net.sf.barcode4j</groupId>
             <artifactId>barcode4j</artifactId>
@@ -131,11 +125,6 @@
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
             <version>3.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>3.0.0-RC1</version> <!-- Последняя версия PDFBox -->
         </dependency>
     </dependencies>
 

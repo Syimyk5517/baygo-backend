@@ -37,7 +37,6 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         buyer.setGender(request.gender());
         buyer.setAddress(request.region());
         buyer.getUser().setEmail(request.email());
-        buyer.getUser().setPassword(encoder.encode(request.password()));
         buyer.getUser().setPhoneNumber(request.phoneNumber());
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Ваш профиль успешно изменен!").build();
     }
