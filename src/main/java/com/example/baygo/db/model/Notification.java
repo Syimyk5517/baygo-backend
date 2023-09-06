@@ -1,5 +1,6 @@
 package com.example.baygo.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class Notification {
     private String message;
     private LocalDateTime createAt;
     private Boolean read;
+    @JsonIgnore
     @ManyToMany(cascade = {MERGE, REFRESH, DETACH, PERSIST})
     @JoinTable(name = "notifications_buyers",
             joinColumns = @JoinColumn(name = "notification_id"),

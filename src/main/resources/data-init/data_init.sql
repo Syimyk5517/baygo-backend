@@ -1286,32 +1286,32 @@ INSERT INTO notifications_buyers(notification_id, buyer_id)
 VALUES (1, 1),
        (2, 1),
        (3, 1),
-       (4, 1),''
+       (4, 1),
        (5, 1),
        (6, 1);
-INSERT INTO access_cards(id,car_brand,delivery_pass,driver_first_name,driver_last_name,number_of_car,number_of_seats,supply_type,supply_id)
-VALUES (1,'Mitsubishi','123435','Altynbek','Shakirov','363AAB',2,'BOX',1),
-       (2,'Scania','1235','Elbek','Abduganiev','545AAB',3,'BOX',2),
-       (3,'Nissan','12434','Syimyk','Zhumabekov','777AAB',4,'BOX',3),
-       (4,'Renault','878384','Kylym','Kimsanov','878AAB',4,'BOX',4),
-       (5,'Daf','3454','Ilim','Shabdanov','932AAB',2,'BOX',5);
-INSERT INTO product_packages(id,package_number)
-VALUES (1,'8237'),
-       (2,'380'),
-       (3,'3556'),
-       (4,'356'),
-       (5,'2323'),
-       (6,'5588'),
-       (7,'133'),
-       (8,'0923'),
-       (9,'2333'),
-       (10,'3729'),
-       (11,'382'),
-       (12,'2233'),
-       (13,'4839'),
-       (14,'9749'),
-       (15,'232');
-INSERT INTO supply_products_packages(product_package_id,product_counts,supplu_product_id)
+INSERT INTO access_cards(id,barcode,barcode_image,car_brand,driver_first_name,driver_last_name,number_of_car,number_of_seats,supply_type,supply_id)
+VALUES (1,'4706898037543','https://baygo.s3.us-east-2.amazonaws.com/4706898037543barcode.png','Mitsubishi','Altynbek','Shakirov','363AAB',2,'BOX',1),
+       (2,'4703605642441','https://baygo.s3.us-east-2.amazonaws.com/4703605642441barcode.png','Scania','Elbek','Abduganiev','545AAB',3,'BOX',2),
+       (3,'4705198432997','https://baygo.s3.us-east-2.amazonaws.com/4705198432997barcode.png','Nissan','Syimyk','Zhumabekov','777AAB',4,'BOX',3),
+       (4,'4709889245811','https://baygo.s3.us-east-2.amazonaws.com/4709889245811barcode.png','Renault','Kylym','Kimsanov','878AAB',4,'BOX',4),
+       (5,'4704265792149','https://baygo.s3.us-east-2.amazonaws.com/4704265792149barcode.png','Daf','Ilim','Shabdanov','932AAB',2,'BOX',5);
+INSERT INTO product_packages(id,package_barcode,package_barcode_image)
+VALUES (1,'4700360934019','https://baygo.s3.us-east-2.amazonaws.com/4700360934019barcode.png'),
+       (2,'4700456436366','https://baygo.s3.us-east-2.amazonaws.com/4700456436366barcode.png'),
+       (3,'4704277050527','https://baygo.s3.us-east-2.amazonaws.com/4704277050527barcode.png'),
+       (4,'4709462859046','https://baygo.s3.us-east-2.amazonaws.com/4709462859046barcode.png'),
+       (5,'4705194697444','https://baygo.s3.us-east-2.amazonaws.com/4705194697444barcode.png'),
+       (6,'4708696926227','https://baygo.s3.us-east-2.amazonaws.com/4708696926227barcode.png'),
+       (7,'4702624927645','https://baygo.s3.us-east-2.amazonaws.com/4702624927645barcode.png'),
+       (8,'4700730274134','https://baygo.s3.us-east-2.amazonaws.com/4700730274134barcode.png'),
+       (9,'4701516644141','https://baygo.s3.us-east-2.amazonaws.com/4701516644141barcode.png'),
+       (10,'4701748564781','https://baygo.s3.us-east-2.amazonaws.com/4701748564781barcode.png'),
+       (11,'4707156556400','https://baygo.s3.us-east-2.amazonaws.com/4707156556400barcode.png'),
+       (12,'4700654172486','https://baygo.s3.us-east-2.amazonaws.com/4700654172486barcode.png'),
+       (13,'4701796944078','https://baygo.s3.us-east-2.amazonaws.com/4701796944078barcode.png'),
+       (14,'4709391781388','https://baygo.s3.us-east-2.amazonaws.com/4709391781388barcode.png'),
+       (15,'4705100164909','https://baygo.s3.us-east-2.amazonaws.com/4705100164909barcode.png');
+INSERT INTO supply_products_product_packages(product_package_id,product_counts,supply_product_id)
 VALUES (1,20,1),
        (1,20,2),
        (2,20,1),

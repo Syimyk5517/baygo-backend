@@ -1,8 +1,8 @@
 package com.example.baygo.api;
 
 import com.example.baygo.db.dto.request.MessageRequest;
-import com.example.baygo.db.dto.response.ChatResponse;
-import com.example.baygo.db.dto.response.NewMessageResponse;
+import com.example.baygo.db.dto.response.chat.ChatResponse;
+import com.example.baygo.db.dto.response.chat.NewMessageResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
