@@ -1,9 +1,9 @@
 package com.example.baygo.repository.custom.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.response.ChatResponse;
-import com.example.baygo.db.dto.response.MessageResponse;
-import com.example.baygo.db.dto.response.NewMessageResponse;
+import com.example.baygo.db.dto.response.chat.ChatResponse;
+import com.example.baygo.db.dto.response.chat.MessageResponse;
+import com.example.baygo.db.dto.response.chat.NewMessageResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.Message;
 import com.example.baygo.db.model.User;

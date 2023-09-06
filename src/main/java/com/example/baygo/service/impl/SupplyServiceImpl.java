@@ -5,10 +5,7 @@ import com.example.baygo.db.dto.request.fbb.*;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
-import com.example.baygo.db.dto.response.supply.DeliveryDraftResponse;
-import com.example.baygo.db.dto.response.supply.ProductBarcodeResponse;
-import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
-import com.example.baygo.db.dto.response.supply.WarehouseResponse;
+import com.example.baygo.db.dto.response.supply.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.db.model.enums.SupplyStatus;
@@ -90,8 +87,8 @@ public class SupplyServiceImpl implements SupplyService {
                 .build();
     }
     @Override
-    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
-        return customRepository.findAllDeliveryFactor(keyword, date, size, page);
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(Long warehouseId, LocalDate date, int size, int page) {
+        return customRepository.findAllDeliveryFactor(warehouseId, date, size, page);
     }
 
     @Override
@@ -232,6 +229,16 @@ public class SupplyServiceImpl implements SupplyService {
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("Поставка с идентификатором %s успешно сохранено!!!", supply.getId())).build();
+    }
+
+    @Override
+    public List<SupplyInfoResponse> findById(Long supplyId) {
+        return customRepository.findById(supplyId);
+    }
+
+    @Override
+    public AccessCardResponse findBySupplyId(Long supplyId) {
+        return repository.findBySupplyId(supplyId);
     }
 
 
