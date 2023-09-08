@@ -6,6 +6,8 @@ import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.SupplyTypeResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
+import com.example.baygo.db.dto.response.supply.NumberOfProductResponse;
+import com.example.baygo.db.dto.response.supply.SupplyInfoResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.repository.custom.SupplyCustomRepository;
@@ -22,21 +24,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
-    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(Long warehouseId, LocalDate date, int size, int page) {
         int offset = (page - 1) * size;
         String deliveryFactorSql = """
                 SELECT w.id AS w_id,
                        w.name AS w_name
                 FROM warehouses w
                 """;
-        if (keyword != null) {
-            deliveryFactorSql += "WHERE w.name iLIKE '%" + keyword + "%'";
+        if (warehouseId != null) {
+            deliveryFactorSql += "WHERE w.id = " + warehouseId;
         }
 
         int totalCount = totalCount(deliveryFactorSql, size);
 
-        deliveryFactorSql += "LIMIT " + size + " OFFSET " + offset;
+        deliveryFactorSql += " LIMIT " + size + " OFFSET " + offset;
 
         List<DeliveryFactorResponse> deliveryFactorResponses = jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
             DeliveryFactorResponse deliveryFactorResponse = new DeliveryFactorResponse();
@@ -146,6 +149,47 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
             warehouseCostResponses.add(warehouseCostResponse);
         }
         return warehouseCostResponses;
+    }
+
+    @Override
+    public List<SupplyInfoResponse> findById(Long supplyId) {
+        String productPackageSql = """
+                SELECT DISTINCT pp.id                    AS productPackageId,
+                                pp.package_barcode       AS packageBarcode,
+                                pp.package_barcode_image AS packageBarcodeImage
+                FROM supplies sp
+                         JOIN supply_products s ON sp.id = s.supply_id
+                         JOIN supply_products_product_packages sppp ON s.id = sppp.supply_product_id
+                         JOIN product_packages pp ON pp.id = sppp.product_package_id
+                WHERE sp.id = ?
+                """;
+        return jdbcTemplate.query(productPackageSql, (innerResult, i) -> {
+            SupplyInfoResponse packageResponse = SupplyInfoResponse.builder()
+                    .supplyId(supplyId)
+                    .productPackageId(innerResult.getLong("productPackageId"))
+                    .packageBarcode(innerResult.getString("packageBarcode"))
+                    .packageBarcodeImage(innerResult.getString("packageBarcodeImage")).build();
+
+
+            String numberOfProductResponseSql = """
+                    SELECT s.barcode           AS barcodeProduct,
+                           sppp.product_counts AS quantityProduct
+                    FROM product_packages pp
+                             JOIN supply_products_product_packages sppp ON pp.id = sppp.product_package_id
+                             JOIN supply_products sp ON sp.id = sppp.supply_product_id
+                             JOIN sizes s ON s.id = sp.size_id
+                    WHERE pp.id = ?
+                    """;
+            List<NumberOfProductResponse> numberOfProductResponses = jdbcTemplate.query(numberOfProductResponseSql, (innerMostResult, j) -> {
+                return NumberOfProductResponse.builder()
+                        .barcodeProduct(innerMostResult.getString("barcodeProduct"))
+                        .quantityProduct(innerMostResult.getInt("quantityProduct")).build();
+            }, packageResponse.getProductPackageId());
+
+            packageResponse.setNumberOfProductResponses(numberOfProductResponses);
+            return packageResponse;
+        }, supplyId);
+
     }
 
     private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {

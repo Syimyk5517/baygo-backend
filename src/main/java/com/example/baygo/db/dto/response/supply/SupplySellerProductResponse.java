@@ -8,7 +8,7 @@ public record SupplySellerProductResponse(
         Long productSizeId,
         String imageProduct,
         String categoryProduct,
-        int barcodeProduct,
+        String barcodeProduct,
         String acticulOfSeller,
         int acticulBG,
         String brandProduct,

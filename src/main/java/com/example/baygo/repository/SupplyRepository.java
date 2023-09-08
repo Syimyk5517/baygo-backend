@@ -4,6 +4,7 @@ import com.example.baygo.db.dto.response.SuppliesResponse;
 
 import com.example.baygo.db.dto.response.SupplyProductResponse;
 
+import com.example.baygo.db.dto.response.supply.AccessCardResponse;
 import com.example.baygo.db.dto.response.supply.DeliveryDraftResponse;
 import com.example.baygo.db.dto.response.supply.ProductBarcodeResponse;
 import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
@@ -91,5 +92,12 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
             @Param("searchWithBarcode") String searchWithBarcode,
             @Param("subCategoryId") Long subCategoryId,
             Pageable pageable);
+
+    @Query("SELECT NEW com.example.baygo.db.dto.response.supply.AccessCardResponse(" +
+            "ac.supply.id,ac.id,ac.barcode,ac.barcodeImage,ac.driverFirstName,ac.driverLastName," +
+            "ac.carBrand,ac.numberOfCar,ac.supplyType,ac.numberOfSeats) " +
+            "FROM AccessCard ac " +
+            "WHERE ac.supply.id = ?1")
+    AccessCardResponse findBySupplyId(Long supplyId);
 
 }

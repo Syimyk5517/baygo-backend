@@ -5,10 +5,7 @@ import com.example.baygo.db.dto.request.fbb.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
-import com.example.baygo.db.dto.response.supply.DeliveryDraftResponse;
-import com.example.baygo.db.dto.response.supply.ProductBarcodeResponse;
-import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
-import com.example.baygo.db.dto.response.supply.WarehouseResponse;
+import com.example.baygo.db.dto.response.supply.*;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import org.springframework.stereotype.Service;
@@ -20,7 +17,7 @@ import java.util.List;
 public interface SupplyService {
     PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, Boolean isAscending, int page, int pageSize);
 
-    PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
+    PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(Long warehouseId, LocalDate date, int size, int page);
 
     SupplyResponse getSupplyById(Long id);
 
@@ -46,6 +43,8 @@ public interface SupplyService {
     List<ProductBarcodeResponse> getAllBarcodeProducts(Long supplyId);
 
     SimpleResponse willCompleteTheDelivery(SupplyWrapperRequest supplyWrapperRequest);
+    List<SupplyInfoResponse> findById(Long supplyId);
+    AccessCardResponse findBySupplyId(Long supplyId);
 
 
 }

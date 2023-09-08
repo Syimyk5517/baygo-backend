@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BuyerAppealController {
     private final AppealService appealService;
+
     @Operation(summary = "Save the appeal of buyer", description = "This method saves the appeals")
     @PostMapping
     @PreAuthorize("hasAuthority('BUYER')")

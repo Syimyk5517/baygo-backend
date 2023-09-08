@@ -1,6 +1,5 @@
-package com.example.baygo.db.dto.response;
+package com.example.baygo.db.dto.response.chat;
 
-import com.example.baygo.db.model.Message;
 import lombok.*;
 
 import java.util.List;

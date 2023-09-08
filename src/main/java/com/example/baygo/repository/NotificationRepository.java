@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    @Query("""
-            SELECT b.notifications FROM Buyer b
-            WHERE b.id = :buyerId
-            """)
+    @Query(value = "SELECT * FROM notifications nt " +
+            "JOIN notifications_buyers nb ON nt.id = nb.notification_id " +
+            "WHERE nb.buyer_id = :buyerId " +
+            "ORDER BY nt.create_at DESC", nativeQuery = true)
     List<Notification> getNotificationByBuyerId(Long buyerId);
 }
