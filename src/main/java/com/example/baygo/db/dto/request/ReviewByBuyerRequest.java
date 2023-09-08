@@ -1,5 +1,6 @@
 package com.example.baygo.db.dto.request;
 
+import com.example.baygo.validations.ImageUrlsValid;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
@@ -11,8 +12,7 @@ public record ReviewByBuyerRequest(
         String text,
         @NotNull(message = "Оценка не должна быть пустым!")
         int grade,
-        @Size(min = 2, max = 6, message = "Размер должен быть от 2 до 6.")
-        @NotEmpty(message = "Изображения должны быть указаны!!!")
+        @ImageUrlsValid(message = "Не верный формат фоты!")
         List<String> images
 ) {
 }
