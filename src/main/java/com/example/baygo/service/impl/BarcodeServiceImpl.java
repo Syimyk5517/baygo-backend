@@ -1,6 +1,7 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
+import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.service.BarcodeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class BarcodeServiceImpl implements BarcodeService {
     @Value("${aws_s3_link}")
     private String BUCKET_PATH;
 
-    public List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity) {
+    public List<BarcodeWithImageResponse> getBarcodesWithImage(String barcode) {
         BitmapCanvasProvider canvas = new BitmapCanvasProvider(
                 160,
                 BufferedImage.TYPE_BYTE_BINARY,
@@ -42,7 +43,7 @@ public class BarcodeServiceImpl implements BarcodeService {
         );
 
         List<BarcodeWithImageResponse> responses = new ArrayList<>();
-        for (String barcode : generateProductBarcode(quantity)) {
+//        for (String barcode : generateProductBarcode(quantity)) {
             try {
                 EAN13Bean barcodeGenerator = new EAN13Bean();
                 barcodeGenerator.generateBarcode(canvas, barcode);
@@ -50,9 +51,9 @@ public class BarcodeServiceImpl implements BarcodeService {
                 responses.add(new BarcodeWithImageResponse(barcode,
                         uploadImageToS3(canvas.getBufferedImage(), barcode)));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new BadRequestException("Get barcodes with images impl error");
             }
-        }
+//        }
         return responses;
     }
 
