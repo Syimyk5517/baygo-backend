@@ -4,5 +4,5 @@ public enum SupplyStatus {
     ACCEPTED,
     PLANNED,
     CANCELED,
-    DELIVERED
+    ON_DELIVERY
 }
