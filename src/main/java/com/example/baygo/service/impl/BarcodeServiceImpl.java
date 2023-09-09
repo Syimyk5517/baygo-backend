@@ -28,25 +28,20 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class BarcodeServiceImpl implements BarcodeService {
-//    private final S3Client s3;
-//    @Value("${aws_bucket_name}")
-//    private String BUCKET_NAME;
-//    @Value("${aws_s3_link}")
-//    private String BUCKET_PATH;
 
     public List<BarcodeWithImageResponse> getBarcodesWithImage(String barcode) {
-        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
-                160,
-                BufferedImage.TYPE_BYTE_BINARY,
-                false,
-                0
-        );
+//        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
+//                160,
+//                BufferedImage.TYPE_BYTE_BINARY,
+//                false,
+//                0
+//        );
 
         List<BarcodeWithImageResponse> responses = new ArrayList<>();
 //        for (String barcode : generateProductBarcode(quantity)) {
 //            try {
-                EAN13Bean barcodeGenerator = new EAN13Bean();
-                barcodeGenerator.generateBarcode(canvas, barcode);
+//                EAN13Bean barcodeGenerator = new EAN13Bean();
+//                barcodeGenerator.generateBarcode(canvas, barcode);
 
                 responses.add(new BarcodeWithImageResponse(barcode,barcode));
 //            } catch (IOException e) {
