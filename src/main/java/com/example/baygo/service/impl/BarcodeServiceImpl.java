@@ -28,26 +28,32 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class BarcodeServiceImpl implements BarcodeService {
+    private final S3Client s3;
+    @Value("${aws_bucket_name}")
+    private String BUCKET_NAME;
+    @Value("${aws_s3_link}")
+    private String BUCKET_PATH;
 
-    public List<BarcodeWithImageResponse> getBarcodesWithImage(String barcode) {
-//        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
-//                160,
-//                BufferedImage.TYPE_BYTE_BINARY,
-//                false,
-//                0
-//        );
+    public List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity) {
+        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
+                160,
+                BufferedImage.TYPE_BYTE_BINARY,
+                false,
+                0
+        );
 
         List<BarcodeWithImageResponse> responses = new ArrayList<>();
-//        for (String barcode : generateProductBarcode(quantity)) {
-//            try {
-//                EAN13Bean barcodeGenerator = new EAN13Bean();
-//                barcodeGenerator.generateBarcode(canvas, barcode);
+        for (String barcode : generateProductBarcode(quantity)) {
+            try {
+                EAN13Bean barcodeGenerator = new EAN13Bean();
+                barcodeGenerator.generateBarcode(canvas, barcode);
 
-                responses.add(new BarcodeWithImageResponse(barcode,barcode));
-//            } catch (IOException e) {
-//                throw new BadRequestException("Get barcodes with images impl error");
-//            }
-//        }
+                responses.add(new BarcodeWithImageResponse(barcode,
+                        uploadImageToS3(canvas.getBufferedImage(), barcode)));
+            } catch (IOException e) {
+                throw new BadRequestException("Get barcodes with images impl error");
+            }
+        }
         return responses;
     }
 
@@ -72,23 +78,23 @@ public class BarcodeServiceImpl implements BarcodeService {
         return barcodes;
     }
 
-//    private String uploadImageToS3(BufferedImage image, String fileName) throws IOException {
-//        ByteArrayOutputStream os = new ByteArrayOutputStream();
-//        ImageIO.write(image, "png", os);
-//        byte[] imageBytes = os.toByteArray();
-//
-//        String key = fileName + "barcode.png";
-//
-//        long contentLength = imageBytes.length;
-//
-//        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-//                .bucket(BUCKET_NAME)
-//                .key(key)
-//                .contentType("image/png")
-//                .contentLength(contentLength)
-//                .build();
-//
-//        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
-//        return BUCKET_PATH + key;
-//    }
+    private String uploadImageToS3(BufferedImage image, String fileName) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", os);
+        byte[] imageBytes = os.toByteArray();
+
+        String key = fileName + "barcode.png";
+
+        long contentLength = imageBytes.length;
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(BUCKET_NAME)
+                .key(key)
+                .contentType("image/png")
+                .contentLength(contentLength)
+                .build();
+
+        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
+        return BUCKET_PATH + key;
+    }
 }

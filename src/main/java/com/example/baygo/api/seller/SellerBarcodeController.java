@@ -28,7 +28,7 @@ public class SellerBarcodeController {
 
     @Operation(summary = "Generate barcodes with image", description = "This method to generate barcodes with image for supply box, for access card and ...")
     @GetMapping("/generate-image-barcode")
-    public List<BarcodeWithImageResponse> generateBarcodeWithImage(@RequestParam String quantity) {
+    public List<BarcodeWithImageResponse> generateBarcodeWithImage(@RequestParam int quantity) {
         return barcodeService.getBarcodesWithImage(quantity);
     }
 }

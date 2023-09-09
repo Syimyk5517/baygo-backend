@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface BarcodeService {
-    List<BarcodeWithImageResponse> getBarcodesWithImage(String barcode);
+    List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity);
 
     List<String> generateProductBarcode(int quantity);
 }
