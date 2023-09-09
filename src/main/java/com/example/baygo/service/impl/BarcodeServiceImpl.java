@@ -68,4 +68,3 @@ public class BarcodeServiceImpl implements BarcodeService {
         return barcodes;
     }
 }
-

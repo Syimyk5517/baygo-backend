@@ -3,7 +3,6 @@ package com.example.baygo.service;
 import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
 import org.springframework.stereotype.Service;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 @Service
