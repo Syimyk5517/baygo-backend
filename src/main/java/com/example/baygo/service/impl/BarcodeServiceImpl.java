@@ -3,11 +3,13 @@ package com.example.baygo.service.impl;
 import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.service.BarcodeService;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.EAN13Writer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.krysalis.barcode4j.impl.upcean.EAN13Bean;
-import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -35,21 +37,23 @@ public class BarcodeServiceImpl implements BarcodeService {
     private String BUCKET_PATH;
 
     public List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity) {
-        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
-                160,
-                BufferedImage.TYPE_BYTE_BINARY,
-                false,
-                0
-        );
+//        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
+//                160,
+//                BufferedImage.TYPE_BYTE_BINARY,
+//                false,
+//                0
+//        );
 
         List<BarcodeWithImageResponse> responses = new ArrayList<>();
         for (String barcode : generateProductBarcode(quantity)) {
             try {
-                EAN13Bean barcodeGenerator = new EAN13Bean();
-                barcodeGenerator.generateBarcode(canvas, barcode);
+//                EAN13Bean barcodeGenerator = new EAN13Bean();
+//                barcodeGenerator.generateBarcode(canvas, barcode);
+                EAN13Writer barcodeWriter = new EAN13Writer();
+                BitMatrix bitMatrix = barcodeWriter.encode(barcode, BarcodeFormat.EAN_13, 500, 90);
 
                 responses.add(new BarcodeWithImageResponse(barcode,
-                        uploadImageToS3(canvas.getBufferedImage(), barcode)));
+                        uploadImageToS3(MatrixToImageWriter.toBufferedImage(bitMatrix), barcode)));
             } catch (IOException e) {
                 throw new BadRequestException("Get barcodes with images impl error");
             }
