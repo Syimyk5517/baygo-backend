@@ -31,5 +31,4 @@ public class SellerBarcodeController {
     public List<BarcodeWithImageResponse> generateBarcodeWithImage(@RequestParam int quantity) {
         return barcodeService.getBarcodesWithImage(quantity);
     }
-
 }

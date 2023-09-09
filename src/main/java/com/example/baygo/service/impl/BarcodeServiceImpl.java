@@ -2,15 +2,20 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
 import com.example.baygo.service.BarcodeService;
-import com.example.baygo.service.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.krysalis.barcode4j.impl.upcean.EAN13Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,7 +27,11 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class BarcodeServiceImpl implements BarcodeService {
-    private final S3Service s3Service;
+    private final S3Client s3;
+    @Value("${aws_bucket_name}")
+    private String BUCKET_NAME;
+    @Value("${aws_s3_link}")
+    private String BUCKET_PATH;
 
     public List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity) {
         BitmapCanvasProvider canvas = new BitmapCanvasProvider(
@@ -39,7 +48,7 @@ public class BarcodeServiceImpl implements BarcodeService {
                 barcodeGenerator.generateBarcode(canvas, barcode);
 
                 responses.add(new BarcodeWithImageResponse(barcode,
-                        s3Service.uploadImage(canvas.getBufferedImage(), barcode)));
+                        uploadImageToS3(canvas.getBufferedImage(), barcode)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -66,5 +75,25 @@ public class BarcodeServiceImpl implements BarcodeService {
             quantity--;
         }
         return barcodes;
+    }
+
+    private String uploadImageToS3(BufferedImage image, String fileName) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", os);
+        byte[] imageBytes = os.toByteArray();
+
+        String key = fileName + "barcode.png";
+
+        long contentLength = imageBytes.length;
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(BUCKET_NAME)
+                .key(key)
+                .contentType("image/png")
+                .contentLength(contentLength)
+                .build();
+
+        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
+        return BUCKET_PATH + key;
     }
 }
