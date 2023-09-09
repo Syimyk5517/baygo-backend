@@ -3,8 +3,8 @@ package com.example.baygo.repository;
 import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
 import com.example.baygo.db.dto.response.BuyerOrderProductsResponse;
 import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
-import com.example.baygo.db.dto.response.fbs.OrdersResponse;
-import com.example.baygo.db.dto.response.orders.OrderResponse;
+import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
+import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
 import com.example.baygo.db.model.Order;
 import com.example.baygo.db.model.enums.OrderStatus;
@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             " FROM Order o JOIN o.orderSizes os JOIN os.size s JOIN s.subProduct sp JOIN sp.product p WHERE p.seller.id = :sellerId order by o.id desc limit 5")
     List<RecentOrdersResponse> getAllRecentOrders(Long sellerId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.OrderResponse(o.id, s.barcode,sp.mainImage,sp.articulOfSeller, p.name,s.fbbQuantity, b.fullName, sp.price, o.dateOfOrder, os.orderStatus) " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.FBBOrderResponse(o.id, s.barcode,sp.mainImage,sp.articulOfSeller, p.name,os.quantity, b.fullName, sp.price, o.dateOfOrder, os.orderStatus) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
             "JOIN os.size s " +
@@ -40,10 +40,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "AND (:keyword IS NULL OR p.name ILIKE %:keyword% OR b.fullName ILIKE %:keyword%) " +
             "AND (:status IS NULL OR os.orderStatus = :status) " +
             "ORDER BY o.dateOfOrder DESC")
-    Page<OrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Pageable pageable);
+    Page<FBBOrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Pageable pageable);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.OrdersResponse(" +
-            "o.id, sp.mainImage, s.barcode, s.fbsQuantity, p.name, sp.articulOfSeller, p.brand, s.size, " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.FBSOrdersResponse(" +
+            "o.id, s.id, sp.mainImage, s.barcode, os.quantity, p.name, sp.articulOfSeller, s.size, " +
             "sp.color, sp.price, CONCAT(fw.street, ' ', fw.houseNumber), os.orderStatus, o.dateOfOrder) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
@@ -55,11 +55,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE s2.id = :sellerId " +
             "AND os.isFbsOrder = true " +
             "AND (:keyWord IS NULL OR p.name ILIKE %:keyWord% OR sp.articulOfSeller ILIKE %:keyWord%) " +
-            "AND (:orderStatus IS NULL OR os.orderStatus = :orderStatus)")
-    Page<OrdersResponse> getAllOrdersFbs(
+            "AND os.orderStatus = 'PENDING' " +
+            "ORDER BY o.dateOfOrder DESC ")
+    Page<FBSOrdersResponse> getAllOrdersFbs(
             @Param("sellerId") Long sellerId,
             @Param("keyWord") String keyWord,
-            @Param("orderStatus") OrderStatus orderStatus,
             Pageable pageable);
 
     @Query("""

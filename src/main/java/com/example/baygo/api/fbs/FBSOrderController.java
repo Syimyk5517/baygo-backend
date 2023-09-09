@@ -1,8 +1,7 @@
 package com.example.baygo.api.fbs;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.fbs.OrdersResponse;
-import com.example.baygo.db.model.enums.OrderStatus;
+import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
 import com.example.baygo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,14 +18,13 @@ import org.springframework.web.bind.annotation.*;
 public class FBSOrderController {
     private final OrderService orderService;
 
-    @Operation(summary = "Get all fbs sellers orders", description = "All orders with search,filter and pagination")
+    @Operation(summary = "Get all new fbs sellers orders", description = "New fbs orders with search and pagination")
     @GetMapping
-    public PaginationResponse<OrdersResponse> getAllFbsOrder(
+    public PaginationResponse<FBSOrdersResponse> getAllFbsOrder(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) OrderStatus orderStatus,
             @RequestParam(required = false) String keyword
     ) {
-        return orderService.getAllFbsOrders(page, size, keyword, orderStatus);
+        return orderService.getAllFbsOrdersOnPending(page, size, keyword);
     }
 }
