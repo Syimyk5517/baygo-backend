@@ -119,12 +119,12 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 rs.getDate("date_of_change").toLocalDate(),
                 rs.getString("color"),
                 rs.getString("size"),
-                rs.getInt("barcode"),
+                rs.getString("barcode"),
                 rs.getInt("quantity"),
                 jdbcTemplate.query(getSizes, ((resultSet, rowNum1) -> new SizeSellerResponse(
                         resultSet.getLong("id"),
                         resultSet.getString("size"),
-                        resultSet.getInt("barcode"),
+                        resultSet.getString("barcode"),
                         resultSet.getInt("quantity")
                 )), rs.getLong("sub_product_id"))));
 
