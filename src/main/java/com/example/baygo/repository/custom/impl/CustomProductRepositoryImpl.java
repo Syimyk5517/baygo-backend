@@ -128,6 +128,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                         resultSet.getInt("quantity")
                 )), rs.getLong("sub_product_id"))));
 
+
         return PaginationResponse.<ProductResponseForSeller>builder()
                 .elements(response)
                 .totalPages(totalPage)
