@@ -33,8 +33,8 @@ public class FbsWarehouse {
     @Column(name = "day_of_week", nullable = false)
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> workingDay;
-    private int preparingSupply;
-    private int assemblyTime;
+    private int countOfDaysToPrepareAnOrder;
+    private int hourToAssemble;
     @Enumerated(EnumType.STRING)
     private TypeOfSupplier typeOfSupplier;
     @Enumerated(EnumType.STRING)

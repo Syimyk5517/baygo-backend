@@ -65,7 +65,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(
               o.id, CONCAT(EXTRACT(DATE FROM o.dateOfOrder), ' ',EXTRACT(HOUR FROM o.dateOfOrder), ':', EXTRACT(MINUTE FROM o.dateOfOrder)),
-              o.orderNumber, cast(sum(os.quantity) as int), o.totalPrice
+              o.orderNumber, COUNT(os), o.totalPrice
             )
             FROM Order o
             JOIN OrderSize os ON os.order.id = o.id
