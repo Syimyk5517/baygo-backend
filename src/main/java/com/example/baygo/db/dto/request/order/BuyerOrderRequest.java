@@ -9,6 +9,7 @@ import java.util.List;
 public record BuyerOrderRequest(
         List<ProductOrderRequest> productOrderRequests,
         CustomerInfoRequest customerInfoRequest,
+        Boolean withDelivery,
         BigDecimal totalPrise
 
 ) {

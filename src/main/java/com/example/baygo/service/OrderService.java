@@ -6,7 +6,6 @@ import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;

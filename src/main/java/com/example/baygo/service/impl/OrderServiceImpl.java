@@ -7,7 +7,6 @@ import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
 import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
@@ -27,12 +26,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -47,43 +45,76 @@ public class OrderServiceImpl implements OrderService {
     public SimpleResponse saveBuyerOrder(BuyerOrderRequest buyerOrderRequest) {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         Order order = new Order();
-        order.setDateOfOrder(LocalDateTime.now());
-        order.setBuyer(buyer);
         List<OrderSize> orderSizeList = new ArrayList<>();
+
         for (ProductOrderRequest productOrderRequest : buyerOrderRequest.productOrderRequests()) {
             Size size = sizeRepository.findById(productOrderRequest.sizeId()).orElseThrow(
                     () -> new NotFoundException(String.format("Продукт идентификатором %s не найден.", productOrderRequest.sizeId())));
-            if (sizeRepository.isFbb(size.getId())) {
+
+            OrderSize orderSize = new OrderSize();
+            orderSize.setOrder(order);
+            orderSize.setOrderStatus(OrderStatus.PENDING);
+            orderSize.setPercentOfDiscount(productOrderRequest.percentOfDiscount());
+
+            if (sizeRepository.isFbb(size.getId()) && size.getFbbQuantity() > 0) {
                 if (size.getFbbQuantity() >= productOrderRequest.quantityProduct()) {
-                    OrderSize orderSize = new OrderSize();
-                    orderSize.setFbsOrder(false);
                     orderSize.setFbbOrder(true);
-                    orderSize.setOrder(order);
-                    orderSize.setOrderStatus(OrderStatus.PENDING);
-                    orderSize.setPercentOfDiscount(productOrderRequest.percentOfDiscount());
+                    orderSize.setFbsOrder(false);
                     orderSize.setFbbQuantity(productOrderRequest.quantityProduct());
+
                     size.setFbbQuantity(size.getFbbQuantity() - productOrderRequest.quantityProduct());
-                    sizeRepository.save(size);
-                    orderSizeRepository.save(orderSize);
-                    orderSizeList.add(orderSize);
                 } else {
                     int fbsQuantity = productOrderRequest.quantityProduct() - size.getFbbQuantity();
-                    OrderSize orderSize = new OrderSize();
-                    orderSize.setOrder(order);
-                    orderSize.setOrderStatus(OrderStatus.PENDING);
                     orderSize.setFbbOrder(true);
                     orderSize.setFbsOrder(true);
                     orderSize.setFbbQuantity(size.getFbbQuantity());
                     orderSize.setFbsQuantity(fbsQuantity);
 
-                    orderSize.setPercentOfDiscount(productOrderRequest.percentOfDiscount());
-
+                    size.setFbbQuantity(0);
+                    size.setFbsQuantity(size.getFbsQuantity() - fbsQuantity);
                 }
+            } else {
+                orderSize.setFbbOrder(false);
+                orderSize.setFbsOrder(true);
+                orderSize.setFbsQuantity(productOrderRequest.quantityProduct());
+
+                size.setFbsQuantity(size.getFbsQuantity() - productOrderRequest.quantityProduct());
             }
 
+            orderSizeRepository.save(orderSize);
+            orderSizeList.add(orderSize);
+
+            sizeRepository.save(size);
         }
-        return null;
+
+        Customer customer = Customer.builder()
+                .firstName(buyerOrderRequest.customerInfoRequest().firsName())
+                .lastName(buyerOrderRequest.customerInfoRequest().lastName())
+                .email(buyerOrderRequest.customerInfoRequest().email())
+                .phoneNumber(buyerOrderRequest.customerInfoRequest().phoneNumber())
+                .country(buyerOrderRequest.customerInfoRequest().country())
+                .city(buyerOrderRequest.customerInfoRequest().city())
+                .postalCode(buyerOrderRequest.customerInfoRequest().postalCode())
+                .address(buyerOrderRequest.customerInfoRequest().address()).build();
+
+        UUID uuid = UUID.randomUUID();
+        long positiveValue = Math.abs(uuid.getLeastSignificantBits()) % 100000000;
+        String orderNumber = String.format("%08d", positiveValue);
+
+        order.setDateOfOrder(LocalDateTime.now());
+        order.setTotalPrice(buyerOrderRequest.totalPrise());
+        order.setWithDelivery(buyerOrderRequest.withDelivery());
+        order.setBuyer(buyer);
+        order.setOrderSizes(orderSizeList);
+        order.setCustomer(customer);
+        order.setOrderNumber(orderNumber);
+        orderRepository.save(order);
+
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message(String.format("Номер заказа  %s  Подтвержден",orderNumber)).build();
     }
+
 
     @Override
     public AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameOfTime) {
