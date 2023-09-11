@@ -38,6 +38,6 @@ public class Return {
     private Boolean withDelivery;
     @Enumerated(EnumType.STRING)
     private ReturnStatus returnStatus;
-    @ManyToOne(cascade = {PERSIST,MERGE,REFRESH,DETACH})
+    @OneToOne(cascade = {PERSIST,MERGE,REFRESH,DETACH})
     private OrderSize orderSize;
 }

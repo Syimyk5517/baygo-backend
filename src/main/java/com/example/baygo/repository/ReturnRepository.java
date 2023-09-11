@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReturnRepository extends JpaRepository<Return, Long> {
     @Query("SELECT NEW com.example.baygo.db.dto.response.buyer.ReturnsResponse(" +
@@ -21,11 +22,11 @@ public interface ReturnRepository extends JpaRepository<Return, Long> {
             " JOIN os.size s " +
             " JOIN s.subProduct sp " +
             " JOIN sp.product p " +
-            " WHERE b.id = :buyerId AND r.returnStatus='ACCEPTED'")
+            " WHERE b.id = :buyerId ")
     List<ReturnsResponse> getAllReturns(@Param("buyerId") Long buyerId);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.buyer.ReturnGetByIdResponse(" +
-            "r.id, s.barcode, sp.mainImage, p.name, s.size, os.quantity, r.reason, os.orderStatus)" +
+            "r.id, s.barcode, sp.mainImage, p.name, s.size, os.quantity, r.reason, os.orderStatus,r.returnStatus)" +
             " FROM Buyer b " +
             " JOIN b.orders o " +
             " JOIN o.orderSizes os " +
@@ -34,7 +35,7 @@ public interface ReturnRepository extends JpaRepository<Return, Long> {
             " JOIN s.subProduct sp " +
             " JOIN sp.product p " +
             " WHERE b.id = :buyerId AND r.id=:returnId ")
-    ReturnGetByIdResponse returnGetById(@Param("buyerId") Long buyerId, @Param("returnId") Long returnId);
+  Optional< ReturnGetByIdResponse> returnGetById(@Param("buyerId") Long buyerId, @Param("returnId") Long returnId);
 
     @Query("SELECT r.images FROM Buyer b " +
             "JOIN b.orders o " +
@@ -63,7 +64,7 @@ public interface ReturnRepository extends JpaRepository<Return, Long> {
             "JOIN sb.product p " +
             "JOIN p.seller sel " +
             " WHERE sel.id = :sellerId AND r.id = :returnId AND r.returnStatus = 'ACCEPTED'")
-    SellerReturnGetByIdResponse getReturnById(@Param("sellerId") Long sellerId, @Param("returnId") Long returnId);
+   Optional<SellerReturnGetByIdResponse>getReturnById(@Param("sellerId") Long sellerId, @Param("returnId") Long returnId);
 
     @Query("SELECT r.images FROM Return  r " +
             "JOIN r.orderSize os " +

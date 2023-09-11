@@ -80,16 +80,15 @@ public class BuyerReturnServiceImpl implements BuyerReturnService {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         return returnRepository.getAllReturns(buyer.getId());
     }
-
     @Override
     public ReturnGetByIdResponse getById(Long returnId) {
-        Buyer buyer = jwtService.getAuthenticate().getBuyer();
-        ReturnGetByIdResponse returnGetByIdResponse = returnRepository.returnGetById(buyer.getId(), returnId);
-        List<String> returnImageUrls = returnRepository.getReturnImageById(buyer.getId(), returnId);
+            Buyer buyer = jwtService.getAuthenticate().getBuyer();
+            ReturnGetByIdResponse returnGetByIdResponse = returnRepository.returnGetById(buyer.getId(), returnId)
+                    .orElseThrow(() -> new NotFoundException(String.format("Возврат с номером %s не найден", returnId)));
 
-        returnGetByIdResponse.setImages(returnImageUrls);
+            List<String> returnImageUrls = returnRepository.getReturnImageById(buyer.getId(), returnId);
+            returnGetByIdResponse.setImages(returnImageUrls);
 
-        return returnGetByIdResponse;
-    }
-
+            return returnGetByIdResponse;
+        }
 }

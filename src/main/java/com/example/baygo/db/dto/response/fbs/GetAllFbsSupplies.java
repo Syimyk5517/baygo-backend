@@ -12,5 +12,6 @@ public record GetAllFbsSupplies(
         int totalQuantity,
         String QRCode
 
+
 ) {
 }
