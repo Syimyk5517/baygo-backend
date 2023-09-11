@@ -41,4 +41,10 @@ public interface SizeRepository extends JpaRepository<Size, Long> {
 
     @Query("SELECT NEW com.example.baygo.db.dto.request.UpdateSizeDTO(s.id, s.size) FROM SubProduct sp JOIN sp.sizes s WHERE sp.id = ?1")
     List<UpdateSizeDTO> getSizesBySubProductId(Long subProductId);
+
+    @Query("SELECT CASE WHEN COUNT (sp) > 0 THEN TRUE ELSE FALSE END FROM " +
+            "SupplyProduct sp " +
+            "JOIN Size s ON s.id = sp.size.id " +
+            "WHERE s.id = ?1")
+    Boolean isFbb(Long sizeId);
 }

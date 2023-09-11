@@ -119,7 +119,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
             throw new NotFoundException(String.format("Fbs заказы с номером %s не найден", supplyOrderRequest.orderSizeId()));
         }
 
-        int totalQuantity = orderSizes.stream().mapToInt(OrderSize::getQuantity).sum();
+        int totalQuantity = orderSizes.stream().mapToInt(OrderSize::getFbsQuantity).sum();
 
         Warehouse warehouse = warehouseRepository.findById(supplyOrderRequest.wareHouseId()).orElseThrow(
                 () -> new NotFoundException(String.format("Склад %s не найден", supplyOrderRequest.wareHouseId())));
