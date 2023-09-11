@@ -54,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
         product.setBrand(request.brand());
         product.setName(request.name());
         product.setDateOfCreate(LocalDate.now());
+        product.setDateOfChange(LocalDate.now());
         product.setSeason(request.season());
         product.setComposition(request.composition());
         product.setSubCategory(subCategory);

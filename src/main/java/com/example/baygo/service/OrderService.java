@@ -4,10 +4,11 @@ import com.example.baygo.db.dto.request.order.BuyerOrderRequest;
 import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
 import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.OrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
-import com.example.baygo.db.dto.response.orders.OrderResponse;
+import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
 import com.example.baygo.db.model.enums.OrderStatus;
@@ -27,9 +28,9 @@ public interface OrderService {
 
     List<RecentOrdersResponse> getResentOrders();
 
-    PaginationResponse<OrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus status);
+    PaginationResponse<FBBOrderResponse> getAllOrdersByFilter(int page, int size, String keyword, OrderStatus status);
 
-    PaginationResponse<OrdersResponse> getAllFbsOrders(int page, int size, String keyword, OrderStatus orderStatus);
+    PaginationResponse<FBSOrdersResponse> getAllFbsOrdersOnPending(int page, int size, String keyword);
 
     List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(String keyWord);
 
