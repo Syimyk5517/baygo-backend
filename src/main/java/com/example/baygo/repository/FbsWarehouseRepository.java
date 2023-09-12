@@ -19,8 +19,9 @@ public interface FbsWarehouseRepository extends JpaRepository<FbsWarehouse, Long
             "join sp.sizes s " +
             "join sp.fbsWarehouse fw " +
             "join fw.seller s1  " +
-            "where s1.id=:sellerId and fw.id=:wareHouseId")
-    List< ProductGetAllResponse> getAllProduct(@Param("sellerId") Long sellerId, @Param("wareHouseId") Long wareHouseId);
+            "where s1.id = :sellerId and fw.id = :wareHouseId " +
+            "and (:keyWord is null or s.barcode ilike %:keyWord% or p.name ilike %:keyWord% or sp.articulOfSeller ilike %:keyWord%)")
+    List<ProductGetAllResponse> getAllProduct(@Param("sellerId") Long sellerId, @Param("wareHouseId") Long wareHouseId, @Param("keyWord")String keyWord);
 
     @Modifying
     @Query(value = "delete from fbs_warehouses_sub_products fwsp where fwsp.sub_products_id = ?1", nativeQuery = true)

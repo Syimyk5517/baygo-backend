@@ -44,4 +44,6 @@ public class OrderSize {
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "fbs_supply_id")
     private FBSSupply fbsSupply;
+    @OneToOne(mappedBy = "orderSize", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    private Return returns;
 }
