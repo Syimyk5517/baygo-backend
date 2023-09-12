@@ -2,6 +2,7 @@ package com.example.baygo.api.fbs;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
+import com.example.baygo.service.FBSOrderService;
 import com.example.baygo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAnyAuthority('SELLER')")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class FBSOrderController {
-    private final OrderService orderService;
+    private final FBSOrderService fbsOrderService;
 
     @Operation(summary = "Get all new fbs sellers orders", description = "New fbs orders with search and pagination")
     @GetMapping
@@ -25,6 +26,6 @@ public class FBSOrderController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String keyword
     ) {
-        return orderService.getAllFbsOrdersOnPending(page, size, keyword);
+        return fbsOrderService.getAllFbsOrdersOnPending(page, size, keyword);
     }
 }

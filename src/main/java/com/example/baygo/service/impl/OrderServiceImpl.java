@@ -66,18 +66,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PaginationResponse<FBSOrdersResponse> getAllFbsOrdersOnPending(int page, int size, String keyword) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<FBSOrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, pageable);
-        return new PaginationResponse<>(orderResponses.getContent(),
-                orderResponses.getNumber() + 1,
-                orderResponses.getTotalPages());
-
-
-    }
-
-    @Override
     public List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(String keyWord) {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         return orderRepository.getAllHistoryOfOrder(buyer.getId(), keyWord);
