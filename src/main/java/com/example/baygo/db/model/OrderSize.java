@@ -26,10 +26,10 @@ public class OrderSize {
     private int fbsQuantity;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    private int percentOfDiscount;
+    private BigDecimal price;
     private LocalDateTime dateOfReceived;
     private String qrCode;
-    private BigDecimal price;
-    private int percentOfDiscount;
     private boolean isFbsOrder;
     private boolean isFbbOrder;
 

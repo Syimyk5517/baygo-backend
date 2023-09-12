@@ -18,18 +18,20 @@ public class CustomBasketRepositoryImpl implements CustomAddToBasketRepository {
     public List<ProductsInBasketResponse> getAllProductFromBasket() {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         String addToBasket = """
-                SELECT b.sub_products_size_id as sizeId,
-                       sp.description as description,
-                       s.size as size,
-                       sp.main_image as image,
-                       d.percent as discount,
-                       sp.price as cost
-                    FROM buyers_baskets b
-                    join sizes s on s.id = b.sub_products_size_id
-                    join sub_products sp on sp.id = s.sub_product_id
-                    join products p on p.id = sp.product_id
-                    join discounts d on sp.discount_id = d.id
-                    WHERE b.buyer_id =?
+                SELECT b.sub_products_size_id               AS sizeId,
+                       sp.description                       AS description,
+                       s.size                               AS size,
+                       sp.main_image                        AS image,
+                       d.percent                            AS discount,
+                       sp.price                             AS cost,
+                       SUM(s.fbb_quantity + s.fbs_quantity) AS quantity
+                FROM buyers_baskets b
+                         JOIN sizes s ON s.id = b.sub_products_size_id
+                         JOIN sub_products sp ON sp.id = s.sub_product_id
+                         JOIN products p ON p.id = sp.product_id
+                         JOIN discounts d ON sp.discount_id = d.id
+                WHERE b.buyer_id = ?
+                GROUP BY sp.description, s.size, sp.main_image, d.percent, sp.price, b.sub_products_size_id
                 """;
         return jdbcTemplate.query(addToBasket, (resultSet,i)->
                 new ProductsInBasketResponse(resultSet.getLong("sizeId"),
@@ -37,7 +39,8 @@ public class CustomBasketRepositoryImpl implements CustomAddToBasketRepository {
                         resultSet.getString("size"),
                         resultSet.getString("image"),
                         resultSet.getInt("discount"),
-                        resultSet.getBigDecimal("cost")),
+                        resultSet.getBigDecimal("cost"),
+                        resultSet.getInt("quantity")),
                         buyer.getId());
     }
 }

@@ -13,22 +13,35 @@ import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
 import com.example.baygo.db.dto.response.orders.RecentOrdersResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
+import com.example.baygo.db.exceptions.MessageSendingException;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.db.model.enums.OrderStatus;
+import com.example.baygo.db.model.enums.PaymentType;
 import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.repository.OrderSizeRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.custom.CustomOrderRepository;
 import com.example.baygo.service.OrderService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import freemarker.template.Template;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,6 +53,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderSizeRepository orderSizeRepository;
     private final SizeRepository sizeRepository;
+    private final JavaMailSender javaMailSender;
+    private final Configuration configuration;
 
     @Override
     public SimpleResponse saveBuyerOrder(BuyerOrderRequest buyerOrderRequest) {
@@ -55,6 +70,9 @@ public class OrderServiceImpl implements OrderService {
             orderSize.setOrder(order);
             orderSize.setOrderStatus(OrderStatus.PENDING);
             orderSize.setPercentOfDiscount(productOrderRequest.percentOfDiscount());
+            BigDecimal price = size.getSubProduct().getPrice().multiply(new BigDecimal(productOrderRequest.quantityProduct()));
+            orderSize.setPrice(price);
+            orderSize.setSize(size);
 
             if (sizeRepository.isFbb(size.getId()) && size.getFbbQuantity() > 0) {
                 if (size.getFbbQuantity() >= productOrderRequest.quantityProduct()) {
@@ -102,13 +120,43 @@ public class OrderServiceImpl implements OrderService {
         String orderNumber = String.format("%08d", positiveValue);
 
         order.setDateOfOrder(LocalDateTime.now());
-        order.setTotalPrice(buyerOrderRequest.totalPrise());
+        order.setTotalPrice(buyerOrderRequest.totalPrice());
         order.setWithDelivery(buyerOrderRequest.withDelivery());
         order.setBuyer(buyer);
         order.setOrderSizes(orderSizeList);
         order.setCustomer(customer);
         order.setOrderNumber(orderNumber);
+        order.setPaymentType(PaymentType.ONLINE_BY_CARD);
         orderRepository.save(order);
+
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("orderNumber", order.getOrderNumber());
+        model.put("dateOfOrder", order.getDateOfOrder().toLocalDate());
+        model.put("statusOfOrder", "В ожидании");
+        model.put("datePurchase", order.getDateOfOrder());
+        model.put("customer", order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName());
+        model.put("phoneNumber", order.getCustomer().getPhoneNumber());
+        String withDelivery = "Самовывоз из магазина";
+        if (buyerOrderRequest.withDelivery()){
+            withDelivery = "Доставка курьером";
+        }
+        model.put("withDelivery",withDelivery);
+        model.put("link","https://www.youtube.com/watch?v=IhZrMyuE6EQ");
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+            Template template = configuration.getTemplate("order-email.html");
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+            mimeMessageHelper.setTo(order.getCustomer().getEmail());
+            mimeMessageHelper.setText(html, true);
+            mimeMessageHelper.setSubject("BuyGo");
+            mimeMessageHelper.setFrom("baygo.kgz@gmail.com");
+            javaMailSender.send(message);
+        } catch (MessagingException | IOException | TemplateException e) {
+            throw new MessageSendingException("Ошибка при отправке сообщения!");
+        }
 
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)

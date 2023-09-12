@@ -10,7 +10,7 @@ public record BuyerOrderRequest(
         List<ProductOrderRequest> productOrderRequests,
         CustomerInfoRequest customerInfoRequest,
         Boolean withDelivery,
-        BigDecimal totalPrise
+        BigDecimal totalPrice
 
 ) {
 }

@@ -1,7 +1,9 @@
 package com.example.baygo.api.buyer;
 
+import com.example.baygo.db.dto.request.order.BuyerOrderRequest;
 import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
 import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
+import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,5 +32,10 @@ public class BuyerOrderController {
     @PreAuthorize("hasAuthority('BUYER')")
     public BuyerOrderHistoryDetailResponse getHistoryOfOrderByOrderId(@PathVariable Long orderId){
         return orderService.getOrderById(orderId);
+    }
+    @PostMapping
+    @PreAuthorize("hasAuthority('BUYER')")
+    public SimpleResponse saveBuyerOrder(@RequestBody BuyerOrderRequest buyerOrderRequest){
+       return orderService.saveBuyerOrder(buyerOrderRequest);
     }
 }
