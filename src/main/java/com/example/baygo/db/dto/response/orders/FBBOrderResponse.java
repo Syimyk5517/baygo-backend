@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
-public record OrderResponse(
+public record FBBOrderResponse(
         Long orderId,
-        int barcode,
+        String barcode,
         String mainPhoto,
         String articulOfSeller,
         String productName,
         int quantity,
-        String firstName,
+        String fullName,
         BigDecimal productPrice,
         LocalDateTime orderDate,
         OrderStatus status
