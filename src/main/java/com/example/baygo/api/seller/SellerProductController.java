@@ -28,12 +28,6 @@ public class SellerProductController {
         return productService.saveProduct(productRequest);
     }
 
-    @Operation(summary = "Get colors", description = "This method gets the colors for saving products")
-    @GetMapping("/colors")
-    public List<ColorResponse> getColors() {
-        return ColorResponse.getColors();
-    }
-
     @Operation(summary = "Get all products", description = "This method gets all products of seller. The categoryId you can get on the SellerCategoryController. SortBy: dateOfChange, rating, quantity. Ascending: true, false")
     @GetMapping
     public PaginationResponse<ProductResponseForSeller> getAllProductForSeller(

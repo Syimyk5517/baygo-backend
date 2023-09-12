@@ -14,6 +14,7 @@ import com.example.baygo.db.model.*;
 import com.example.baygo.db.model.enums.FBSSupplyStatus;
 import com.example.baygo.repository.*;
 import com.example.baygo.service.FBSSupplyService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,29 +39,16 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     private final JwtService jwtService;
 
 
-
     @Override
+    @Transactional
     public SimpleResponse saveSupply(SupplyRequest supplyRequest) {
         Seller seller = jwtService.getAuthenticate().getSeller();
 
         Long warehouseId = supplyRequest.wareHouseId();
-        List<SupplySubProductQuantityRequest> supplySizeQuantityRequestList = supplyRequest.supplySizeQuantityRequestList();
-
         FbsWarehouse warehouse = fbsWarehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fbs склад с номером %s не найден", warehouseId)));
 
-        boolean anyNotBelongToSeller = supplySizeQuantityRequestList.stream()
-                .map(SupplySubProductQuantityRequest::sizeId)
-                .map(sizeId -> sizeRepository.findById(sizeId)
-                        .map(Size::getSubProduct)
-                        .map(SubProduct::getProduct)
-                        .map(Product::getSeller)
-                        .orElse(null))
-                .anyMatch(sellerForSubProduct -> sellerForSubProduct == null || !sellerForSubProduct.equals(seller));
-
-        if (anyNotBelongToSeller) {
-            throw new BadRequestException("Этот продукт вам не подлежит");
-        }
+        List<SupplySubProductQuantityRequest> supplySizeQuantityRequestList = supplyRequest.supplySizeQuantityRequestList();
 
         for (SupplySubProductQuantityRequest sizeQuantityRequest : supplySizeQuantityRequestList) {
             Long sizeId = sizeQuantityRequest.sizeId();
@@ -70,29 +58,15 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
                     .orElseThrow(() -> new NotFoundException(String.format("Размер с %s id не найден", sizeId)));
 
             SubProduct subProduct = sizeToUpdate.getSubProduct();
-            if (!subProduct.getProduct().getSeller().equals(seller)) {
+            if (!subProduct.getProduct().getSeller().equals(seller) || !warehouse.getSubProducts().contains(subProduct)) {
                 throw new BadRequestException("Этот продукт вам не подлежит");
             }
-
-            Size sizeInSubProduct = subProduct.getSizes().stream()
-                    .filter(s -> Objects.equals(s.getId(), sizeId))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Размер не найден в продукте"));
-
-            sizeInSubProduct.setFbsQuantity(sizeInSubProduct.getFbsQuantity() + quantity);
+            sizeToUpdate.setFbsQuantity(sizeToUpdate.getFbsQuantity() + quantity);
         }
-
-        sizeRepository.saveAll(supplySizeQuantityRequestList.stream()
-                .map(SupplySubProductQuantityRequest::sizeId)
-                .map(sizeRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList()));
-
-        fbsWarehouseRepository.save(warehouse);
 
         return new SimpleResponse(HttpStatus.OK, "Товары успешно добавлены");
     }
+
     @Override
     public List<GetAllFbsSupplies> getAllFbsSupplies() {
         User user = jwtService.getAuthenticate();
