@@ -24,11 +24,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("DELETE FROM Order o WHERE o.id = :orderId ")
     void deleteById(@Param("orderId") Long orderId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.RecentOrdersResponse(o.id,sp.articulBG,p.name, sp.price, os.quantity ,os.orderStatus)" +
-            " FROM Order o JOIN o.orderSizes os JOIN os.size s JOIN s.subProduct sp JOIN sp.product p WHERE p.seller.id = :sellerId order by o.id desc limit 5")
+    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.RecentOrdersResponse(o.id,sp.articulBG,p.name, sp.price, os.fbbQuantity ,os.orderStatus)" +
+            " FROM Order o JOIN o.orderSizes os JOIN os.size s JOIN s.subProduct sp JOIN sp.product p WHERE p.seller.id = :sellerId AND os.isFbbOrder = true ORDER BY o.id DESC LIMIT 5")
     List<RecentOrdersResponse> getAllRecentOrders(Long sellerId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.FBBOrderResponse(o.id, s.barcode,sp.mainImage,sp.articulOfSeller, p.name,os.quantity, b.fullName, sp.price, o.dateOfOrder, os.orderStatus) " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.FBBOrderResponse(o.id, s.barcode,sp.mainImage,sp.articulOfSeller, p.name,os.fbbQuantity, b.fullName, sp.price, o.dateOfOrder, os.orderStatus) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
             "JOIN os.size s " +
@@ -36,14 +36,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN sp.product p " +
             "JOIN o.buyer b " +
             "WHERE p.seller.id = :sellerId " +
-            "AND os.isFbsOrder = false " +
+            "AND os.isFbbOrder = TRUE " +
             "AND (:keyword IS NULL OR p.name ILIKE %:keyword% OR b.fullName ILIKE %:keyword%) " +
             "AND (:status IS NULL OR os.orderStatus = :status) " +
             "ORDER BY o.dateOfOrder DESC")
     Page<FBBOrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Pageable pageable);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.FBSOrdersResponse(" +
-            "o.id, s.id, sp.mainImage, s.barcode, os.quantity, p.name, sp.articulOfSeller, s.size, " +
+            "o.id, s.id, sp.mainImage, s.barcode, os.fbsQuantity, p.name, sp.articulOfSeller, s.size, " +
             "sp.color, sp.price, CONCAT(fw.street, ' ', fw.houseNumber), os.orderStatus, o.dateOfOrder) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
@@ -65,7 +65,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(
               o.id, CONCAT(EXTRACT(DATE FROM o.dateOfOrder), ' ',EXTRACT(HOUR FROM o.dateOfOrder), ':', EXTRACT(MINUTE FROM o.dateOfOrder)),
-              o.orderNumber, cast(sum(os.quantity) as int), o.totalPrice
+              o.orderNumber, CAST(sum(os.fbbQuantity + os.fbsQuantity) AS int), o.totalPrice
             )
             FROM Order o
             JOIN OrderSize os ON os.order.id = o.id
@@ -77,17 +77,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             ORDER BY o.dateOfOrder DESC
             """)
     List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(Long buyerId,
-                                                          String keyWord);
+                                                          String keyWord);//fixed
 
     @Query("""
              SELECT new com.example.baygo.db.dto.response.BuyerOrderProductsResponse(
-                          os.size.id, os.quantity, os.orderStatus, os.dateOfReceived, os.qrCode, os.percentOfDiscount,
+                          os.size.id, CAST( SUM(os.fbsQuantity + os.fbbQuantity) AS int ), os.orderStatus, os.dateOfReceived, os.qrCode, os.percentOfDiscount,
                           os.price, os.size.subProduct.mainImage, os.size.subProduct.product.name, os.size.size
             )
             FROM OrderSize os
             WHERE os.order.id = :orderId
             """)
-    List<BuyerOrderProductsResponse> getProductOfOrderByOrderId(Long orderId);
+    List<BuyerOrderProductsResponse> getProductOfOrderByOrderId(Long orderId);// fixed
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse(

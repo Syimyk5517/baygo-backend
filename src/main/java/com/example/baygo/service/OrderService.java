@@ -1,9 +1,11 @@
 package com.example.baygo.service;
 
+import com.example.baygo.db.dto.request.order.BuyerOrderRequest;
 import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
 import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
+import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
 import com.example.baygo.db.dto.response.orders.OrderWareHouseResponse;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @Service
 public interface OrderService {
+    SimpleResponse saveBuyerOrder(BuyerOrderRequest buyerOrderRequest);
 
     AnalysisResponse getWeeklyAnalysis(Date startDate, Date endDate, Long warehouseId, String nameOfTime);
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface OrderSizeRepository extends JpaRepository<OrderSize, Long> {
     List<OrderSize> findAllByIdIn(List<Long> singletonList);
-    @Query("SELECT COUNT(r.productQuantity) FROM OrderSize o JOIN Return r ON r.orderSize.id = o.id ")
+
+    @Query("SELECT SUM (r.productQuantity) FROM OrderSize o JOIN Return r ON r.orderSize.id = o.id ")
     int countOfProductsToBeReturned(Long id);
 }

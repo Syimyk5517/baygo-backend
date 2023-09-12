@@ -8,6 +8,7 @@ public record ProductsInBasketResponse(
         String size,
         String image,
         int discount,
-        BigDecimal cost
+        BigDecimal cost,
+        int productQuantity
 ) {
 }
