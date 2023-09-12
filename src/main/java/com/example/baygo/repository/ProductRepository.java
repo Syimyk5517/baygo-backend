@@ -14,8 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
-//Nuriza
-//
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
@@ -139,5 +137,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             AND (sp.isDeleted = FALSE )
             """)
     UpdateProductDTO getProductById(Long productId);
+
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END FROM " +
+            "Product p " +
+            "JOIN SubProduct sp ON sp.product.id = p.id " +
+            "JOIN Seller s ON s.id = p.seller.id " +
+            "WHERE s.id = ?1 AND sp.id = ?2")
+    Boolean existsBySubProduct(Long subProductId,Long sellerId);
 
 }
