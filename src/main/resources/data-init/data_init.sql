@@ -607,16 +607,18 @@ VALUES (1, 2, 'PENDING', 12, 4500, NOW(), '456789', 1, 1, 1, TRUE),
        (7, 8, 'ON_DELIVERY', 33, 4800, now(), '980765', 7, 7, 2, FALSE),
        (8, 9, 'CANCELED', 50, 8000, now(), '876578', 8, 8, 1, TRUE);
 
-INSERT INTO returns (id, reason, country, city, address, postal_code, phone_number, date_of_return)
-VALUES (1, 'Product damaged', 'USA', 'New York', '123 Main St', 10001, '555-1234', '2023-08-16 10:00:00'),
-       (2, 'Product damaged', 'KYRGYZSTAN', 'BISHKEK', 'Bishkek 123', 20002, '777333222', '2023-08-24 14:00:00'),
-       (3, 'Product damaged', 'KAZAKHSTAN', 'ASTANA', 'Astana 234', 30003, '8342344', '2023-08-30 12:00:00'),
-       (4, 'Product quality is bad', 'RUSSIAN', 'MOSCOW', 'Moscow 453', 40004, '34543234', '2023-08-25 14:34:03'),
-       (5, 'Product quality is bad', 'USA', 'New York', 'New 123', 50005, '4532345', '2023-09-12 15:05:00'),
-       (6, 'Product quality is bad', 'KYRGYZSTAN', 'Bishkek', 'Sadr 232', 60006, '3456789', '2023-10-12 23:00:00'),
-       (7, 'Product quality is bad', 'TURKEY', 'Istanbul', 'Istanbul 123', 70007, '5346432', '2023-12-23 23:00:00'),
-       (8, 'Product quality is bad', 'KAZAKHSTAN', 'Almaty', 'Almaty 123', 80008, '6546432', '2023-12-13 15:00:00');
-
+INSERT INTO returns (id, reason, return_status,with_delivery, product_quantity, country, city, address, postal_code, phone_number, date_of_return,order_size_id)
+VALUES
+    (1, 'Товар поврежден', 'CANCELED',TRUE, 12, 'США', 'Нью-Йорк', '123 Main St', 10001, '555-1234', '2023-08-16 10:00:00',1),
+    (2, 'Доставлен неправильный товар', 'ACCEPTED',TRUE, 5, 'Канада', 'Торонто', '456 Elm St', 20002, '555-5678', '2023-08-17 14:30:00',2),
+    (3, 'Не удовлетворена качеством', 'CANCELED',FALSE, 8, 'Великобритания', 'Лондон', '789 Oak Ave', 30003, '555-9876', '2023-08-18 09:15:00',1),
+    (4, 'Изменил(а) решение', 'ACCEPTED',FALSE, 2, 'Германия', 'Берлин', '101 Market St', 40004, '555-2468', '2023-08-19 11:30:00',1),
+    (5, 'Размер не подходит', 'ACCEPTED',TRUE, 1, 'Франция', 'Париж', '222 Avenue Rd', 50005, '555-1357', '2023-08-20 13:45:00',5),
+    (6, 'Неисправный товар', 'CANCELED',TRUE, 4, 'Австралия', 'Сидней', '333 Beach Blvd', 60006, '555-7890', '2023-08-21 08:20:00',6),
+    (7, 'Получен неверный цвет', 'ACCEPTED',TRUE, 3, 'Япония', 'Токио', '444 Sakura St', 70007, '555-1111', '2023-08-22 17:30:00',1),
+    (8, 'Товар не соответствует описанию', 'CANCELED',FALSE, 6, 'Италия', 'Рим', '555 Colosseum Ave', 80008, '555-2222', '2023-08-23 09:45:00',1),
+    (9, 'Поздняя доставка', 'CANCELED',TRUE, 2, 'Испания', 'Мадрид', '666 Flamenco Rd', 90009, '555-3333', '2023-08-24 12:15:00',1),
+    (10, 'Изменил(а) решение', 'ACCEPTED',TRUE, 1, 'Бразилия', 'Рио-де-Жанейро', '777 Copacabana St', 100010, '555-4444', '2023-08-25 14:00:00',1);
 INSERT INTO return_images (return_id, images)
 VALUES (1, 'https://fromjapan.kg/uploads/catalog/products/full/1677324178_40387800.jpg'),
        (2, 'https://brandambassador.kg/product-category/muzhskoe/odezhda-2/futbolki-2/'),
