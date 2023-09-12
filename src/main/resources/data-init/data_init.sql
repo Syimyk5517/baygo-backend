@@ -600,7 +600,7 @@ VALUES (1, 'T-shirt', NOW(), NOW(), 100, '123456', 'RECEIVED', 1),
 INSERT INTO orders_sizes (id,fbs_quantity, fbb_quantity, order_status, percent_of_discount, price, date_of_received, qr_code,is_fbs_order,is_fbb_order, order_id, size_id, fbs_supply_id)
 VALUES (1, 2,0, 'PENDING', 12, 4500, NOW(),'456789',TRUE,FALSE, 1, 1, 1),
        (2, 3,4, 'ON_ASSEMBLY', 5, 4000, now(),'123452',TRUE,TRUE, 2, 2, 2),
-       (3,4, 0,'ON_SUPPLY_DELIVERY', 7, 2900, now(), '343543',TRUE,FALSE, 3, 3, 3),
+       (3,4, 0, 'ON_SUPPLY_DELIVERY', 7, 2900, now(), '343543',TRUE,FALSE, 3, 3, 3),
        (4, 5,2, 'ON_WAREHOUSE', 32, 5500, now(), '674321',TRUE,TRUE, 4, 4, 2),
        (5, 0,6, 'ON_PIO', 10, 2200, now(), '234132',FALSE,TRUE, 5, 5, 3),
        (6, 7,2, 'COURIER_ON_THE_WAY', 22, 3400, now(),'543454',TRUE,TRUE, 6, 6, 1),
