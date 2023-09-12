@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class GetAllFbsOrderBySupplyId {
     private String image;
-    private int barcode;
+    private String barcode;
     private int quantity;
     private String productName;
     private String size;

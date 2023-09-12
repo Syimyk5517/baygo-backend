@@ -26,7 +26,7 @@ public interface ReturnRepository extends JpaRepository<Return, Long> {
     List<ReturnsResponse> getAllReturns(@Param("buyerId") Long buyerId);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.buyer.ReturnGetByIdResponse(" +
-            "r.id, s.barcode, sp.mainImage, p.name, s.size, os.quantity, r.reason, os.orderStatus,r.returnStatus)" +
+            "r.id, s.barcode, sp.mainImage, p.name, s.size, r.productQuantity, r.reason, os.orderStatus,r.returnStatus)" +
             " FROM Buyer b " +
             " JOIN b.orders o " +
             " JOIN o.orderSizes os " +
@@ -35,7 +35,7 @@ public interface ReturnRepository extends JpaRepository<Return, Long> {
             " JOIN s.subProduct sp " +
             " JOIN sp.product p " +
             " WHERE b.id = :buyerId AND r.id=:returnId ")
-  Optional< ReturnGetByIdResponse> returnGetById(@Param("buyerId") Long buyerId, @Param("returnId") Long returnId);
+  Optional<ReturnGetByIdResponse> returnGetById(@Param("buyerId") Long buyerId, @Param("returnId") Long returnId);
 
     @Query("SELECT r.images FROM Buyer b " +
             "JOIN b.orders o " +

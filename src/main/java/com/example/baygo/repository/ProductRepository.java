@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
-
+//Nuriza
+//
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
@@ -47,7 +48,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                    FROM OrderSize o
                                    WHERE o.size.id = s.id
                                    AND (
-                                        SELECT SUM(o.quantity)
+                                        SELECT SUM(o.fbbQuantity + o.fbsQuantity)
                                         FROM OrderSize o
                                         WHERE o.size.id = s.id
                                     ) > 20
@@ -83,7 +84,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
               AND os.order.dateOfOrder >= CURRENT_DATE - 15
               AND (sp.isDeleted = FALSE )
               GROUP BY p.id, sp.id, s.id
-              ORDER BY SUM(os.quantity) DESC
+              ORDER BY SUM(os.fbsQuantity + os.fbbQuantity) DESC
               LIMIT 8
              """)
     List<HomePageResponse> getBestSellersForHomePage();

@@ -24,11 +24,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("DELETE FROM Order o WHERE o.id = :orderId ")
     void deleteById(@Param("orderId") Long orderId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.RecentOrdersResponse(o.id,sp.articulBG,p.name, sp.price, os.quantity ,os.orderStatus)" +
-            " FROM Order o JOIN o.orderSizes os JOIN os.size s JOIN s.subProduct sp JOIN sp.product p WHERE p.seller.id = :sellerId order by o.id desc limit 5")
+    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.RecentOrdersResponse(o.id,sp.articulBG,p.name, sp.price, os.fbbQuantity ,os.orderStatus)" +
+            " FROM Order o JOIN o.orderSizes os JOIN os.size s JOIN s.subProduct sp JOIN sp.product p WHERE p.seller.id = :sellerId AND os.isFbbOrder = true ORDER BY o.id DESC LIMIT 5")
     List<RecentOrdersResponse> getAllRecentOrders(Long sellerId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.FBBOrderResponse(o.id, s.barcode,sp.mainImage,sp.articulOfSeller, p.name,os.quantity, b.fullName, sp.price, o.dateOfOrder, os.orderStatus) " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.orders.FBBOrderResponse(o.id, s.barcode,sp.mainImage,sp.articulOfSeller, p.name,os.fbbQuantity, b.fullName, sp.price, o.dateOfOrder, os.orderStatus) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
             "JOIN os.size s " +
@@ -36,14 +36,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN sp.product p " +
             "JOIN o.buyer b " +
             "WHERE p.seller.id = :sellerId " +
-            "AND os.isFbsOrder = false " +
+            "AND os.isFbbOrder = TRUE " +
             "AND (:keyword IS NULL OR p.name ILIKE %:keyword% OR b.fullName ILIKE %:keyword%) " +
             "AND (:status IS NULL OR os.orderStatus = :status) " +
             "ORDER BY o.dateOfOrder DESC")
     Page<FBBOrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Pageable pageable);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.FBSOrdersResponse(" +
-            "o.id, s.id, sp.mainImage, s.barcode, os.quantity, p.name, sp.articulOfSeller, s.size, " +
+            "o.id, s.id, sp.mainImage, s.barcode, os.fbsQuantity, p.name, sp.articulOfSeller, s.size, " +
             "sp.color, sp.price, CONCAT(fw.street, ' ', fw.houseNumber), os.orderStatus, o.dateOfOrder) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +

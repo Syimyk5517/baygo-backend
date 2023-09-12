@@ -34,18 +34,20 @@ public class BuyerReturnServiceImpl implements BuyerReturnService {
     private final OrderRepository orderRepository;
     private final OrderSizeRepository orderSizeRepository;
     private final JwtService jwtService;
+
     @Override
     public SimpleResponse save(ReturnProductRequest request) {
         OrderSize orderSize = orderSizeRepository.findById(request.orderSizeId()).orElseThrow(
                 () -> new NotFoundException(String.format("Продукт с идентификатором %s не найден!", request.orderSizeId())));
         Order order = orderRepository.findById(request.orderId()).orElseThrow(() -> new NotFoundException("Нет такого заказа!"));
+
         if (!order.getOrderSizes().contains(orderSize)) {
             throw new NotFoundException("Продукт в данном заказе не найден");
         }
-        if (orderSize.getQuantity() < orderSizeRepository.countOfProductsToBeReturned(orderSize.getId())) {
+        if (orderSize.getFbsQuantity() + orderSize.getFbbQuantity() < orderSizeRepository.countOfProductsToBeReturned(orderSize.getId())) {
             throw new AlreadyExistException("В уже подали заявку на этот товар!");
         }
-        if (orderSize.getQuantity() < orderSizeRepository.countOfProductsToBeReturned(orderSize.getId()) + request.quantityProduct()) {
+        if (orderSize.getFbbQuantity() + orderSize.getFbsQuantity() < orderSizeRepository.countOfProductsToBeReturned(orderSize.getId()) + request.quantityProduct()) {
             throw new BadRequestException("Неверная количества продукт!");
         }
         if (!LocalDate.now().isBefore(ChronoLocalDate.from(order.getDateOfOrder().plusDays(7)))) {
@@ -60,6 +62,7 @@ public class BuyerReturnServiceImpl implements BuyerReturnService {
         newReturn.setReason(request.returnReason());
         newReturn.setImages(request.returnImages());
         newReturn.setCountry(request.country());
+        newReturn.setProductQuantity(request.quantityProduct());
         newReturn.setCity(request.city());
         newReturn.setAddress(request.address());
         newReturn.setPostalCode(request.postalCode());
@@ -70,25 +73,21 @@ public class BuyerReturnServiceImpl implements BuyerReturnService {
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Возврат успешно оформлено!").build();
     }
 
-    //        LocalDate lastDateForReturn = order.getDateOfReceived().plusDays(7);
-    //        System.out.println("lastDateForReturn = " + lastDateForReturn);
-
-
-
     @Override
     public List<ReturnsResponse> getAll() {
         Buyer buyer = jwtService.getAuthenticate().getBuyer();
         return returnRepository.getAllReturns(buyer.getId());
     }
+
     @Override
     public ReturnGetByIdResponse getById(Long returnId) {
-            Buyer buyer = jwtService.getAuthenticate().getBuyer();
-            ReturnGetByIdResponse returnGetByIdResponse = returnRepository.returnGetById(buyer.getId(), returnId)
-                    .orElseThrow(() -> new NotFoundException(String.format("Возврат с номером %s не найден", returnId)));
+        Buyer buyer = jwtService.getAuthenticate().getBuyer();
+        ReturnGetByIdResponse returnGetByIdResponse = returnRepository.returnGetById(buyer.getId(), returnId)
+                .orElseThrow(() -> new NotFoundException(String.format("Возврат с номером %s не найден", returnId)));
 
-            List<String> returnImageUrls = returnRepository.getReturnImageById(buyer.getId(), returnId);
-            returnGetByIdResponse.setImages(returnImageUrls);
+        List<String> returnImageUrls = returnRepository.getReturnImageById(buyer.getId(), returnId);
+        returnGetByIdResponse.setImages(returnImageUrls);
 
-            return returnGetByIdResponse;
-        }
+        return returnGetByIdResponse;
+    }
 }
