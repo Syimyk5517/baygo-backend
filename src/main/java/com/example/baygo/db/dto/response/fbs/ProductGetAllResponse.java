@@ -6,7 +6,7 @@ import lombok.Builder;
 public record ProductGetAllResponse(
       Long sizeId,
       String photo,
-      int barcode,
+      String barcode,
       String productName,
       String articulOfSeller,
       String brand,

@@ -24,12 +24,6 @@ import java.util.List;
 public class FBSSupplyController {
     private final FBSSupplyService supplyService;
 
-    @Operation(summary = "Add quantity to product", description = "This method will add quantity to product")
-    @PostMapping("/add-quantity")
-    public SimpleResponse saveSupply(@RequestBody @Valid SupplyRequest supplyRequest) {
-        return supplyService.saveSupply(supplyRequest);
-    }
-
     @Operation(summary = "Get all supply of FBS seller", description = "This method will get all supplies")
     @GetMapping("/supplies")
     public List<GetAllFbsSupplies> getAllFbsSupplies() {
