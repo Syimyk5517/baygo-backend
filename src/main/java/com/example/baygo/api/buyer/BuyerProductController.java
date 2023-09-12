@@ -1,5 +1,6 @@
 package com.example.baygo.api.buyer;
 
+import com.example.baygo.db.dto.response.ColorResponse;
 import com.example.baygo.db.dto.response.PaginationResponseWithQuantity;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
 import com.example.baygo.service.ProductService;
@@ -17,12 +18,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Product Buyer API")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PermitAll
 public class BuyerProductController {
     private final ProductService productService;
 
     @Operation(summary = "Get all products.", description = "This method gets all products with filters and search.")
     @GetMapping
-    @PermitAll
     public PaginationResponseWithQuantity<ProductBuyerResponse> getAll(@RequestParam(required = false) String keyWord,
                                                                        @RequestParam(required = false) List<String> sizes,
                                                                        @RequestParam(required = false) List<String> compositions,
@@ -38,8 +39,13 @@ public class BuyerProductController {
     }
     @Operation(summary = "Find all similar products",description = "This method find all similar products with brand.")
     @GetMapping("/similar_product")
-    @PermitAll
     List<ProductBuyerResponse> findAllSimilarProducts(){
         return null;
+    }
+
+    @Operation(summary = "Get colors", description = "This method gets the colors for buyer")
+    @GetMapping("/colors")
+    public List<ColorResponse> getColors() {
+        return ColorResponse.getColors();
     }
 }
