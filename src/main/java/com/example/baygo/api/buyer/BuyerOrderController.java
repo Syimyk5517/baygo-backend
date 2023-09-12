@@ -7,6 +7,7 @@ import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +34,10 @@ public class BuyerOrderController {
     public BuyerOrderHistoryDetailResponse getHistoryOfOrderByOrderId(@PathVariable Long orderId){
         return orderService.getOrderById(orderId);
     }
+    @Operation(summary = "Buyer's order",description = "This is the method for ordering")
     @PostMapping
     @PreAuthorize("hasAuthority('BUYER')")
-    public SimpleResponse saveBuyerOrder(@RequestBody BuyerOrderRequest buyerOrderRequest){
+    public SimpleResponse saveBuyerOrder(@RequestBody @Valid BuyerOrderRequest buyerOrderRequest){
        return orderService.saveBuyerOrder(buyerOrderRequest);
     }
 }

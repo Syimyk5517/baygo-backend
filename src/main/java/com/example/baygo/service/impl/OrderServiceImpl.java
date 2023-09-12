@@ -23,12 +23,12 @@ import com.example.baygo.repository.OrderSizeRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.custom.CustomOrderRepository;
 import com.example.baygo.service.OrderService;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import freemarker.template.Template;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -134,15 +134,15 @@ public class OrderServiceImpl implements OrderService {
         model.put("orderNumber", order.getOrderNumber());
         model.put("dateOfOrder", order.getDateOfOrder().toLocalDate());
         model.put("statusOfOrder", "В ожидании");
-        model.put("datePurchase", order.getDateOfOrder());
+        model.put("datePurchase", order.getDateOfOrder().toLocalDate());
         model.put("customer", order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName());
         model.put("phoneNumber", order.getCustomer().getPhoneNumber());
         String withDelivery = "Самовывоз из магазина";
-        if (buyerOrderRequest.withDelivery()){
+        if (buyerOrderRequest.withDelivery()) {
             withDelivery = "Доставка курьером";
         }
-        model.put("withDelivery",withDelivery);
-        model.put("link","https://www.youtube.com/watch?v=IhZrMyuE6EQ");
+        model.put("withDelivery", withDelivery);
+        model.put("link", "https://www.youtube.com/watch?v=IhZrMyuE6EQ");
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
 
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
-                .message(String.format("Номер заказа  %s  Подтвержден",orderNumber)).build();
+                .message(String.format("Номер заказа  %s  Подтвержден", orderNumber)).build();
     }
 
 

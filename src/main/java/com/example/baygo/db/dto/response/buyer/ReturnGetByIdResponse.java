@@ -13,17 +13,17 @@ import java.util.List;
 @NoArgsConstructor
 public class ReturnGetByIdResponse {
     private Long id;
-    private int barcode;
+    private String barcode;
     private String mainImage;
-   private String productName;
-   private String size;
-   private int quantity;
-   private String reason;
-   private OrderStatus orderStatus;
-   private ReturnStatus returnStatus;
-   private List<String> images;
+    private String productName;
+    private String size;
+    private int quantity;
+    private String reason;
+    private OrderStatus orderStatus;
+    private ReturnStatus returnStatus;
+    private List<String> images;
 
-    public ReturnGetByIdResponse(Long id, int barcode, String mainImage, String productName, String size, int quantity, String reason, OrderStatus orderStatus, ReturnStatus returnStatus) {
+    public ReturnGetByIdResponse(Long id, String barcode, String mainImage, String productName, String size, int quantity, String reason, OrderStatus orderStatus, ReturnStatus returnStatus) {
         this.id = id;
         this.barcode = barcode;
         this.mainImage = mainImage;

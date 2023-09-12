@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SellerReturnResponse {
     private Long id;
-    private int barcode;
+    private String barcode;
     private String mainImage;
     private String productName;
     private String size;
