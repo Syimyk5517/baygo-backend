@@ -1,5 +1,6 @@
 package com.example.baygo.api.fbs;
 
+import com.example.baygo.db.dto.response.FBSPercentageResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
 import com.example.baygo.service.FBSOrderService;
@@ -27,5 +28,11 @@ public class FBSOrderController {
             @RequestParam(required = false) String keyword
     ) {
         return fbsOrderService.getAllFbsOrdersOnPending(page, size, keyword);
+    }
+
+    @Operation(summary = "Percentage of FBS", description = "Get all percentage of FBS: count of order, seller rating, ransom rating")
+    @GetMapping("/percentage")
+    public FBSPercentageResponse fbsPercentage(){
+        return fbsOrderService.fbsPercentage();
     }
 }

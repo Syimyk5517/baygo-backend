@@ -27,9 +27,9 @@ public record WarehouseRequest(
         @NotEmpty(message = "Дни недели не могут быть пустыми")
         List<DayOfWeek> dayOfWeek,
         @Min(value = 1, message = "Время подготовки поставки должно быть больше нуля")
-        int preparingSupply,
+        int countOfDaysToPrepareAnOrder,
         @Min(value = 1, message = "Время сборки должно быть больше нуля")
-        int assemblyTime,
+        int hourToAssemble,
         @NotNull(message = "Идентификатор склада не может быть пустым")
         Long fbbWarehouseId
 ) {

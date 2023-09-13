@@ -49,8 +49,8 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
                 .houseNumber(warehouseRequest.houseNumber())
                 .phoneNumber(warehouseRequest.phoneNumber())
                 .workingDay(warehouseRequest.dayOfWeek())
-                .preparingSupply(warehouseRequest.preparingSupply())
-                .assemblyTime(warehouseRequest.assemblyTime())
+                .countOfDaysToPrepareAnOrder(warehouseRequest.countOfDaysToPrepareAnOrder())
+                .hourToAssemble(warehouseRequest.hourToAssemble())
                 .seller(seller).build();
         fbsWarehouseRepository.save(fbsWarehouse);
 

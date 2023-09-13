@@ -46,7 +46,4 @@ public class FbsWarehouse {
     private Seller seller;
     @ManyToMany
     private List<SubProduct> subProducts;
-
-
-
 }

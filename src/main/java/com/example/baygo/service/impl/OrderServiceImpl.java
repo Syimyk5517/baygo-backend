@@ -3,10 +3,7 @@ package com.example.baygo.service.impl;
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.order.BuyerOrderRequest;
 import com.example.baygo.db.dto.request.order.ProductOrderRequest;
-import com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse;
-import com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse;
-import com.example.baygo.db.dto.response.PaginationResponse;
-import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
 import com.example.baygo.db.dto.response.orders.AnalysisResponse;
 import com.example.baygo.db.dto.response.orders.FBBOrderResponse;
@@ -22,6 +19,7 @@ import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.repository.OrderSizeRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.custom.CustomOrderRepository;
+import com.example.baygo.service.BarcodeService;
 import com.example.baygo.service.OrderService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -55,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
     private final SizeRepository sizeRepository;
     private final JavaMailSender javaMailSender;
     private final Configuration configuration;
+    private final BarcodeService barcodeService;
 
     @Override
     public SimpleResponse saveBuyerOrder(BuyerOrderRequest buyerOrderRequest) {
@@ -99,6 +98,9 @@ public class OrderServiceImpl implements OrderService {
                 size.setFbsQuantity(size.getFbsQuantity() - productOrderRequest.quantityProduct());
             }
 
+            QRCodeWithImageResponse qrCodeWithImageResponse = barcodeService.generateQrCode();
+            orderSize.setQrCode(qrCodeWithImageResponse.qrCode());
+            orderSize.setQrCodeImage(qrCodeWithImageResponse.qrCodeImage());
             orderSizeRepository.save(orderSize);
             orderSizeList.add(orderSize);
 

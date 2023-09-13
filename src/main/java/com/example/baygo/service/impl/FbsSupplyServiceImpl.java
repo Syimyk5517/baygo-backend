@@ -1,10 +1,10 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
-import com.example.baygo.db.dto.request.AccessCardRequest;
 import com.example.baygo.db.dto.request.fbs.SupplyOrderRequest;
 import com.example.baygo.db.dto.request.fbs.SupplyRequest;
 import com.example.baygo.db.dto.request.fbs.SupplySubProductQuantityRequest;
+import com.example.baygo.db.dto.response.QRCodeWithImageResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies;
 import com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders;
@@ -14,6 +14,7 @@ import com.example.baygo.db.model.*;
 import com.example.baygo.db.model.enums.FBSSupplyStatus;
 import com.example.baygo.db.model.enums.OrderStatus;
 import com.example.baygo.repository.*;
+import com.example.baygo.service.BarcodeService;
 import com.example.baygo.service.FBSSupplyService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     private final FBSSupplyRepository fbsSupplyRepository;
     private final OrderSizeRepository orderSizeRepository;
     private final FBSSupplyRepository repository;
-    private final AccessCardRepository accessCardRepository;
+    private final BarcodeService barcodeService;
     private final JwtService jwtService;
 
 
@@ -95,6 +96,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
             OrderSize orderSize = orderSizeRepository.findById(orderSizeId).orElseThrow(
                     () -> new NotFoundException(String.format("Fbs заказ с номером - %s не найден", orderSizeId))
             );
+
             orderSize.setOrderStatus(OrderStatus.ON_ASSEMBLY);
             orderSize.setFbsSupply(fbsSupply);
         }
@@ -108,18 +110,17 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
         Warehouse warehouse = warehouseRepository.findById(warehouseId).orElseThrow(
                 () -> new NotFoundException(String.format("Склад %s не найден", warehouseId)));
 
-        UUID uuid = UUID.randomUUID();
-        String qrCode = uuid.toString().replaceAll("[^0-9]", "").substring(1, 9);
-
         FBSSupply fbsSupply = new FBSSupply();
+        QRCodeWithImageResponse qrCodeWithImageResponse = barcodeService.generateQrCode();
         fbsSupply.setName(nameOfSupply);
         fbsSupply.setCreatedAt(LocalDateTime.now());
-        fbsSupply.setQrCode(qrCode);
+        fbsSupply.setQrCode(qrCodeWithImageResponse.qrCode());
+        fbsSupply.setQrCodeImage(qrCodeWithImageResponse.qrCodeImage());
         fbsSupply.setSeller(seller);
         fbsSupply.setFbsSupplyStatus(FBSSupplyStatus.ON_ASSEMBLY);
         fbsSupply.setWarehouse(warehouse);
-        fbsSupplyRepository.save(fbsSupply);
 
+        fbsSupplyRepository.save(fbsSupply);
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("%s - сборочная задание успешно сохранен", fbsSupply.getName()))

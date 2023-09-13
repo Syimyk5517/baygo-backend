@@ -30,6 +30,7 @@ public class OrderSize {
     private BigDecimal price;
     private LocalDateTime dateOfReceived;
     private String qrCode;
+    private String qrCodeImage;
     private boolean isFbsOrder;
     private boolean isFbbOrder;
 
