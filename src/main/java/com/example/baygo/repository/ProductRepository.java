@@ -30,7 +30,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         LEFT JOIN Discount d ON sp.discount.id = d.id
                         LEFT JOIN Buyer b ON b.id = :buyerId
                         LEFT JOIN b.favorites f ON sp.id = f.id
-                        WHERE (:keyWord IS NULL OR p.name iLIKE LOWER(CONCAT('%', :keyWord, '%')))
+                        LEFT JOIN SubCategory sc ON sc.id = p.subCategory.id
+                        WHERE (:categoryId IS NULL OR sc.category.id = :categoryId)
+                        AND (:subCategoryId IS NULL OR sc.id = :subCategoryId)
+                        AND (:keyWord IS NULL OR p.name iLIKE LOWER(CONCAT('%', :keyWord, '%')))
                         AND (:buyerId IS NOT NULL OR :buyerId IS NULL)
                         AND ('' IN :sizes OR s.size IN (:sizes))
                         AND ('' IN :compositions OR p.composition IN (:compositions))
@@ -61,6 +64,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     @PreAuthorize("hasRole('BUYER') or permitAll()")
     Page<ProductBuyerResponse> finds(Long buyerId,
+                                     Long categoryId,
+                                     Long subCategoryId,
                                      String keyWord,
                                      List<String> sizes,
                                      List<String> compositions,

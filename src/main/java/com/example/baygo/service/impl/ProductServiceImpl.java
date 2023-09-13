@@ -96,6 +96,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PaginationResponseWithQuantity<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
+                                                                                    Long categoryId,
+                                                                                    Long subCategoryId,
                                                                                     List<String> sizes,
                                                                                     List<String> compositions,
                                                                                     List<String> brands,
@@ -123,7 +125,10 @@ public class ProductServiceImpl implements ProductService {
         brands = getDefaultIfEmpty(brands);
         colors = getDefaultIfEmpty(colors);
 
-        Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, keyWord, sizes, compositions, brands, colors,
+        if(categoryId != null && subCategoryId != null){
+            categoryId = null;
+        }
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, categoryId, subCategoryId, keyWord,sizes, compositions, brands, colors,
                 minPrice, maxPrice, filterBy, pageable);
 
         return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
