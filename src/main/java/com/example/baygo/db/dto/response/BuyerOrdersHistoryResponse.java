@@ -14,6 +14,6 @@ public class BuyerOrdersHistoryResponse {
     private Long orderId;
     private String dateOfOrder;
     private String orderNumber;
-    private int quantityOfProducts;
+    private Long quantityOfProducts;
     private BigDecimal totalPrice;
 }

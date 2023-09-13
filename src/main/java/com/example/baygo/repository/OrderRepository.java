@@ -65,7 +65,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(
               o.id, CONCAT(EXTRACT(DATE FROM o.dateOfOrder), ' ',EXTRACT(HOUR FROM o.dateOfOrder), ':', EXTRACT(MINUTE FROM o.dateOfOrder)),
-              o.orderNumber, CAST(sum(os.fbbQuantity + os.fbsQuantity) AS int), o.totalPrice
+              o.orderNumber, COUNT(os), o.totalPrice
             )
             FROM Order o
             JOIN OrderSize os ON os.order.id = o.id
@@ -81,7 +81,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("""
              SELECT new com.example.baygo.db.dto.response.BuyerOrderProductsResponse(
-                          os.size.id, CAST( SUM(os.fbsQuantity + os.fbbQuantity) AS int ), os.orderStatus, os.dateOfReceived, os.qrCode, os.percentOfDiscount,
+                          os.size.id, (os.fbsQuantity + os.fbbQuantity), os.orderStatus,
+                          CONCAT(EXTRACT(DATE FROM os.dateOfReceived), ' ',EXTRACT(HOUR FROM os.dateOfReceived), ':', EXTRACT(MINUTE FROM os.dateOfReceived)),
+                          os.qrCode, os.percentOfDiscount,
                           os.price, os.size.subProduct.mainImage, os.size.subProduct.product.name, os.size.size
             )
             FROM OrderSize os
@@ -91,10 +93,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse(
-            o.dateOfOrder, o.orderNumber, o.withDelivery, sum(os.price), cast(sum(os.price * (os.percentOfDiscount / 100.0)) as bigdecimal ), o.totalPrice
-            )
+            CONCAT(EXTRACT(DATE FROM o.dateOfOrder), ' ',EXTRACT(HOUR FROM o.dateOfOrder), ':', EXTRACT(MINUTE FROM o.dateOfOrder)), o.orderNumber, o.withDelivery,
+            CAST(SUM (os.price * (os.fbsQuantity + os.fbbQuantity)) AS BIGDECIMAL),
+            CAST(SUM (os.price * (os.percentOfDiscount / 100.0) * (os.fbsQuantity + os.fbbQuantity)) AS BIGDECIMAL),
+            o.totalPrice)
             FROM Order o
-            JOIN OrderSize os ON os.order.id = o.id
+            JOIN o.orderSizes os
             WHERE o.id = :orderId
             GROUP BY o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice
             """)

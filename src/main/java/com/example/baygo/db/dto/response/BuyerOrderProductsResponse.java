@@ -14,7 +14,7 @@ public class BuyerOrderProductsResponse{
         private Long sizeId;
         private int quantityOfSize;
         private OrderStatus orderStatus;
-        private LocalDateTime dateOfReceived;
+        private String dateOfReceived;
         private String QRCode;
         private int percentOfDiscount;
         private BigDecimal price;
