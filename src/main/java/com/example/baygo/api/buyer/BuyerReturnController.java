@@ -32,7 +32,7 @@ public class BuyerReturnController {
         return service.getAll();
     }
 
-    @Operation(summary="Get by id of return",description = "This method wil get return by id")
+    @Operation(summary="Get by supplyId of return",description = "This method wil get return by supplyId")
     @GetMapping("/{returnId}")
     public ReturnGetByIdResponse getByIdReturn(@PathVariable Long returnId){
         return service.getById(returnId);

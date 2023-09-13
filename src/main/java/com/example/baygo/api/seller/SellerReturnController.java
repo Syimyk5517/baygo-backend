@@ -25,7 +25,7 @@ public class SellerReturnController {
         return returnService.getAllReturns();
     }
 
-    @Operation(summary = "Return get by id", description = "This method will get return by id")
+    @Operation(summary = "Return get by supplyId", description = "This method will get return by supplyId")
     @GetMapping("/{returnId}")
     public SellerReturnGetByIdResponse getById(@PathVariable Long returnId) {
         return returnService.getById(returnId);

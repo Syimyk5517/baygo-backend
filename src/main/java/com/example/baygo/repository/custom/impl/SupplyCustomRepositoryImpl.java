@@ -34,7 +34,7 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
                 FROM warehouses w
                 """;
         if (warehouseId != null) {
-            deliveryFactorSql += "WHERE w.id = " + warehouseId;
+            deliveryFactorSql += "WHERE w.supplyId = " + warehouseId;
         }
 
         int totalCount = totalCount(deliveryFactorSql, size);

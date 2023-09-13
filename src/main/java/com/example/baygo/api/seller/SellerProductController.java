@@ -40,14 +40,14 @@ public class SellerProductController {
         return productService.findAll(categoryId, keyWord, sortBy, ascending, page, size);
     }
 
-    @Operation(summary = "Delete product with product id.", description = "This method delete product with product id.")
+    @Operation(summary = "Delete product with product supplyId.", description = "This method delete product with product supplyId.")
     @DeleteMapping()
     public SimpleResponse deleteProduct(@RequestParam Long subProductId) {
         return productService.deleteProduct(subProductId);
     }
 
     @GetMapping("/{productId}")
-    @Operation(summary = "Get product by id",
+    @Operation(summary = "Get product by supplyId",
             description = "Retrieves detailed information about a product based on the provided ID.")
     public UpdateProductDTO getById(@PathVariable Long productId) {
         return productService.getById(productId);

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fbs/warehouses")
+@RequestMapping("/api/fbs/warehouses")
 @RequiredArgsConstructor
 @Tag(name = "WareHouse and Access card Api")
 @CrossOrigin(origins = "*", maxAge = 3600)

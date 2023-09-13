@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BuyerOrderHistoryDetailResponse {
-    private LocalDateTime dateOfOrder;
+    private String dateOfOrder;
     private String orderNumber;
     private boolean withDelivery;
     private BigDecimal beforeDiscountPrice;
@@ -28,7 +28,7 @@ public class BuyerOrderHistoryDetailResponse {
         this.products.addAll(product);
     }
 
-    public BuyerOrderHistoryDetailResponse(LocalDateTime dateOfOrder, String orderNumber, boolean withDelivery, BigDecimal beforeDiscountPrice, BigDecimal discountPrice, BigDecimal afterDiscountPrice) {
+    public BuyerOrderHistoryDetailResponse(String dateOfOrder, String orderNumber, boolean withDelivery, BigDecimal beforeDiscountPrice, BigDecimal discountPrice, BigDecimal afterDiscountPrice) {
         this.dateOfOrder = dateOfOrder;
         this.orderNumber = orderNumber;
         this.withDelivery = withDelivery;

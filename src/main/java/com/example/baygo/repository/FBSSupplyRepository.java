@@ -11,17 +11,20 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface FBSSupplyRepository extends JpaRepository<FBSSupply, Long> {
-    @Query("select new com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies(fs.id, fs.name, fs.createdAt, fs.quantityOfProducts, fs.qrCode) " +
-            "FROM FBSSupply fs  " +
-            "join fs.seller s " +
-            "WHERE s.id = :sellerId")
+    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies(fs.id, fs.name, EXTRACT(DATE FROM fs.createdAt), " +
+            "(SELECT COUNT(*) FROM OrderSize os WHERE os.fbsSupply.id = fs.id), fs.qrCode) " +
+            "FROM FBSSupply fs " +
+            "JOIN fs.seller s " +
+            "WHERE s.id = :sellerId AND fs.fbsSupplyStatus = 'ON_ASSEMBLY' ")
     List<GetAllFbsSupplies> getAllFbsSupplies(@Param("sellerId") Long sellerId);
-    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders(fs.id, fs.name, fs.createdAt, fs.quantityOfProducts, fs.qrCode) " +
+
+    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders(fs.id, fs.name, EXTRACT(DATE FROM fs.createdAt), " +
+            "(SELECT COUNT(*) FROM OrderSize os WHERE os.fbsSupply.id = fs.id), fs.fbsSupplyStatus, fs.qrCode) " +
             "FROM FBSSupply fs  join fs.seller s " +
-            "WHERE fs.id = :supplyId and s.id=:sellerId")
+            "WHERE fs.id = :supplyId and s.id= :sellerId")
     GetSupplyWithOrders getFbsSupplyById(@Param("supplyId") Long supplyId, @Param("sellerId") Long sellerId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetAllFbsOrderBySupplyId(sp.mainImage, s.barcode, s.fbsQuantity, p.name, s.size, sp.color, sp.price, o.dateOfOrder) " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetAllFbsOrderBySupplyId(sp.mainImage, s.barcode, os.fbsQuantity, p.name, s.size, sp.color, os.price, EXTRACT(DATE FROM o.dateOfOrder)) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
             "JOIN os.size s " +

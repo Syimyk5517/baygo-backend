@@ -37,7 +37,7 @@ public class SellerDiscountController {
         return discountService.getAllDiscount(date);
     }
     
-    @Operation(summary = "Cancellation of discount by subProducts id!", description = "This method cancelled of discount by subProducts id!")
+    @Operation(summary = "Cancellation of discount by subProducts supplyId!", description = "This method cancelled of discount by subProducts supplyId!")
     @DeleteMapping
     @PreAuthorize("hasAuthority('SELLER')")
     public SimpleResponse cancellationOfDiscount(@RequestBody @Valid DiscountRequestForCancel request){
