@@ -23,6 +23,7 @@ public class FBSSupply {
     private LocalDateTime createdAt;
     private LocalDateTime receivedAt;
     private String qrCode;
+    private String qrCodeImage;
 
     @Enumerated(EnumType.STRING)
     private FBSSupplyStatus fbsSupplyStatus;

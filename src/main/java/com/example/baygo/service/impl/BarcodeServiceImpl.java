@@ -1,24 +1,21 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.response.BarcodeWithImageResponse;
+import com.example.baygo.db.dto.response.QRCodeWithImageResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.service.BarcodeService;
+import com.example.baygo.service.S3Service;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.EAN13Writer;
+import com.google.zxing.qrcode.QRCodeWriter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -30,11 +27,7 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class BarcodeServiceImpl implements BarcodeService {
-    private final S3Client s3;
-    @Value("${aws_bucket_name}")
-    private String BUCKET_NAME;
-    @Value("${aws_s3_link}")
-    private String BUCKET_PATH;
+    private final S3Service s3Service;
 
     public List<BarcodeWithImageResponse> getBarcodesWithImage(int quantity) {
 //        BitmapCanvasProvider canvas = new BitmapCanvasProvider(
@@ -53,7 +46,7 @@ public class BarcodeServiceImpl implements BarcodeService {
                 BitMatrix bitMatrix = barcodeWriter.encode(barcode, BarcodeFormat.EAN_13, 500, 90);
 
                 responses.add(new BarcodeWithImageResponse(barcode,
-                        uploadImageToS3(MatrixToImageWriter.toBufferedImage(bitMatrix), barcode)));
+                        s3Service.uploadImage(MatrixToImageWriter.toBufferedImage(bitMatrix), barcode)));
             } catch (IOException e) {
                 throw new BadRequestException("Get barcodes with images impl error");
             }
@@ -82,23 +75,22 @@ public class BarcodeServiceImpl implements BarcodeService {
         return barcodes;
     }
 
-    private String uploadImageToS3(BufferedImage image, String fileName) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", os);
-        byte[] imageBytes = os.toByteArray();
+    @Override
+    public QRCodeWithImageResponse generateQrCode() {
+        UUID uuid = UUID.randomUUID();
+        String qrCodeText = uuid.toString().replaceAll("[^0-9]", "").substring(1, 9);
+        QRCodeWriter barcodeWriter = new QRCodeWriter();
 
-        String key = fileName + "barcode.png";
+        try {
+            BitMatrix bitMatrix = barcodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, 200, 200);
 
-        long contentLength = imageBytes.length;
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(BUCKET_NAME)
-                .key(key)
-                .contentType("image/png")
-                .contentLength(contentLength)
+        return QRCodeWithImageResponse.builder()
+                .qrCode(qrCodeText)
+                .qrCodeImage(s3Service.uploadImage(MatrixToImageWriter.toBufferedImage(bitMatrix), qrCodeText))
                 .build();
 
-        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
-        return BUCKET_PATH + key;
+        } catch (WriterException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

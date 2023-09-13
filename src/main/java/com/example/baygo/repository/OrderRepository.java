@@ -77,7 +77,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             ORDER BY o.dateOfOrder DESC
             """)
     List<BuyerOrdersHistoryResponse> getAllHistoryOfOrder(Long buyerId,
-                                                          String keyWord);//fixed
+                                                          String keyWord);
 
     @Query("""
              SELECT new com.example.baygo.db.dto.response.BuyerOrderProductsResponse(
@@ -89,7 +89,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             FROM OrderSize os
             WHERE os.order.id = :orderId
             """)
-    List<BuyerOrderProductsResponse> getProductOfOrderByOrderId(Long orderId);// fixed
+    List<BuyerOrderProductsResponse> getProductOfOrderByOrderId(Long orderId);
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse(
@@ -103,4 +103,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             GROUP BY o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice
             """)
     BuyerOrderHistoryDetailResponse getHistoryOfOrderById(Long orderId);
+
+    @Query("""
+            SELECT COUNT(os)
+            FROM Order o
+            JOIN o.orderSizes os
+            WHERE os.size.subProduct.product.seller.id = :sellerId AND os.orderStatus = 'PENDING'
+            """)
+    int getCountOfOrdersOnPending(Long sellerId);
 }

@@ -60,25 +60,46 @@ public class S3ServiceImpl implements S3Service {
                 "message", fileLink + " has been deleted");
     }
 
+//    @Override
+//    public String uploadImage(BufferedImage image, String fileName) throws IOException {
+////        ByteArrayOutputStream os = new ByteArrayOutputStream();
+////        ImageIO.write(image, "png", os);
+////        byte[] imageBytes = os.toByteArray();
+////
+////        String key = fileName + "barcode.png";
+////
+////        long contentLength = imageBytes.length;
+////
+////        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+////                .bucket(BUCKET_NAME)
+////                .key(key)
+////                .contentType("image/png")
+////                .contentLength(contentLength)
+////                .build();
+////
+////        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
+////        return BUCKET_PATH + key;
+//        return null;
+//    }
+
     @Override
     public String uploadImage(BufferedImage image, String fileName) throws IOException {
-//        ByteArrayOutputStream os = new ByteArrayOutputStream();
-//        ImageIO.write(image, "png", os);
-//        byte[] imageBytes = os.toByteArray();
-//
-//        String key = fileName + "barcode.png";
-//
-//        long contentLength = imageBytes.length;
-//
-//        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-//                .bucket(BUCKET_NAME)
-//                .key(key)
-//                .contentType("image/png")
-//                .contentLength(contentLength)
-//                .build();
-//
-//        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
-//        return BUCKET_PATH + key;
-        return null;
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", os);
+        byte[] imageBytes = os.toByteArray();
+
+        String key = fileName + "barcode.png";
+
+        long contentLength = imageBytes.length;
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(BUCKET_NAME)
+                .key(key)
+                .contentType("image/png")
+                .contentLength(contentLength)
+                .build();
+
+        s3.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
+        return BUCKET_PATH + key;
     }
 }

@@ -563,7 +563,7 @@ VALUES (1, '2022-12-30', '11',
        (6, '2023-05-24', '66',
         'OFFLINE_BY_CARD', 23868, FALSE, 2, 6),
        (7, '2023-04-10', '77',
-        'OFFLINE_BY_CASH', 6432, FALSE, 1, 7),
+        'OFFLINE_BY_CASH', 9600, FALSE, 1, 7),
        (8, '2023-06-17', '71',
         'ONLINE_BY_CARD', 24000, TRUE, 1, 8),
        (9, '2023-07-12', '23',
@@ -582,36 +582,36 @@ VALUES (1, '2022-12-30', '11',
         'ONLINE_BY_CARD', 9999, FALSE, 1, 15);
 
 INSERT INTO fbs_supplies (id, name, created_at, received_at, qr_code, fbs_supply_status,
-                          seller_id)
-VALUES (1, 'T-shirt', NOW(), NULL, '123456', 'ON_DELIVERY', 1),
-       (2, 'T-shirt 2', now(), now(), '32421', ' ACCEPTED', 1),
-       (3, 'Women t-shirt', now(), now(), '23132', ' ACCEPTED', 1),
-       (4, 'Cap', now(), NULL, '23413', 'ON_DELIVERY', 1),
-       (5, 'Shorts', now(), NULL, '42313', 'ON_DELIVERY', 1),
-       (6, 'Deuces', now(), now(), '54353', 'ACCEPTED', 1),
-       (7, 'Sweater', now(), now(), '59892', 'CANCELED', 1),
-       (8, 'T-shirt', now(), now(), '43422', 'ACCEPTED', 1),
-       (9, 'Deuces', now(), now(), '232242', 'CANCELED', 1),
-       (10, 'Sweater', now(), now(), '432132', 'ACCEPTED', 1),
-       (11, 'Dresses', now(), NULL, '323123', 'ON_ASSEMBLY', 1),
-       (12, 'Sportswear', now(), NULL, '213112', 'ON_ASSEMBLY', 1),
-       (13, 'Sportswear', now(), now(), '432234', 'ACCEPTED', 1),
-       (14, 'JACKET', now(), NULL, '543345', 'ON_ASSEMBLY', 1),
-       (15, 'Cap', now(), now(), '098432', 'ACCEPTED', 1);
+                          seller_id, qr_code_image)
+VALUES (1, 'T-shirt', NOW(), NULL, '32244879', 'ON_DELIVERY', 1, 'https://baygo.s3.us-east-2.amazonaws.com/32244879barcode.png'),
+       (2, 'T-shirt 2', now(), now(), '91034598', ' ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/91034598barcode.png'),
+       (3, 'Women t-shirt', now(), now(), '82284834', ' ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/82284834barcode.png'),
+       (4, 'Cap', now(), NULL, '38964567', 'ON_DELIVERY', 1, 'https://baygo.s3.us-east-2.amazonaws.com/38964567barcode.png'),
+       (5, 'Shorts', now(), NULL, '51395214', 'ON_DELIVERY', 1, 'https://baygo.s3.us-east-2.amazonaws.com/51395214barcode.png'),
+       (6, 'Deuces', now(), now(), '03662440', 'ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/03662440barcode.png'),
+       (7, 'Sweater', now(), now(), '91260246', 'CANCELED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/91260246barcode.png'),
+       (8, 'T-shirt', now(), now(), '46670435', 'ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/46670435barcode.png'),
+       (9, 'Deuces', now(), now(), '00944054', 'CANCELED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/00944054barcode.png'),
+       (10, 'Sweater', now(), now(), '15784198', 'ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/15784198barcode.png'),
+       (11, 'Dresses', now(), NULL, '71554366', 'ON_ASSEMBLY', 1, 'https://baygo.s3.us-east-2.amazonaws.com/71554366barcode.png'),
+       (12, 'Sportswear', now(), NULL, '16504430', 'ON_ASSEMBLY', 1, 'https://baygo.s3.us-east-2.amazonaws.com/16504430barcode.png'),
+       (13, 'Sportswear', now(), now(), '23258946', 'ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/23258946barcode.png'),
+       (14, 'JACKET', now(), NULL, '57822416', 'ON_ASSEMBLY', 1, 'https://baygo.s3.us-east-2.amazonaws.com/57822416barcode.png'),
+       (15, 'Cap', now(), now(), '79124793', 'ACCEPTED', 1, 'https://baygo.s3.us-east-2.amazonaws.com/79124793barcode.png');
 
 INSERT INTO orders_sizes (id, fbs_quantity, fbb_quantity, order_status, percent_of_discount, price,
-                          date_of_received, qr_code, is_fbs_order, is_fbb_order, order_id, size_id, fbs_supply_id)
-VALUES (1, 2, 0, 'PENDING', 12, 4500, NULL, '456789', TRUE, FALSE, 1, 1, 1),
-       (2, 3, 4, 'PENDING', 5, 1000, NULL, '123452', TRUE, TRUE, 2, 2, 2),
-       (3, 4, 0, 'ON_SUPPLY_DELIVERY', 7, 2900, NULL, '343543', TRUE, FALSE, 3, 3, 3),
-       (4, 1, 2, 'ON_WAREHOUSE', 32, 5500, NULL, '674321', TRUE, TRUE, 4, 4, 2),
-       (5, 0, 6, 'ON_PIO', 10, 2200, NULL, '234132', FALSE, TRUE, 5, 5, 3),
-       (6, 7, 2, 'COURIER_ON_THE_WAY', 22, 3400, NULL, '543454', TRUE, TRUE, 6, 6, 6),
-       (7, 2, 0, 'DELIVERED', 33, 4800, NULL, '980765', TRUE, FALSE, 7, 31, 5),
-       (8, 5, 1, 'DELIVERED', 3, 2300, now(), '980765', TRUE, TRUE, 2, 19, 2),
-       (9, 6, 0, 'PENDING', 33, 4800, NULL, '980765', TRUE, FALSE, 1, 23, 1),
-       (10, 2, 3, 'PENDING', 0, 1200, NULL, '980765', TRUE, TRUE, 1, 12, 1),
-       (11, 5, 1, 'CANCELED', 50, 8000, now(), '876578', TRUE, TRUE, 8, 8, 1);
+                          date_of_received, qr_code, is_fbs_order, is_fbb_order, order_id, size_id, fbs_supply_id, qr_code_image)
+VALUES (1, 2, 0, 'PENDING', 12, 4500, NULL, '32071312', TRUE, FALSE, 1, 1, 1, 'https://baygo.s3.us-east-2.amazonaws.com/32071312barcode.png'),
+       (2, 3, 4, 'PENDING', 5, 1000, NULL, '29497423', TRUE, TRUE, 2, 2, 2, 'https://baygo.s3.us-east-2.amazonaws.com/29497423barcode.png'),
+       (3, 4, 0, 'ON_SUPPLY_DELIVERY', 7, 2900, NULL, '76139703', TRUE, FALSE, 3, 3, 3, 'https://baygo.s3.us-east-2.amazonaws.com/76139703barcode.png'),
+       (4, 1, 2, 'ON_WAREHOUSE', 32, 5500, NULL, '08905881', TRUE, TRUE, 4, 4, 2, 'https://baygo.s3.us-east-2.amazonaws.com/08905881barcode.png'),
+       (5, 0, 6, 'ON_PIO', 10, 2200, NULL, '97835904', FALSE, TRUE, 5, 5, 3, 'https://baygo.s3.us-east-2.amazonaws.com/97835904barcode.png'),
+       (6, 7, 2, 'COURIER_ON_THE_WAY', 22, 3400, NULL, '88068861', TRUE, TRUE, 6, 6, 6, 'https://baygo.s3.us-east-2.amazonaws.com/88068861barcode.png'),
+       (7, 2, 0, 'DELIVERED', 0, 4800, NULL, '63510410', TRUE, FALSE, 7, 31, 5, 'https://baygo.s3.us-east-2.amazonaws.com/63510410barcode.png'),
+       (8, 5, 1, 'DELIVERED', 3, 2300, now(), '81764113', TRUE, TRUE, 2, 19, 2, 'https://baygo.s3.us-east-2.amazonaws.com/81764113barcode.png'),
+       (9, 6, 0, 'PENDING', 33, 4800, NULL, '53087284', TRUE, FALSE, 1, 23, 1, 'https://baygo.s3.us-east-2.amazonaws.com/53087284barcode.png'),
+       (10, 2, 3, 'PENDING', 0, 1200, NULL, '49696136', TRUE, TRUE, 1, 12, 1, 'https://baygo.s3.us-east-2.amazonaws.com/49696136barcode.png'),
+       (11, 5, 1, 'CANCELED', 50, 8000, now(), '15392260', TRUE, TRUE, 8, 8, 1, 'https://baygo.s3.us-east-2.amazonaws.com/15392260barcode.png');
 
 INSERT INTO returns (id, reason, return_status, with_delivery, product_quantity, country, city, address, postal_code,
                      phone_number, date_of_return, order_size_id)
@@ -816,7 +816,7 @@ VALUES (1, 'БайGo', 'Бишкек', 1200.00),
        (15, 'Запад-Карго', 'Уральск', 1200.00);
 
 INSERT INTO fbs_warehouses (id, name, country, city, index_of_country, street, house_number, phone_number,
-                            preparing_supply, assembly_time, type_of_supplier, type_of_product, shipping_type,
+                            count_of_days_to_prepare_an_order, hour_to_assemble, type_of_supplier, type_of_product, shipping_type,
                             seller_id)
 VALUES (1, 'Жибек Жолу', 'Кыргызстан', 'Бишкек', 723500, 'Лев Толстой', 123, '+1234567890', 3, 4,
         'WITH_MY_OWN_RESOURCES', 'ORDINARY', 'BY_CARRIER_BAIGO', 1),
@@ -1469,6 +1469,3 @@ VALUES (1, 20, 1),
        (14, 25, 15),
        (15, 19, 13),
        (15, 12, 14);
-
-
-
