@@ -32,7 +32,11 @@ public class CustomCalendarActionRepositoryImpl implements CustomCalendarActionR
 
 
         String sql = """
-                SELECT date_of_start::date, EXTRACT(HOUR FROM date_of_start::timestamp) AS hour, date_of_finish
+                SELECT 
+                date_of_start AS date_of_start, 
+                EXTRACT(HOUR FROM date_of_start::timestamp) AS hour, 
+                date_of_finish AS date_of_finish,
+                name_of_discount AS name
                 FROM discounts d
                 WHERE date_of_start >= ?::date
                   AND date_of_start <= ?::date
@@ -45,6 +49,7 @@ public class CustomCalendarActionRepositoryImpl implements CustomCalendarActionR
             return CalendarActionResponse.builder()
                     .dateOfStart(resultSet.getDate("date_of_start").toLocalDate())
                     .time(resultSet.getInt("hour"))
+                    .nameOfDiscount(resultSet.getString("name"))
                     .dateOfFinish(resultSet.getDate("date_of_finish").toLocalDate())
                     .build();
         }, startDate, endDate);
