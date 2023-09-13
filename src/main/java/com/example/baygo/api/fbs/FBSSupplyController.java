@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fbs/supply")
+@RequestMapping("/api/fbs/supply")
 @RequiredArgsConstructor
 @Tag(name = "Fbs Supply ")
 @CrossOrigin(value = "*", maxAge = 3600)
