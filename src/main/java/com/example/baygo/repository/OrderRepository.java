@@ -103,4 +103,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             GROUP BY o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice
             """)
     BuyerOrderHistoryDetailResponse getHistoryOfOrderById(Long orderId);
+
+    @Query("""
+            SELECT COUNT(os)
+            FROM Order o
+            JOIN o.orderSizes os
+            WHERE os.size.subProduct.product.seller.id = :sellerId AND os.orderStatus = 'PENDING'
+            """)
+    int getCountOfOrdersOnPending(Long sellerId);
 }

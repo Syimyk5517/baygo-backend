@@ -12,6 +12,7 @@ import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.db.model.enums.FBSSupplyStatus;
+import com.example.baygo.db.model.enums.OrderStatus;
 import com.example.baygo.repository.*;
 import com.example.baygo.service.FBSSupplyService;
 import jakarta.transaction.Transactional;
@@ -92,8 +93,9 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
 
         for (Long orderSizeId : supplyOrderRequest.orderSizesId()) {
             OrderSize orderSize = orderSizeRepository.findById(orderSizeId).orElseThrow(
-                    () -> new NotFoundException(String.format("Fbs заказ с номером %s не найден", orderSizeId))
+                    () -> new NotFoundException(String.format("Fbs заказ с номером - %s не найден", orderSizeId))
             );
+            orderSize.setOrderStatus(OrderStatus.ON_ASSEMBLY);
             orderSize.setFbsSupply(fbsSupply);
         }
 
@@ -120,8 +122,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
 
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
-                .message(String.format("%s сборочная задание успешно сохранен", fbsSupply.getName()))
+                .message(String.format("%s - сборочная задание успешно сохранен", fbsSupply.getName()))
                 .build();
     }
 }
-

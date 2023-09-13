@@ -4,6 +4,7 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.response.FBSPercentageResponse;
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.fbs.FBSOrdersResponse;
+import com.example.baygo.db.model.Seller;
 import com.example.baygo.repository.OrderRepository;
 import com.example.baygo.service.FBSOrderService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,20 @@ public class FBSOrderServiceImpl implements FBSOrderService {
 
     @Override
     public FBSPercentageResponse fbsPercentage() {
-        return null;
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        int totalCountOfNewOrders = orderRepository.getCountOfOrdersOnPending(seller.getId());
+        return FBSPercentageResponse.builder()
+                .totalCountOfNewOrders(totalCountOfNewOrders)
+                .percentageComparedToLateOrder(2.31)
+                .isIncreasedOrder(true)
+
+                .percentOfRatingSeller(87.96)
+                .percentageComparedToLateRatingSeller(3.56)
+                .isIncreasedRatingSeller(false)
+
+                .percentOfRatingRansom(65.48)
+                .percentageComparedToLateRatingRansom(9.11)
+                .isIncreasedRatingRansom(true)
+                .build();
     }
 }
