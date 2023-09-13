@@ -43,7 +43,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<FBBOrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Pageable pageable);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.FBSOrdersResponse(" +
-            "o.id, s.id, sp.mainImage, s.barcode, os.fbsQuantity, p.name, sp.articulOfSeller, s.size, " +
+            "o.id, os.id, sp.mainImage, s.barcode, os.fbsQuantity, p.name, sp.articulOfSeller, s.size, " +
             "sp.color, sp.price, CONCAT(fw.street, ' ', fw.houseNumber), os.orderStatus, o.dateOfOrder) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +

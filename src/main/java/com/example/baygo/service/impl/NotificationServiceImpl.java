@@ -37,7 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setRead(false);
         for (Long buyerId : notificationSendRequest.buyerIds()) {
             Buyer buyer = buyerRepository.findById(buyerId).orElseThrow(
-                    () -> new NotFoundException("Buyer not found with id: " + buyerId));
+                    () -> new NotFoundException("Buyer not found with supplyId: " + buyerId));
             notification.addBuyer(buyer);
         }
         notificationRepository.save(notification);
@@ -68,7 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationResponse getById(Long notificationId) {
 
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(
-                () -> new NotFoundException("Notification not found with id: " + notificationId));
+                () -> new NotFoundException("Notification not found with supplyId: " + notificationId));
 
         if (notification != null) {
             notification.setRead(true);

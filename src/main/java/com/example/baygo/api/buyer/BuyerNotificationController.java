@@ -26,7 +26,7 @@ public class BuyerNotificationController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @Operation(summary = "Get by id notification!", description = "This method for getting by id notification!")
+    @Operation(summary = "Get by supplyId notification!", description = "This method for getting by supplyId notification!")
     @GetMapping("/{notificationId}")
     public NotificationResponse getNotificationById(@PathVariable Long notificationId){
         return service.getById(notificationId);

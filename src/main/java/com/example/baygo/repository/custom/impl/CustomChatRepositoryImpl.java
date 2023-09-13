@@ -84,7 +84,7 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
                 messageResponse.setLocalDate(messageResultSet.getDate("extractedDate").toLocalDate());
                 messageResponse.setTimezone(hour + ":" + minute);
                 Message message = messageRepository.findById(messageResponse.getId())
-                        .orElseThrow(() -> new NotFoundException("Message with id " + messageResponse.getId() + " not found"));
+                        .orElseThrow(() -> new NotFoundException("Message with supplyId " + messageResponse.getId() + " not found"));
 
                 boolean isNewMessage = message.getIsNewMessage();
                 boolean shouldUpdate = (user.getRole() == Role.SELLER && (message.getIsSeller() || isNewMessage))
@@ -135,7 +135,7 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
         return """
                  SELECT
                  m.message as message,
-                 m.id as messageId,
+                 m.supplyId as messageId,
                  m.image as image,
                  m.is_seller as isSeller,
                  CAST(m.time AS DATE) as extractedDate,

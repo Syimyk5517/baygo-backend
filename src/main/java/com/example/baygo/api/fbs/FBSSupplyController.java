@@ -30,15 +30,21 @@ public class FBSSupplyController {
         return supplyService.getAllFbsSupplies();
     }
 
-    @Operation(summary = "Supply get by id", description = "This method will get supply by id")
+    @Operation(summary = "Supply get by supplyId", description = "This method will get supply by supplyId")
     @GetMapping("/{supplyId}")
     public GetSupplyWithOrders getByIdFbsSupply(@PathVariable Long supplyId) {
         return supplyService.getSupplyByIdWithOrders(supplyId);
     }
 
-    @Operation(summary = "Save assembly task", description = "This method will save assembly task")
-    @PostMapping("/save/assembly")
+    @Operation(summary = "Add orders to supply", description = "This method will add new orders to fbs supply")
+    @PostMapping("/add-orders-to-supply")
     public SimpleResponse saveAssemblyTask(@RequestBody @Valid SupplyOrderRequest supplyOrderRequest) {
         return supplyService.saveAssemblyTask(supplyOrderRequest);
+    }
+
+    @Operation(summary = "Create supply", description = "This method will create the supply")
+    @PostMapping
+    public SimpleResponse createSupply(@RequestParam Long warehouseId, @RequestParam String nameOfSupply) {
+        return supplyService.createSupply(warehouseId, nameOfSupply);
     }
 }

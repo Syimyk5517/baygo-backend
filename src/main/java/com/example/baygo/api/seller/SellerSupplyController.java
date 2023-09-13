@@ -53,7 +53,7 @@ public class SellerSupplyController {
         return service.getSupplyProducts(supplyId, keyWord, page, size);
     }
 
-    @Operation(summary = "Get supply by id ", description = "This method gets the get supply by products")
+    @Operation(summary = "Get supply by supplyId ", description = "This method gets the get supply by products")
     @GetMapping("/{id}")
     public SupplyResponse getById(@PathVariable Long id) {
         return service.getSupplyById(id);
@@ -139,13 +139,13 @@ public class SellerSupplyController {
         return service.willCompleteTheDelivery(supplyWrapperRequest);
     }
 
-    @Operation(summary = "All submission information by id", description = "This method returns all submission information by id")
+    @Operation(summary = "All submission information by supplyId", description = "This method returns all submission information by supplyId")
     @GetMapping("/find_by_id")
     public List<SupplyInfoResponse> findById(@RequestParam Long supplyId) {
         return service.findById(supplyId);
     }
 
-    @Operation(summary = "this method allows you to get a driver's pass by supply id", description = "this method allows you to get a driver's pass by supply id")
+    @Operation(summary = "this method allows you to get a driver's pass by supply supplyId", description = "this method allows you to get a driver's pass by supply supplyId")
     @GetMapping("all_access_card")
     public AccessCardResponse findBySupplyId(@RequestParam Long supplyId) {
         return service.findBySupplyId(supplyId);
