@@ -28,7 +28,7 @@ public class BuyerOrderController {
         return orderService.getAllHistoryOfOrder(keyWord);
     }
 
-    @Operation(summary = "Get history detail of order by id!", description = "This method gets history detail of order by order id!")
+    @Operation(summary = "Get history detail of order by supplyId!", description = "This method gets history detail of order by order supplyId!")
     @GetMapping("/{orderId}")
     @PreAuthorize("hasAuthority('BUYER')")
     public BuyerOrderHistoryDetailResponse getHistoryOfOrderByOrderId(@PathVariable Long orderId){

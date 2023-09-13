@@ -25,6 +25,8 @@ public class BuyerProductController {
     @Operation(summary = "Get all products.", description = "This method gets all products with filters and search.")
     @GetMapping
     public PaginationResponseWithQuantity<ProductBuyerResponse> getAll(@RequestParam(required = false) String keyWord,
+                                                                       @RequestParam(required = false) Long categoryId,
+                                                                       @RequestParam(required = false) Long subCategoryId,
                                                                        @RequestParam(required = false) List<String> sizes,
                                                                        @RequestParam(required = false) List<String> compositions,
                                                                        @RequestParam(required = false) List<String> brands,
@@ -35,7 +37,7 @@ public class BuyerProductController {
                                                                        @RequestParam(required = false) String sortBy,
                                                                        @RequestParam(required = false, defaultValue = "1") int page,
                                                                        @RequestParam(required = false, defaultValue = "16") int pageSize) {
-        return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors,filterBy, sortBy, page, pageSize);
+        return productService.getAllProductsBuyer(keyWord,categoryId, subCategoryId, sizes, compositions, brands, minPrice, maxPrice, colors,filterBy, sortBy, page, pageSize);
     }
     @Operation(summary = "Find all similar products",description = "This method find all similar products with brand.")
     @GetMapping("/similar_product")

@@ -2,16 +2,14 @@ package com.example.baygo.db.dto.response.fbs;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Builder
 public record GetAllFbsSupplies(
         Long id,
         String name,
-        LocalDateTime createAt,
-        int totalQuantity,
+        LocalDate createAt,
+        Long totalQuantity,
         String QRCode
-
-
 ) {
 }

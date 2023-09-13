@@ -27,8 +27,6 @@ public class AccessCard {
     private int numberOfSeats;
     @Enumerated(EnumType.STRING)
     private SupplyType supplyType;
-    @OneToOne(mappedBy = "accessCard")
-    private FBSSupply fbsSupply;
     @OneToOne(cascade = {DETACH,REFRESH,PERSIST,MERGE})
     private Supply supply;
 

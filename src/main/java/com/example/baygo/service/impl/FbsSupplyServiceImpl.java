@@ -20,11 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +51,7 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
             int quantity = sizeQuantityRequest.quantity();
 
             Size sizeToUpdate = sizeRepository.findById(sizeId)
-                    .orElseThrow(() -> new NotFoundException(String.format("Размер с %s id не найден", sizeId)));
+                    .orElseThrow(() -> new NotFoundException(String.format("Размер с %s supplyId не найден", sizeId)));
 
             SubProduct subProduct = sizeToUpdate.getSubProduct();
             if (!subProduct.getProduct().getSeller().equals(seller) || !warehouse.getSubProducts().contains(subProduct)) {
@@ -84,46 +80,48 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     }
 
     @Override
+    @Transactional
     public SimpleResponse saveAssemblyTask(SupplyOrderRequest supplyOrderRequest) {
-        User user = jwtService.getAuthenticate();
+        Seller seller = jwtService.getAuthenticate().getSeller();
 
-        List<OrderSize> orderSizes = orderSizeRepository.findAllByIdIn(Collections.singletonList(supplyOrderRequest.orderSizeId()));
-
-        if (orderSizes.isEmpty()) {
-            throw new NotFoundException(String.format("Fbs заказы с номером %s не найден", supplyOrderRequest.orderSizeId()));
+        FBSSupply fbsSupply = fbsSupplyRepository.findById(supplyOrderRequest.fbsSupplyId()).orElseThrow(
+                () -> new NotFoundException(String.format("Fbs заказы с номером %s не найден", supplyOrderRequest.fbsSupplyId())));
+        if (!seller.getFbsSupplies().contains(fbsSupply)) {
+            throw new BadRequestException("Этот поставка вам не подлежит");
         }
 
-        int totalQuantity = orderSizes.stream().mapToInt(OrderSize::getFbsQuantity).sum();
-
-        Warehouse warehouse = warehouseRepository.findById(supplyOrderRequest.wareHouseId()).orElseThrow(
-                () -> new NotFoundException(String.format("Склад %s не найден", supplyOrderRequest.wareHouseId())));
-
-        AccessCard accessCard = null;
-        if (supplyOrderRequest.accessCardRequest() != null) {
-            AccessCardRequest accessCardRequest = supplyOrderRequest.accessCardRequest();
-            accessCard = AccessCard.builder()
-                    .driverFirstName(accessCardRequest.driverFirstName())
-                    .driverLastName(accessCardRequest.driverLastname())
-                    .carBrand(accessCardRequest.brand())
-                    .numberOfCar(accessCardRequest.number())
-                    .build();
-            accessCardRepository.save(accessCard);
+        for (Long orderSizeId : supplyOrderRequest.orderSizesId()) {
+            OrderSize orderSize = orderSizeRepository.findById(orderSizeId).orElseThrow(
+                    () -> new NotFoundException(String.format("Fbs заказ с номером %s не найден", orderSizeId))
+            );
+            orderSize.setFbsSupply(fbsSupply);
         }
 
-        FBSSupply fbsSupply = FBSSupply.builder()
-                .name(supplyOrderRequest.nameOfSupply())
-                .orderSizes(orderSizes)
-                .warehouse(warehouse)
-                .fbsSupplyStatus(FBSSupplyStatus.DELIVERY)
-                .accessCard(accessCard)
-                .createdAt(LocalDateTime.now())
-                .quantityOfProducts(totalQuantity)
-                .seller(user.getSeller())
-                .build();
+        return new SimpleResponse(HttpStatus.OK, String.format("Заказы успешно добавились на сборку - %s", fbsSupply.getName()));
+    }
 
+    @Override
+    public SimpleResponse createSupply(Long warehouseId, String nameOfSupply) {
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        Warehouse warehouse = warehouseRepository.findById(warehouseId).orElseThrow(
+                () -> new NotFoundException(String.format("Склад %s не найден", warehouseId)));
+
+        UUID uuid = UUID.randomUUID();
+        String qrCode = uuid.toString().replaceAll("[^0-9]", "").substring(1, 9);
+
+        FBSSupply fbsSupply = new FBSSupply();
+        fbsSupply.setName(nameOfSupply);
+        fbsSupply.setCreatedAt(LocalDateTime.now());
+        fbsSupply.setQrCode(qrCode);
+        fbsSupply.setSeller(seller);
+        fbsSupply.setFbsSupplyStatus(FBSSupplyStatus.ON_ASSEMBLY);
+        fbsSupply.setWarehouse(warehouse);
         fbsSupplyRepository.save(fbsSupply);
 
-        return new SimpleResponse(HttpStatus.OK, String.format("%s сборочная задание успешно сохранен", supplyOrderRequest.nameOfSupply()));
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message(String.format("%s сборочная задание успешно сохранен", fbsSupply.getName()))
+                .build();
     }
 }
 

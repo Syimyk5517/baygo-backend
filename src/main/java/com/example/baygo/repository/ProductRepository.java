@@ -14,8 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
-//Nuriza
-//
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
@@ -31,7 +29,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         LEFT JOIN Discount d ON sp.discount.id = d.id
                         LEFT JOIN Buyer b ON b.id = :buyerId
                         LEFT JOIN b.favorites f ON sp.id = f.id
-                        WHERE (:keyWord IS NULL OR p.name iLIKE LOWER(CONCAT('%', :keyWord, '%')))
+                        LEFT JOIN SubCategory sc ON sc.id = p.subCategory.id
+                        WHERE (:categoryId IS NULL OR sc.category.id = :categoryId)
+                        AND (:subCategoryId IS NULL OR sc.id = :subCategoryId)
+                        AND (:keyWord IS NULL OR p.name iLIKE LOWER(CONCAT('%', :keyWord, '%')))
                         AND (:buyerId IS NOT NULL OR :buyerId IS NULL)
                         AND ('' IN :sizes OR s.size IN (:sizes))
                         AND ('' IN :compositions OR p.composition IN (:compositions))
@@ -62,6 +63,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     @PreAuthorize("hasRole('BUYER') or permitAll()")
     Page<ProductBuyerResponse> finds(Long buyerId,
+                                     Long categoryId,
+                                     Long subCategoryId,
                                      String keyWord,
                                      List<String> sizes,
                                      List<String> compositions,
@@ -139,5 +142,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             AND (sp.isDeleted = FALSE )
             """)
     UpdateProductDTO getProductById(Long productId);
+
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END FROM " +
+            "Product p " +
+            "JOIN SubProduct sp ON sp.product.id = p.id " +
+            "JOIN Seller s ON s.id = p.seller.id " +
+            "WHERE s.id = ?1 AND sp.id = ?2")
+    Boolean existsBySubProduct(Long subProductId,Long sellerId);
 
 }
