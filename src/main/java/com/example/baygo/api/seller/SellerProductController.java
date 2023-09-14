@@ -59,4 +59,10 @@ public class SellerProductController {
     public SimpleResponse updateProduct(@RequestBody @Valid UpdateProductDTO request) {
         return productService.updateProduct(request);
     }
+
+    @Operation(summary = "Get colors", description = "This method gets the colors for buyer")
+    @GetMapping("/colors")
+    public List<ColorResponse> getColors() {
+        return ColorResponse.getColors();
+    }
 }

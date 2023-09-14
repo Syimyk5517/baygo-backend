@@ -25,8 +25,8 @@ public class FBSSupplyController {
 
     @Operation(summary = "Get all supply of FBS seller", description = "This method will get all supplies")
     @GetMapping("/supplies")
-    public List<GetAllFbsSupplies> getAllFbsSupplies() {
-        return supplyService.getAllFbsSupplies();
+    public List<GetAllFbsSupplies> getAllFbsSupplies(@RequestParam boolean isOnAssembly) {
+        return supplyService.getAllFbsSupplies(isOnAssembly);
     }
 
     @Operation(summary = "Supply get by supplyId", description = "This method will get supply by supplyId")
@@ -43,7 +43,7 @@ public class FBSSupplyController {
 
     @Operation(summary = "Create supply", description = "This method will create the supply")
     @PostMapping
-    public SimpleResponse createSupply(@RequestParam Long warehouseId, @RequestParam String nameOfSupply) {
-        return supplyService.createSupply(warehouseId, nameOfSupply);
+    public SimpleResponse createSupply(@RequestParam String nameOfSupply) {
+        return supplyService.createSupply(nameOfSupply);
     }
 }

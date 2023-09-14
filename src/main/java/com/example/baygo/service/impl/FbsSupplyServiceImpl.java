@@ -66,10 +66,10 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     }
 
     @Override
-    public List<GetAllFbsSupplies> getAllFbsSupplies() {
+    public List<GetAllFbsSupplies> getAllFbsSupplies(boolean isOnAssembly) {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
-        return repository.getAllFbsSupplies(seller.getId());
+        return repository.getAllFbsSupplies(seller.getId(), isOnAssembly);
     }
 
     @Override
@@ -105,10 +105,8 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
     }
 
     @Override
-    public SimpleResponse createSupply(Long warehouseId, String nameOfSupply) {
+    public SimpleResponse createSupply(String nameOfSupply) {
         Seller seller = jwtService.getAuthenticate().getSeller();
-        Warehouse warehouse = warehouseRepository.findById(warehouseId).orElseThrow(
-                () -> new NotFoundException(String.format("Склад %s не найден", warehouseId)));
 
         FBSSupply fbsSupply = new FBSSupply();
         QRCodeWithImageResponse qrCodeWithImageResponse = barcodeService.generateQrCode();
@@ -118,7 +116,6 @@ public class FbsSupplyServiceImpl implements FBSSupplyService {
         fbsSupply.setQrCodeImage(qrCodeWithImageResponse.qrCodeImage());
         fbsSupply.setSeller(seller);
         fbsSupply.setFbsSupplyStatus(FBSSupplyStatus.ON_ASSEMBLY);
-        fbsSupply.setWarehouse(warehouse);
 
         fbsSupplyRepository.save(fbsSupply);
         return SimpleResponse.builder()

@@ -55,12 +55,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE s2.id = :sellerId " +
             "AND os.isFbsOrder = true " +
             "AND (:keyWord IS NULL OR p.name ILIKE %:keyWord% OR sp.articulOfSeller ILIKE %:keyWord%) " +
-            "AND os.orderStatus = 'PENDING' " +
+            "AND (:isNews = TRUE AND os.orderStatus = 'PENDING' OR :isNews = FALSE AND os.orderStatus <> 'PENDING') " +
             "ORDER BY o.dateOfOrder DESC ")
     Page<FBSOrdersResponse> getAllOrdersFbs(
             @Param("sellerId") Long sellerId,
             @Param("keyWord") String keyWord,
-            Pageable pageable);
+            boolean isNews, Pageable pageable);
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(

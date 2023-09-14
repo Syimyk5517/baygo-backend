@@ -20,14 +20,15 @@ import org.springframework.web.bind.annotation.*;
 public class FBSOrderController {
     private final FBSOrderService fbsOrderService;
 
-    @Operation(summary = "Get all new fbs sellers orders", description = "New fbs orders with search and pagination")
+    @Operation(summary = "Get all new and archive fbs sellers orders", description = "New and archive fbs orders with search and pagination")
     @GetMapping
     public PaginationResponse<FBSOrdersResponse> getAllFbsOrder(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String keyword
+            @RequestParam(required = false) String keyword,
+            @RequestParam boolean isNews
     ) {
-        return fbsOrderService.getAllFbsOrdersOnPending(page, size, keyword);
+        return fbsOrderService.getAllFbsOrdersOnPending(page, size, keyword, isNews);
     }
 
     @Operation(summary = "Percentage of FBS", description = "Get all percentage of FBS: count of order, seller rating, ransom rating")
