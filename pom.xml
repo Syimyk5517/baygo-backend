@@ -108,6 +108,13 @@
             <version>22.20.0</version>
         </dependency>
 
+        <!--        export excel-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.2</version>
+        </dependency>
+
 <!--        email sender-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
