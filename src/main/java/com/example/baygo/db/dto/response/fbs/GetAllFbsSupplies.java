@@ -1,5 +1,6 @@
 package com.example.baygo.db.dto.response.fbs;
 
+import com.example.baygo.db.model.enums.FBSSupplyStatus;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ public record GetAllFbsSupplies(
         String name,
         LocalDate createAt,
         Long totalQuantity,
-        String QRCode
+        String QRCode,
+        FBSSupplyStatus status
 ) {
 }

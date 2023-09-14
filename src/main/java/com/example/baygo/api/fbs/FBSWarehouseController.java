@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,10 +21,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/fbs/warehouses")
 @RequiredArgsConstructor
-@Tag(name = "WareHouse and Access card Api")
+@Tag(name = "FBS WareHouse and Access card api")
 @CrossOrigin(origins = "*", maxAge = 3600)
-@PreAuthorize("hasAnyAuthority('SELLER')")
-public class WarehouseController {
+@PreAuthorize("hasAuthority('SELLER')")
+public class FBSWarehouseController {
     private final FbsWareHouseService wareHouseService;
     private final FBSSupplyService supplyService;
 
@@ -36,7 +35,7 @@ public class WarehouseController {
     }
 
     @Operation(summary = "Save fbs warehouse", description = "The method will save fbs warehouse")
-    @PostMapping()
+    @PostMapping
     public SimpleResponse saveWarehouse(@RequestBody @Valid WarehouseRequest warehouseRequest) {
         return wareHouseService.saveWarehouse(warehouseRequest);
     }

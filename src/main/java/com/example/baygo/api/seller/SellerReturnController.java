@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seller/returns")
+@RequestMapping("/api/seller/returns")
 @RequiredArgsConstructor
 @Tag(name = "Seller returns")
 @CrossOrigin(origins = "*", maxAge = 3600)
