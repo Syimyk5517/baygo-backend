@@ -19,6 +19,7 @@ import java.util.List;
 @PreAuthorize("hasAuthority('SELLER')")
 public class SellerReturnController {
     private final SellerReturnService returnService;
+
     @Operation(summary = "Get all returns", description = "This method will get all returns of seller")
     @GetMapping
     public List<SellerReturnResponse> getAllReturns() {

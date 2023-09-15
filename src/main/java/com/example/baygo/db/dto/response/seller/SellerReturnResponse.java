@@ -16,6 +16,8 @@ public class SellerReturnResponse {
     private String productName;
     private String size;
     private int quantity;
+    private String articulOfSeller;
+    private String color;
 
 
 }

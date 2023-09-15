@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class BuyerOrderHistoryDetailResponse {
+    private Long orderId;
     private String dateOfOrder;
     private String orderNumber;
     private boolean withDelivery;
