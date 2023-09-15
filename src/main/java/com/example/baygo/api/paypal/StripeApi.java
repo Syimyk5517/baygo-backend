@@ -7,6 +7,7 @@ import com.example.baygo.service.StripeServices;
 import com.stripe.exception.StripeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class StripeApi {
     @Value("${stripe.public.key}")
     private String stripePublicKey;
     @PostMapping("/create-payment-intent")
+    @PermitAll
     @Operation(summary = "Creating a payment",
             description = "This method creates payment with stripe system.")
     public CreatePaymentResponse createPaymentIntent(@RequestBody CreatePaymentRequest request) throws StripeException {
@@ -28,6 +30,7 @@ public class StripeApi {
     }
 
     @GetMapping("/public_key")
+    @PermitAll
     public String key(){
         return stripePublicKey;
     }
