@@ -3,6 +3,7 @@ package com.example.baygo.api.buyer;
 import com.example.baygo.db.dto.request.BuyerProfileImageRequest;
 import com.example.baygo.db.dto.request.BuyerProfileRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
+import com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse;
 import com.example.baygo.service.BuyerProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,5 +37,11 @@ public class BuyerProfileController {
     @DeleteMapping
     public SimpleResponse deleteProfile() {
         return buyerProfileService.deleteProfile();
+    }
+
+    @GetMapping
+    @Operation(summary="Get buyer profile information",description = "This method will get buyer profile information")
+    public BuyerProfileInfoResponse getBuyerInfo(){
+        return buyerProfileService.getProfileInfo();
     }
 }

@@ -1,12 +1,13 @@
 package com.example.baygo.db.model;
 
-import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.db.model.enums.SupplyStatus;
+import com.example.baygo.db.model.enums.SupplyType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,10 +22,10 @@ import static jakarta.persistence.CascadeType.*;
 @Table(name = "supplies")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Supply {
+public class Supply  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_gen")
-    @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1, initialValue = 11)
+    @SequenceGenerator(name = "supply_gen", sequenceName = "supply_seq", allocationSize = 1, initialValue = 50)
     private Long id;
     private String supplyNumber;
     @Enumerated(EnumType.STRING)
@@ -33,7 +34,7 @@ public class Supply {
     private LocalDate changedAt;
     private int quantityOfProducts;
     private int acceptedProducts;
-    private BigDecimal commission;
+    private String commission;
     private BigDecimal supplyCost;
     private LocalDate plannedDate;
     private LocalDate actualDate;
@@ -51,8 +52,9 @@ public class Supply {
     @OneToMany(mappedBy = "supply", cascade = ALL)
     private List<SupplyProduct> supplyProduct;
 
-    @OneToOne(cascade = ALL)
-    private Supplier supplier;
+    @OneToOne(mappedBy = "supply", cascade = ALL)
+    private AccessCard accessCard;
+    private Boolean isDraft;
 
     public void addSupplyProduct(SupplyProduct supplyProduct) {
         if (this.supplyProduct == null) {

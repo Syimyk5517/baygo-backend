@@ -45,7 +45,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                            sp.color as color,
                            (select s.size from sizes s where s.sub_product_id = sp.id limit 1) as size,
                            (select s.barcode from sizes s where s.sub_product_id = sp.id limit 1) as barcode,
-                           (select s.quantity from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
+                           (select (s.fbb_quantity + s.fbs_quantity)  from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
@@ -61,13 +61,13 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                    s.id,
                    s.size,
                    s.barcode,
-                   s.quantity
+                   (s.fbs_quantity + s.fbb_quantity) as quantity
                 from sizes s
                 where s.sub_product_id = ?
                 """;
         String categoryCondition = "";
         if (categoryId != null) {
-            categoryCondition = " and c.id = " + categoryId;
+            categoryCondition = " and c.supplyId = " + categoryId;
         }
 
         List<Object> params = new ArrayList<>();
@@ -124,14 +124,15 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 rs.getDate("date_of_change").toLocalDate(),
                 rs.getString("color"),
                 rs.getString("size"),
-                rs.getInt("barcode"),
+                rs.getString("barcode"),
                 rs.getInt("quantity"),
                 jdbcTemplate.query(getSizes, ((resultSet, rowNum1) -> new SizeSellerResponse(
                         resultSet.getLong("id"),
                         resultSet.getString("size"),
-                        resultSet.getInt("barcode"),
+                        resultSet.getString("barcode"),
                         resultSet.getInt("quantity")
                 )), rs.getLong("sub_product_id"))));
+
 
         return PaginationResponse.<ProductResponseForSeller>builder()
                 .elements(response)

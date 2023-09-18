@@ -1,5 +1,4 @@
 package com.example.baygo.db.model;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +17,11 @@ import static jakarta.persistence.CascadeType.*;
 @Table(name = "reviews")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review {
+public class
+Review {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_gen")
-    @SequenceGenerator(name = "review_gen", sequenceName = "review_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "review_gen", sequenceName = "review_seq", allocationSize = 1, initialValue = 61)
     private Long id;
     private String text;
     private int grade;
