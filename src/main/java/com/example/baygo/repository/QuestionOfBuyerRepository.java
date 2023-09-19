@@ -1,6 +1,7 @@
 package com.example.baygo.repository;
 
 import com.example.baygo.db.dto.response.BuyerQuestionResponse;
+import com.example.baygo.db.dto.response.QuestionBuyerResponse;
 import com.example.baygo.db.model.BuyerQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,4 +53,16 @@ public interface QuestionOfBuyerRepository extends JpaRepository<BuyerQuestion, 
 
     List<BuyerQuestion> deleteBuyerQuestionBySubProductId(Long subProductId);
 
+    @Query("""
+            SELECT NEW com.example.baygo.db.dto.response.QuestionBuyerResponse(
+            bq.id, b.photo, b.fullName,
+            CONCAT(EXTRACT(DATE FROM bq.createdAt), ' ',EXTRACT(HOUR FROM bq.createdAt), ':', EXTRACT(MINUTE FROM bq.createdAt)),
+            bq.question, bq.answer,
+            CONCAT(EXTRACT(DATE FROM bq.replyDate), ' ',EXTRACT(HOUR FROM bq.replyDate), ':', EXTRACT(MINUTE FROM bq.replyDate))
+            )
+            FROM BuyerQuestion bq
+            JOIN bq.buyer b
+            WHERE bq.subProduct.product.id = :productId
+            """)
+    List<QuestionBuyerResponse> getQuestionsOfSubProduct(Long productId);
 }

@@ -20,7 +20,7 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.ProductBuyerResponse(
-               s.id,sp.id,p.id,sp.mainImage, p.name, sp.description,
+               p.id, sp.id, sp.mainImage, p.name, sp.description,
                p.rating,count(r),sp.price, coalesce(d.percent, 0),
                CASE WHEN f.id IS NOT NULL THEN true ELSE false END
                 )
@@ -154,7 +154,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.product.ProductGetByIdResponse(
-            p.id, sp.id, p.name, sp.color, sp.articulBG, p.brand, sp.price, COALESCE(d.percent, 0), p.rating,
+            p.id, sp.id, p.name, sp.color, sp.colorHexCode, sp.articulBG, p.brand, sp.price, COALESCE(d.percent, 0), p.rating,
             COUNT (r.id), sp.description)
             FROM SubProduct sp
             JOIN sp.product p
@@ -165,4 +165,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             GROUP BY p.id, sp.id, p.name, sp.color, sp.articulBG, p.brand, sp.price, d.percent, p.rating, sp.description
             """)
     Optional<ProductGetByIdResponse> getProductByIdForBuyer(Long subProductId);
+
+    @Query("""
+            SELECT NEW com.example.baygo.db.dto.response.ProductBuyerResponse(
+            p.id, sp.id, sp.mainImage, p.name, sp.description, p.rating,
+            (SELECT COALESCE(COUNT (*), 0) FROM Review r WHERE r.subProduct.id = sp.id),
+            sp.price, COALESCE(d.percent, 0), FALSE
+            )
+            FROM Product p
+            JOIN p.subProducts sp
+            LEFT JOIN sp.discount d
+            """)
+    List<ProductBuyerResponse> findAllSimilarProducts(Long productId);
 }

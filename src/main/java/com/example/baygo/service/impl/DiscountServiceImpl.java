@@ -4,6 +4,8 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.DiscountRequest;
 import com.example.baygo.db.dto.request.DiscountRequestForCancel;
 import com.example.baygo.db.dto.response.CalendarActionResponse;
+import com.example.baygo.db.dto.response.DiscountProductResponse;
+import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.db.model.Discount;
@@ -17,6 +19,9 @@ import com.example.baygo.service.DiscountService;
 import com.example.baygo.repository.SubProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -114,6 +119,18 @@ public class DiscountServiceImpl implements DiscountService {
         return SimpleResponse.builder()
                 .message("Скидка успешно отменена!")
                 .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    @Override
+    public PaginationResponse<DiscountProductResponse> getAllProducts(boolean isForCancel, int page, int size) {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<DiscountProductResponse> products = discountRepository.getAllProducts(sellerId, isForCancel, pageable);
+        return PaginationResponse.<DiscountProductResponse>builder()
+                .elements(products.getContent())
+                .currentPage(page)
+                .totalPages(products.getTotalPages())
                 .build();
     }
 }

@@ -235,4 +235,9 @@ public class ProductServiceImpl implements ProductService {
                 .message("Продукт с ID: %s успешно обновлен.".formatted(product.getId()))
                 .build();
     }
+
+    @Override
+    public List<ProductBuyerResponse> findAllSimilarProducts(Long productId) {
+        return productRepository.findAllSimilarProducts(productId);
+    }
 }

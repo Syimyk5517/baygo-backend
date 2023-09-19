@@ -2,6 +2,7 @@ package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.QuestionOfBuyerRequest;
+import com.example.baygo.db.dto.response.QuestionBuyerResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.BuyerQuestion;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +36,10 @@ public class QuestionOfBuyerServiceImpl implements QuestionOfBuyerService {
         question.setCreatedAt(LocalDateTime.now());
         repository.save(question);
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Вопрос успешно отправлен!").build();
+    }
+
+    @Override
+    public List<QuestionBuyerResponse> getQuestionsOfSubProduct(Long productId) {
+        return repository.getQuestionsOfSubProduct(productId);
     }
 }

@@ -34,4 +34,6 @@ public interface ProductService {
     UpdateProductDTO getById(Long productId);
 
     SimpleResponse updateProduct(UpdateProductDTO request);
+
+    List<ProductBuyerResponse> findAllSimilarProducts(Long productId);
 }

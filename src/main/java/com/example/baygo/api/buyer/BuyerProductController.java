@@ -43,10 +43,10 @@ public class BuyerProductController {
         return productService.getAllProductsBuyer(keyWord, categoryId, subCategoryId, sizes, compositions, brands, minPrice, maxPrice, colors, filterBy, sortBy, page, pageSize);
     }
 
-    @Operation(summary = "Find all similar products", description = "This method find all similar products with brand.")
-    @GetMapping("/similar_product")
-    List<ProductBuyerResponse> findAllSimilarProducts() {
-        return null;
+    @Operation(summary = "Find all similar products", description = "This method find all similar products.")
+    @GetMapping("/similar")
+    List<ProductBuyerResponse> findAllSimilarProducts(@RequestParam Long productId) {
+        return productService.findAllSimilarProducts(productId);
     }
 
     @Operation(summary = "Get colors", description = "This method gets the colors for buyer")
