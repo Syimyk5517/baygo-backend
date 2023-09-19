@@ -3,6 +3,7 @@ package com.example.baygo.repository;
 import com.example.baygo.db.dto.request.UpdateProductDTO;
 import com.example.baygo.db.dto.response.HomePageResponse;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
+import com.example.baygo.db.dto.response.product.ProductGetByIdResponse;
 import com.example.baygo.db.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -150,4 +152,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE s.id = ?1 AND sp.id = ?2")
     Boolean existsBySubProduct(Long subProductId,Long sellerId);
 
+    @Query("""
+            SELECT NEW com.example.baygo.db.dto.response.product.ProductGetByIdResponse(
+            p.id, sp.id, p.name, sp.color, sp.articulBG, p.brand, sp.price, COALESCE(d.percent, 0), p.rating,
+            COUNT (r.id), sp.description)
+            FROM SubProduct sp
+            JOIN sp.product p
+            JOIN sp.sizes s
+            LEFT JOIN sp.discount d
+            LEFT JOIN sp.reviews r
+            WHERE sp.id = :subProductId
+            GROUP BY p.id, sp.id, p.name, sp.color, sp.articulBG, p.brand, sp.price, d.percent, p.rating, sp.description
+            """)
+    Optional<ProductGetByIdResponse> getProductByIdForBuyer(Long subProductId);
 }
