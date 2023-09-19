@@ -2,6 +2,7 @@ package com.example.baygo.repository;
 
 import com.example.baygo.db.dto.request.UpdateSizeDTO;
 import com.example.baygo.db.dto.response.buyer.FavoriteResponse;
+import com.example.baygo.db.dto.response.product.SizeResponse;
 import com.example.baygo.db.model.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,4 +48,13 @@ public interface SizeRepository extends JpaRepository<Size, Long> {
             "JOIN Size s ON s.id = sp.size.id " +
             "WHERE s.id = ?1")
     Boolean isFbb(Long sizeId);
+
+    @Query("""
+            SELECT NEW com.example.baygo.db.dto.response.product.SizeResponse(
+            s.id, s.size,(s.fbbQuantity + s.fbsQuantity)
+            )
+            FROM Size s
+            WHERE s.subProduct.id = :subProductId
+            """)
+    List<SizeResponse> findSizeBySubProductId(Long subProductId);
 }

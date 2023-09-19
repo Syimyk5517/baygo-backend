@@ -4,7 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record SizeResponse(
-        Long sizeI,
-        String size
+        Long sizeId,
+        String size,
+        int quantity
 ) {
 }

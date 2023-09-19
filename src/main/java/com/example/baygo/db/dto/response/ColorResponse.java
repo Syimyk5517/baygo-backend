@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Builder
 public record ColorResponse(
-        @NotBlank(message = "Код цвета должен быть указан!!!")
         String hexCode,
-        @NotEmpty(message = "Поле 'Имя' не должно быть пустым")
         String name
 ) {
     public static List<ColorResponse> getColors() {
