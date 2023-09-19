@@ -25,7 +25,6 @@ public class StripeApi {
     @PermitAll
     @Operation(summary = "Creating a payment",
             description = "This method creates payment with stripe system.")
-    @PermitAll
     public CreatePaymentResponse createPaymentIntent(@RequestBody CreatePaymentRequest request) throws StripeException {
         return stripeServices.createPaymentIntent(request);
     }
