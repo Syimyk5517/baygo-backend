@@ -22,6 +22,7 @@ public class StripeApi {
     @Value("${stripe.public.key}")
     private String stripePublicKey;
     @PostMapping("/create-payment-intent")
+    @PermitAll
     @Operation(summary = "Creating a payment",
             description = "This method creates payment with stripe system.")
     @PermitAll

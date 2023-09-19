@@ -55,12 +55,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE s2.id = :sellerId " +
             "AND os.isFbsOrder = true " +
             "AND (:keyWord IS NULL OR p.name ILIKE %:keyWord% OR sp.articulOfSeller ILIKE %:keyWord%) " +
-            "AND os.orderStatus = 'PENDING' " +
+            "AND (:isNews = TRUE AND os.orderStatus = 'PENDING' OR :isNews = FALSE AND os.orderStatus <> 'PENDING') " +
             "ORDER BY o.dateOfOrder DESC ")
     Page<FBSOrdersResponse> getAllOrdersFbs(
             @Param("sellerId") Long sellerId,
             @Param("keyWord") String keyWord,
-            Pageable pageable);
+            boolean isNews, Pageable pageable);
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrdersHistoryResponse(
@@ -81,7 +81,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("""
              SELECT new com.example.baygo.db.dto.response.BuyerOrderProductsResponse(
-                          os.size.id, (os.fbsQuantity + os.fbbQuantity), os.orderStatus,
+                          os.size.id, os.id, (os.fbsQuantity + os.fbbQuantity), os.orderStatus,
                           CONCAT(EXTRACT(DATE FROM os.dateOfReceived), ' ',EXTRACT(HOUR FROM os.dateOfReceived), ':', EXTRACT(MINUTE FROM os.dateOfReceived)),
                           os.qrCode, os.percentOfDiscount,
                           os.price, os.size.subProduct.mainImage, os.size.subProduct.product.name, os.size.size
@@ -93,7 +93,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("""
             SELECT new com.example.baygo.db.dto.response.BuyerOrderHistoryDetailResponse(
-            CONCAT(EXTRACT(DATE FROM o.dateOfOrder), ' ',EXTRACT(HOUR FROM o.dateOfOrder), ':', EXTRACT(MINUTE FROM o.dateOfOrder)), o.orderNumber, o.withDelivery,
+            o.id, CONCAT(EXTRACT(DATE FROM o.dateOfOrder), ' ',EXTRACT(HOUR FROM o.dateOfOrder), ':', EXTRACT(MINUTE FROM o.dateOfOrder)), o.orderNumber, o.withDelivery,
             CAST(SUM (os.price * (os.fbsQuantity + os.fbbQuantity)) AS BIGDECIMAL),
             CAST(SUM (os.price * (os.percentOfDiscount / 100.0) * (os.fbsQuantity + os.fbbQuantity)) AS BIGDECIMAL),
             o.totalPrice)

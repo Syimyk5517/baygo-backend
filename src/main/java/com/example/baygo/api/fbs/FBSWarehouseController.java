@@ -21,10 +21,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/fbs/warehouses")
 @RequiredArgsConstructor
-@Tag(name = "WareHouse and Access card Api")
+@Tag(name = "FBS WareHouse and Access card api")
 @CrossOrigin(origins = "*", maxAge = 3600)
-@PreAuthorize("hasAnyAuthority('SELLER')")
-public class WarehouseController {
+@PreAuthorize("hasAuthority('SELLER')")
+public class FBSWarehouseController {
     private final FbsWareHouseService wareHouseService;
     private final FBSSupplyService supplyService;
 
@@ -35,7 +35,7 @@ public class WarehouseController {
     }
 
     @Operation(summary = "Save fbs warehouse", description = "The method will save fbs warehouse")
-    @PostMapping()
+    @PostMapping
     public SimpleResponse saveWarehouse(@RequestBody @Valid WarehouseRequest warehouseRequest) {
         return wareHouseService.saveWarehouse(warehouseRequest);
     }

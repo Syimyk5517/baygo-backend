@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seller/returns")
+@RequestMapping("/api/seller/returns")
 @RequiredArgsConstructor
 @Tag(name = "Seller returns")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('SELLER')")
 public class SellerReturnController {
     private final SellerReturnService returnService;
+
     @Operation(summary = "Get all returns", description = "This method will get all returns of seller")
     @GetMapping
     public List<SellerReturnResponse> getAllReturns() {

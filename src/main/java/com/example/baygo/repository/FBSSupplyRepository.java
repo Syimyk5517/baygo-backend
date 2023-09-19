@@ -12,11 +12,11 @@ import java.util.List;
 
 public interface FBSSupplyRepository extends JpaRepository<FBSSupply, Long> {
     @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies(fs.id, fs.name, EXTRACT(DATE FROM fs.createdAt), " +
-            "(SELECT COUNT(*) FROM OrderSize os WHERE os.fbsSupply.id = fs.id), fs.qrCode) " +
+            "(SELECT COUNT(*) FROM OrderSize os WHERE os.fbsSupply.id = fs.id), fs.qrCode, fs.fbsSupplyStatus) " +
             "FROM FBSSupply fs " +
             "JOIN fs.seller s " +
-            "WHERE s.id = :sellerId AND fs.fbsSupplyStatus = 'ON_ASSEMBLY' ")
-    List<GetAllFbsSupplies> getAllFbsSupplies(@Param("sellerId") Long sellerId);
+            "WHERE s.id = :sellerId AND (:isOnAssembly = true AND fs.fbsSupplyStatus = 'ON_ASSEMBLY' OR :isOnAssembly = FALSE AND fs.fbsSupplyStatus <> 'ON_ASSEMBLY')")
+    List<GetAllFbsSupplies> getAllFbsSupplies(@Param("sellerId") Long sellerId, boolean isOnAssembly);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders(fs.id, fs.name, EXTRACT(DATE FROM fs.createdAt), " +
             "(SELECT COUNT(*) FROM OrderSize os WHERE os.fbsSupply.id = fs.id), fs.fbsSupplyStatus, fs.qrCode) " +

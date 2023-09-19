@@ -20,10 +20,10 @@ public class FBSOrderServiceImpl implements FBSOrderService {
     private final OrderRepository orderRepository;
 
     @Override
-    public PaginationResponse<FBSOrdersResponse> getAllFbsOrdersOnPending(int page, int size, String keyword) {
+    public PaginationResponse<FBSOrdersResponse> getAllFbsOrdersOnPending(int page, int size, String keyword, boolean isNews) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        Page<FBSOrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, pageable);
+        Page<FBSOrdersResponse> orderResponses = orderRepository.getAllOrdersFbs(sellerId, keyword, isNews, pageable);
         return new PaginationResponse<>(orderResponses.getContent(),
                 orderResponses.getNumber() + 1,
                 orderResponses.getTotalPages());
