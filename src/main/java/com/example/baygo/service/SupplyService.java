@@ -1,9 +1,13 @@
 package com.example.baygo.service;
 
+import com.example.baygo.db.dto.request.fbb.FBBSupplyRequest;
+import com.example.baygo.db.dto.request.fbb.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
+import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
+import com.example.baygo.db.dto.response.supply.*;
 import com.example.baygo.db.model.enums.SupplyStatus;
-import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
+import com.example.baygo.db.model.enums.SupplyType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,9 +15,9 @@ import java.util.List;
 
 @Service
 public interface SupplyService {
-    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status,Boolean isAscending, int page, int pageSize);
+    PaginationResponse<SuppliesResponse> getAllSuppliesOfSeller(String supplyNumber, SupplyStatus status, Boolean isAscending, int page, int pageSize);
 
-    PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page);
+    PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(Long warehouseId, LocalDate date, int size, int page);
 
     SupplyResponse getSupplyById(Long id);
 
@@ -22,4 +26,25 @@ public interface SupplyService {
     List<SupplyTransitDirectionResponse> getAllTransitDirections(String transitWarehouse, String destinationWarehouse);
 
     List<SupplyLandingPage> getAllSupplyForLanding();
+
+
+    PaginationResponse<DeliveryDraftResponse> getDeliveryDrafts(int pageSize, int page);
+
+    SimpleResponse deleteDeliveryDraft(Long supplyId);
+
+    PaginationResponse<SupplySellerProductResponse> getSellerProducts(String searchWithBarcode, Long subCategoryId, int page, int pageSize);
+
+    List<WarehouseResponse> getAllWarehouses();
+
+    SimpleResponse createSupply(FBBSupplyRequest supplyRequest);
+
+    List<WarehouseCostResponse> getAllWarehouseCost(Long warehouseId, SupplyType supplyType);
+
+    List<ProductBarcodeResponse> getAllBarcodeProducts(Long supplyId);
+
+    SimpleResponse willCompleteTheDelivery(SupplyWrapperRequest supplyWrapperRequest);
+    List<SupplyInfoResponse> findById(Long supplyId);
+    AccessCardResponse findBySupplyId(Long supplyId);
+
+
 }

@@ -4,7 +4,6 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.BuyerProfileImageRequest;
 import com.example.baygo.db.dto.request.BuyerProfileRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
-import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse;
 import com.example.baygo.db.model.Buyer;
 import com.example.baygo.db.model.Order;
@@ -38,7 +37,6 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         buyer.setGender(request.gender());
         buyer.setAddress(request.region());
         buyer.getUser().setEmail(request.email());
-        buyer.getUser().setPassword(encoder.encode(request.password()));
         buyer.getUser().setPhoneNumber(request.phoneNumber());
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("Ваш профиль успешно изменен!").build();
     }
@@ -80,7 +78,8 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
     }
 
     @Override
-    public BuyerProfileInfoResponse getProfileInfo(Long buyerId) {
+    public BuyerProfileInfoResponse getProfileInfo() {
+        Long buyerId = jwtService.getAuthenticate().getBuyer().getId();
         return buyerRepository.getProfileInfo(buyerId);
     }
 }

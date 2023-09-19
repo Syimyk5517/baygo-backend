@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthenticationApi {
+
     private final AuthenticationService authenticationService;
 
     @Operation(summary = "Register a new buyer", description = "This method validates the request and creates a new buyer.")
@@ -60,5 +61,11 @@ public class AuthenticationApi {
     @PostMapping("/google")
     public AuthenticationResponse google(@RequestParam String tokenId) throws FirebaseAuthException {
         return authenticationService.authWithGoogle(tokenId);
+    }
+
+    @Operation(summary = "Confirm", description = "This method for confirm code checking method")
+    @PostMapping("/confirm")
+    AuthenticationResponse confirmRegistration(String email, int code){
+        return authenticationService.confirmRegistration(email, code);
     }
 }

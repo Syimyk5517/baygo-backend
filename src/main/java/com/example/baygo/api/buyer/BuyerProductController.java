@@ -1,9 +1,11 @@
 package com.example.baygo.api.buyer;
 
-import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.ColorResponse;
 import com.example.baygo.db.dto.response.PaginationResponseWithQuantity;
 import com.example.baygo.db.dto.response.ProductBuyerResponse;
+import com.example.baygo.db.dto.response.product.ProductGetByIdResponse;
 import com.example.baygo.service.ProductService;
+import com.example.baygo.service.SubProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
@@ -18,13 +20,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Product Buyer API")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PermitAll
 public class BuyerProductController {
     private final ProductService productService;
+    private final SubProductService subProductService;
 
     @Operation(summary = "Get all products.", description = "This method gets all products with filters and search.")
     @GetMapping
-    @PermitAll
     public PaginationResponseWithQuantity<ProductBuyerResponse> getAll(@RequestParam(required = false) String keyWord,
+                                                                       @RequestParam(required = false) Long categoryId,
+                                                                       @RequestParam(required = false) Long subCategoryId,
                                                                        @RequestParam(required = false) List<String> sizes,
                                                                        @RequestParam(required = false) List<String> compositions,
                                                                        @RequestParam(required = false) List<String> brands,
@@ -35,6 +40,23 @@ public class BuyerProductController {
                                                                        @RequestParam(required = false) String sortBy,
                                                                        @RequestParam(required = false, defaultValue = "1") int page,
                                                                        @RequestParam(required = false, defaultValue = "16") int pageSize) {
-        return productService.getAllProductsBuyer(keyWord, sizes, compositions, brands, minPrice, maxPrice, colors,filterBy, sortBy, page, pageSize);
+        return productService.getAllProductsBuyer(keyWord, categoryId, subCategoryId, sizes, compositions, brands, minPrice, maxPrice, colors, filterBy, sortBy, page, pageSize);
+    }
+
+    @Operation(summary = "Find all similar products", description = "This method find all similar products.")
+    @GetMapping("/similar")
+    List<ProductBuyerResponse> findAllSimilarProducts(@RequestParam Long productId) {
+        return productService.findAllSimilarProducts(productId);
+    }
+
+    @Operation(summary = "Get colors", description = "This method gets the colors for buyer")
+    @GetMapping("/colors")
+    public List<ColorResponse> getColors() {
+        return ColorResponse.getColors();
+    }
+
+    @GetMapping("/{subProductId}")
+    public ProductGetByIdResponse getById(@PathVariable Long subProductId) {
+        return subProductService.getById(subProductId);
     }
 }

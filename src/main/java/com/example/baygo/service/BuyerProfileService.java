@@ -14,5 +14,5 @@ public interface BuyerProfileService {
 
     SimpleResponse deleteProfile();
 
-    BuyerProfileInfoResponse getProfileInfo(Long buyerId);
+    BuyerProfileInfoResponse getProfileInfo();
 }

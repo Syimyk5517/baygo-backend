@@ -1,8 +1,8 @@
 package com.example.baygo.service;
 
 import com.example.baygo.db.dto.request.MessageRequest;
-import com.example.baygo.db.dto.response.ChatResponse;
-import com.example.baygo.db.dto.response.NewMessageResponse;
+import com.example.baygo.db.dto.response.chat.ChatResponse;
+import com.example.baygo.db.dto.response.chat.NewMessageResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 
 import java.util.List;
