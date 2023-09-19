@@ -100,7 +100,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             FROM Order o
             JOIN o.orderSizes os
             WHERE o.id = :orderId
-            GROUP BY o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice
+            GROUP BY o.id, o.dateOfOrder, o.orderNumber, o.withDelivery, o.totalPrice
             """)
     BuyerOrderHistoryDetailResponse getHistoryOfOrderById(Long orderId);
 

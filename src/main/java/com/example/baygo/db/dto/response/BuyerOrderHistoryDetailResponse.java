@@ -26,7 +26,8 @@ public class BuyerOrderHistoryDetailResponse {
         this.products.addAll(product);
     }
 
-    public BuyerOrderHistoryDetailResponse(String dateOfOrder, String orderNumber, boolean withDelivery, BigDecimal beforeDiscountPrice, BigDecimal discountPrice, BigDecimal afterDiscountPrice) {
+    public BuyerOrderHistoryDetailResponse(Long orderId, String dateOfOrder, String orderNumber, boolean withDelivery, BigDecimal beforeDiscountPrice, BigDecimal discountPrice, BigDecimal afterDiscountPrice) {
+        this.orderId = orderId;
         this.dateOfOrder = dateOfOrder;
         this.orderNumber = orderNumber;
         this.withDelivery = withDelivery;
