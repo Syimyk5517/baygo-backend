@@ -103,7 +103,7 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     @Override
-    public List<ProductInfoExcelResponse> willReceiveAllInformationAboutTheProductAndBoxViaExcel(MultipartFile multipartFile) throws IOException {
+    public List<ProductInfoExcelResponse> willReceiveAllInformationAboutTheProductAndBoxViaExcel(MultipartFile multipartFile) {
         List<ProductInfoExcelResponse> productInfoExcelResponses = new ArrayList<>();
         if (!multipartFile.isEmpty()) {
             try (InputStream is = multipartFile.getInputStream()) {

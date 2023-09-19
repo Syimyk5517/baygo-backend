@@ -4,7 +4,6 @@ import com.example.baygo.db.dto.request.excel.ProductExcelRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.excel.ProductInfoExcelResponse;
 import com.example.baygo.service.ExcelService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ import java.util.List;
 public class SupplyExcelController {
     private final ExcelService excelService;
 
-    @PostMapping("/excel")
+    @PostMapping("/barcode_product")
     public SimpleResponse downloadProductInfoExcelTemplate(@RequestBody List<ProductExcelRequest> productExcelRequests, HttpServletResponse httpServletResponse) throws IOException {
         return excelService.downloadProductInfoExcelTemplate(productExcelRequests, httpServletResponse);
     }
@@ -37,9 +36,8 @@ public class SupplyExcelController {
 
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            path = "/export")
-    public List<ProductInfoExcelResponse>  willReceiveAllInformationAboutTheProductAndBoxViaExcel(@RequestParam(name = "file") MultipartFile multipartFile) throws IOException {
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProductInfoExcelResponse> willReceiveAllInformationAboutTheProductAndBoxViaExcel(@RequestParam(name = "file") MultipartFile multipartFile) throws IOException {
         return excelService.willReceiveAllInformationAboutTheProductAndBoxViaExcel(multipartFile);
     }
 }
