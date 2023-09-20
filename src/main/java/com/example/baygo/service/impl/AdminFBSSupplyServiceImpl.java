@@ -26,20 +26,14 @@ public class AdminFBSSupplyServiceImpl implements AdminFBSSupplyService {
     @Override
     public void statusChange(List<Long> supplyIds, FBSSupplyStatus newStatus) {
         LocalDateTime now = LocalDateTime.now();
-        List<FBSSupply> suppliesToUpdate = new ArrayList<>();
 
-        for (Long supplyId : supplyIds) {
-            Optional<FBSSupply> optionalSupply = fbsSupplyRepository.findById(supplyId);
+        List<FBSSupply> fbsSupplies = fbsSupplyRepository.findAllById(supplyIds);
+        fbsSupplies.forEach(s -> {
+            s.setFbsSupplyStatus(newStatus);
+            s.setReceivedAt(now);
+        });
 
-            if (optionalSupply.isPresent()) {
-                FBSSupply supply = optionalSupply.get();
-                supply.setFbsSupplyStatus(newStatus);
-                supply.setReceivedAt(now);
-                suppliesToUpdate.add(supply);
-            }
-        }
-
-        fbsSupplyRepository.saveAll(suppliesToUpdate);
+        fbsSupplyRepository.saveAll(fbsSupplies);
     }
 
     @Override

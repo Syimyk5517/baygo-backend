@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/FBS-status-change")
+@RequestMapping("/api/admin/fbs/supplies")
 @RequiredArgsConstructor
 @Tag(name = "Admin FBS Status Change Api")
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -27,21 +27,21 @@ public class AdminFBSStatusChangeController {
     private final AdminFBSSupplyService adminFBSSupplyService;
 
     @Operation(summary = "FBS supplies multiple status change", description = "This method will change FBS status")
-    @PostMapping
+    @PostMapping("/status-change")
     public SimpleResponse fbsStatusChange(@RequestBody @Valid FBSStatusChangeRequest request) {
         adminFBSSupplyService.statusChange(request.getSupplyIds(), request.getNewStatus());
         return new SimpleResponse(HttpStatus.OK, String.format("FBS статус поставки изменен на  статус %s успешно", request.getNewStatus()));
     }
 
     @Operation(summary = "Get all fbs supply status", description = "This method will get all status of fbs supplies")
-    @GetMapping
+    @GetMapping("/statuses")
     public List<FBSSupplyStatus> getAllStatus() {
         return adminFBSSupplyService.getAllStatus();
 
     }
 
     @Operation(summary = "Get all fbs supplies", description = "This method will get all fb supplies")
-    @GetMapping("/fbs-supplies")
+    @GetMapping
     public PaginationResponse<AdminFBSSuppliesResponse> getAll(@RequestParam(required = false) String keyWord,
                                                                @RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size) {
@@ -49,13 +49,13 @@ public class AdminFBSStatusChangeController {
     }
 
     @Operation(summary = "Count total FBS supply quantity")
-    @GetMapping("/total-supply-quantity")
+    @GetMapping("/total-quantity")
     public long countTotalSupplyQuantity() {
         return adminFBSSupplyService.countTotalSupplyQuantity();
     }
 
     @Operation(summary = "Count FBS supplies for the current day")
-    @GetMapping("/supplies-for-day")
+    @GetMapping("/current-day-quantity")
     public long countSuppliesForCurrentDay() {
         LocalDate currentDate = LocalDate.now();
         return adminFBSSupplyService.countSuppliesForDay(currentDate);

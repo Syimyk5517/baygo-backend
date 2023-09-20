@@ -17,7 +17,7 @@ public interface OrderSizeRepository extends JpaRepository<OrderSize, Long> {
     Integer countOfProductsToBeReturned(Long id);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.admin.AdminFBBOrderResponse(" +
-            "os.id, os.qrCode, p.name, os.quantity, CONCAT(sel.firstName, ' ', sel.lastName), " +
+            "os.id, os.qrCode, p.name, os.fbbQuantity, CONCAT(sel.firstName, ' ', sel.lastName), " +
             "o.dateOfOrder, os.dateOfReceived, os.orderStatus,CONCAT(c.firstName,' ',c.lastName),c.address,c.phoneNumber) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
@@ -34,7 +34,7 @@ public interface OrderSizeRepository extends JpaRepository<OrderSize, Long> {
     long countFBBOrders();
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.admin.AdminFBSOrderResponse(" +
-            "o.id, os.qrCode, os.quantity, p.name, os.orderStatus, o.dateOfOrder, os.dateOfReceived,CONCAT(c.firstName,' ',c.lastName),c.address,c.phoneNumber) " +
+            "o.id, os.qrCode, os.fbsQuantity, p.name, os.orderStatus, o.dateOfOrder, os.dateOfReceived,CONCAT(c.firstName,' ',c.lastName),c.address,c.phoneNumber) " +
             "FROM Order o " +
             "JOIN o.orderSizes os " +
             "JOIN os.size s " +

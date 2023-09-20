@@ -39,14 +39,21 @@ public interface FBSSupplyRepository extends JpaRepository<FBSSupply, Long> {
             "WHERE fs.id = :supplyId AND s2.id = :sellerId")
     List<GetAllFbsOrderBySupplyId> getAllFbsOrdersBySupplyId(@Param("supplyId") Long supplyId, @Param("sellerId") Long sellerId);
 
-    @Query("SELECT NEW com.example.baygo.db.dto.response.admin.AdminFBSSuppliesResponse(fs.id, fs.qrCode, fs.createdAt, fs.quantityOfProducts, fs.receivedAt, CONCAT(s.firstName, ' ', s.lastName)) " +
+    @Query("SELECT NEW com.example.baygo.db.dto.response.admin.AdminFBSSuppliesResponse(" +
+            "fs.id, fs.qrCode, fs.createdAt, " +
+            "COUNT (os), " +
+            "fs.receivedAt, CONCAT(s.firstName, ' ', s.lastName)) " +
             "FROM FBSSupply fs " +
             "JOIN fs.seller s " +
-            "WHERE (:keyWord IS NULL OR fs.qrCode ILIKE %:keyWord% OR s.firstName ILIKE %:keyWord% OR s.lastName ILIKE %:keyWord%) " +
+            "LEFT JOIN OrderSize os " +
+            "WHERE (:keyWord IS NULL OR fs.qrCode ILIKE %:keyWord% OR s.firstName ILIKE %:keyWord% OR s.lastName ILIKE %:keyWord% ) " +
+            "GROUP BY fs.id, fs.qrCode, fs.createdAt, fs.receivedAt, CONCAT(s.firstName, ' ', s.lastName)" +
             "ORDER BY fs.id DESC")
     Page<AdminFBSSuppliesResponse> getAllAdminSupplies(@Param("keyWord") String keyWord, Pageable pageable);
+
     @Query("SELECT COUNT (fs)FROM FBSSupply  fs")
     long countTotalSupplyQuantity();
+
     @Query("SELECT COUNT(fs) FROM FBSSupply fs WHERE DATE(fs.receivedAt) = :currentDate")
     long countFbsSuppliesForDay(@Param("currentDate") LocalDate currentDate);
 

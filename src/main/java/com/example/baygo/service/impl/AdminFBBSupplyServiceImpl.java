@@ -23,13 +23,11 @@ public class AdminFBBSupplyServiceImpl implements AdminFBBSupplyService {
 
     @Override
     public void fbbSupplyChangeStatus(List<Long> supplyIds, SupplyStatus newStatus) {
-        List<Supply> suppliesToUpdate = new ArrayList<>();
 
-        Iterable<Supply> supplies = supplyRepository.findAllById(supplyIds);
-        supplies.forEach(suppliesToUpdate::add);
-        suppliesToUpdate.forEach(supply -> supply.setStatus(newStatus));
+        List<Supply> supplies = supplyRepository.findAllById(supplyIds);
+        supplies.forEach(supply -> supply.setStatus(newStatus));
 
-        supplyRepository.saveAll(suppliesToUpdate);
+        supplyRepository.saveAll(supplies);
     }
 
     @Override

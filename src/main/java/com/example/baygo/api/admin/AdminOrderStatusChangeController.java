@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/order-status-change")
+@RequestMapping("/api/admin/orders")
 @RequiredArgsConstructor
 @Tag(name = "Admin Orders Status Change Api")
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -26,21 +26,19 @@ public class AdminOrderStatusChangeController {
     private final AdminOrderService adminOrderService;
 
     @Operation(summary = "Order status multiple change", description = "This method will change status of orders")
-    @PostMapping
+    @PostMapping("/status-change")
     public SimpleResponse orderStatusChange(@RequestBody AdminOrderStatusChangeRequest orderStatusChangeRequest) {
-        adminOrderService.statusChange(orderStatusChangeRequest.getOrderIds(), orderStatusChangeRequest.getOrderStatus());
-        return new SimpleResponse(HttpStatus.OK, String.format("Стптус заказа изменен на статус %s успешно", orderStatusChangeRequest.getOrderStatus()));
+        return adminOrderService.statusChange(orderStatusChangeRequest.getOrderIds(), orderStatusChangeRequest.getOrderStatus());
     }
 
     @Operation(summary = "Get all orders status", description = "This method will get all status of fbs supplies")
-    @GetMapping
+    @GetMapping("/statuses")
     public List<OrderStatus> getAllStatus() {
         return adminOrderService.getAllStatus();
-
     }
 
     @Operation(summary = "Get all fbb orders", description = "This method will get all fbb orders")
-    @GetMapping("/fbb/orders")
+    @GetMapping("/fbb")
     public PaginationResponse<AdminFBBOrderResponse> getAllFBBOrder(@RequestParam(required = false) String keyWord,
                                                                     @RequestParam(defaultValue = "1") int page,
                                                                     @RequestParam(defaultValue = "10") int size) {
@@ -48,20 +46,20 @@ public class AdminOrderStatusChangeController {
     }
 
     @Operation(summary = "Count total FBB order quantity")
-    @GetMapping("/total-order-quantity")
+    @GetMapping("/fbb-quantity")
     public long countTotalFBBOrderQuantity() {
         return adminOrderService.countFBBOrder();
     }
 
     @Operation(summary = "Get all fbs orders", description = "This method will get all fbs orders")
-    @GetMapping("/fbs/orders")
+    @GetMapping("/fbs")
     public PaginationResponse<AdminFBSOrderResponse> getAllFBSOrder(@RequestParam(required = false) String keyWord,
                                                                     @RequestParam(defaultValue = "1") int page,
                                                                     @RequestParam(defaultValue = "10") int size) {
         return adminOrderService.getAllFBSOrders(keyWord, page, size);
     }
     @Operation(summary = "Count total FBS order quantity")
-    @GetMapping("/total-fbs-order-quantity")
+    @GetMapping("/fbs-quantity")
     public long countTotalFBSOrderQuantity() {
         return adminOrderService.countFBSOrder();
     }

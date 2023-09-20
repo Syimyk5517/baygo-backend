@@ -1,6 +1,7 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.admin.AdminFBBOrderResponse;
 import com.example.baygo.db.dto.response.admin.AdminFBSOrderResponse;
 import com.example.baygo.db.model.OrderSize;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,7 +24,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     private final OrderSizeRepository orderRepository;
 
     @Override
-    public void statusChange(List<Long> orderIds, OrderStatus orderStatus) {
+    public SimpleResponse statusChange(List<Long> orderIds, OrderStatus orderStatus) {
 
         LocalDateTime receivedDate = LocalDateTime.now();
 
@@ -33,6 +35,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         });
 
         orderRepository.saveAll(ordersToUpdate);
+        return new SimpleResponse(HttpStatus.OK, String.format("Стптус заказа изменен на статус %s успешно", orderStatus));
     }
 
     @Override

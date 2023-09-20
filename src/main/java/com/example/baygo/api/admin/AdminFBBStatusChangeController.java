@@ -17,30 +17,30 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/FBB-status-change")
+@RequestMapping("/api/admin/fbb/supplies")
 @RequiredArgsConstructor
 @Tag(name = "Admin FBB Status Change Api")
 @CrossOrigin(value = "*", maxAge = 3600)
 @PreAuthorize("hasAnyAuthority('ADMIN')")
-public class AdminStatusChangeController {
+public class AdminFBBStatusChangeController {
 
     private final AdminFBBSupplyService adminFBBSupplyService;
 
     @Operation(summary = "Change status of multiple FBB supplies by admin")
-    @PostMapping("/supply-status-change")
+    @PostMapping("/status-change")
     public SimpleResponse fbbStatusChange(@RequestBody FBBStatusChangeRequest request) {
         adminFBBSupplyService.fbbSupplyChangeStatus(request.getSupplyIds(), request.getNewStatus());
         return new SimpleResponse(HttpStatus.OK, String.format("FBB статус поставки изменен на %s успешно", request.getNewStatus()));
     }
 
     @Operation(summary = "Get all FBB supply status", description = "This method will get all status")
-    @GetMapping
+    @GetMapping("/statuses")
     public List<SupplyStatus> getAllStatus() {
         return adminFBBSupplyService.getAllStatus();
     }
 
     @Operation(summary = "Get all FBB supplies", description = "This method wil get all supplies")
-    @GetMapping("/fbb-supplies")
+    @GetMapping
     public PaginationResponse<AdminSupplyGetAllResponse> getAllSupplies(@RequestParam(required = false) String keyWord,
                                                                         @RequestParam(defaultValue = "1") int page,
                                                                         @RequestParam(defaultValue = "10") int size) {
@@ -48,13 +48,13 @@ public class AdminStatusChangeController {
     }
 
     @Operation(summary = "Count total FBB supply quantity")
-    @GetMapping("/total-supply-quantity")
+    @GetMapping("/total-quantity")
     public long countTotalSupplyQuantity() {
         return adminFBBSupplyService.countTotalSupplyQuantity();
     }
 
     @Operation(summary = "Count FBB supplies for the current day")
-    @GetMapping("/supplies-for-day")
+    @GetMapping("/current-day-quantity")
     public long countSuppliesForCurrentDay() {
         LocalDate currentDate = LocalDate.now();
         return adminFBBSupplyService.countSuppliesForDay(currentDate);

@@ -6,10 +6,9 @@ public record AdminFBSSuppliesResponse(
         Long supplyId,
         String qrCode,
         LocalDateTime createAt,
-        int quantity,
+        Long quantity,
         LocalDateTime receivedAt,
         String fullName
-
 
 ) {
 }
