@@ -1,6 +1,7 @@
 package com.example.baygo.repository;
 
 import com.example.baygo.db.dto.response.SuppliesResponse;
+import com.example.baygo.db.dto.response.admin.AdminSupplyGetAllResponse;
 
 import com.example.baygo.db.dto.response.SupplyProductResponse;
 
@@ -8,7 +9,6 @@ import com.example.baygo.db.dto.response.supply.AccessCardResponse;
 import com.example.baygo.db.dto.response.supply.DeliveryDraftResponse;
 import com.example.baygo.db.dto.response.supply.ProductBarcodeResponse;
 import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
-
 import com.example.baygo.db.model.Supply;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import org.springframework.data.domain.Page;
@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -100,5 +101,19 @@ public interface SupplyRepository extends JpaRepository<Supply, Long> {
             "FROM AccessCard ac " +
             "WHERE ac.supply.id = ?1")
     AccessCardResponse findBySupplyId(Long supplyId);
+
+    @Query("SELECT NEW com.example.baygo.db.dto.response.admin.AdminSupplyGetAllResponse(" +
+            "su.id, su.supplyNumber,su.supplyType, su.acceptedProducts, su.actualDate, su.status, CONCAT(s.firstName, ' ', s.lastName)) " +
+            "FROM Supply su " +
+            "JOIN su.seller s " +
+            "WHERE (:keyWord is null OR (su.supplyNumber) ILIKE %:keyWord% OR (s.firstName) ILIKE %:keyWord% OR (s.lastName) ILIKE %:keyWord%) " +
+            "ORDER BY su.id DESC")
+    Page<AdminSupplyGetAllResponse> getAllSuppliesOfAdmin(@Param("keyWord") String keyWord, Pageable pageable);
+
+    @Query("SELECT COUNT(s) FROM Supply s")
+    long countTotalSupplyQuantity();
+
+    @Query("SELECT COUNT(s) FROM Supply s WHERE DATE(s.actualDate) = :date")
+    long countSuppliesForDay(@Param("date") LocalDate date);
 
 }

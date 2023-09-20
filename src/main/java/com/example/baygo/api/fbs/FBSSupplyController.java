@@ -1,9 +1,9 @@
 package com.example.baygo.api.fbs;
 
-import com.example.baygo.db.dto.request.fbs.SupplyOrderRequest;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.GetAllFbsSupplies;
 import com.example.baygo.db.dto.response.fbs.GetSupplyWithOrders;
+import com.example.baygo.db.dto.response.fbs.SupplyOrderRequest;
 import com.example.baygo.service.FBSSupplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,4 +1,4 @@
-package com.example.baygo.db.dto.request.fbs;
+package com.example.baygo.db.dto.response.fbs;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
