@@ -2,18 +2,17 @@ package com.example.baygo.repository.custom.impl;
 
 import com.example.baygo.db.dto.response.PaginationResponse;
 import com.example.baygo.db.dto.response.SupplyLandingPage;
-import com.example.baygo.db.dto.response.SupplyProductResponse;
 import com.example.baygo.db.dto.response.SupplyTransitDirectionResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.SupplyTypeResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
+import com.example.baygo.db.dto.response.supply.NumberOfProductResponse;
+import com.example.baygo.db.dto.response.supply.SupplyInfoResponse;
 import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import com.example.baygo.repository.custom.SupplyCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -25,91 +24,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
 
     @Override
-    public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long sellerId, Long supplyId, String keyWord, int page, int size) {
-        String query = """
-                select
-                     p.id as product_id,
-                     sp.id as sub_product_id,
-                     s.id as size_id,
-                     (select spi.images
-                     from sub_product_images spi
-                     where spi.sub_product_id = sp.id
-                     limit 1)                           as image,
-                     s.barcode                          as barcode,
-                     splp.quantity                      as quantity,
-                     p.name                             as name,
-                     sel.vendor_number                  as vendor_number,
-                     p.brand                            as brand_name,
-                     s.size                             as sizes,
-                     sp.color                           as color
-                from supplies spl
-                     join supply_products splp on spl.id = splp.supply_id
-                     join sizes s on splp.size_id = s.id
-                     join sub_products sp on s.sub_product_id = sp.id
-                     join products p on p.id = sp.product_id
-                     join sellers sel on spl.seller_id = sel.id
-                where sel.id = :sellerId and spl.id = :supplyId
-                """;
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("sellerId", sellerId);
-        params.addValue("supplyId", supplyId);
-        if (keyWord != null && !keyWord.isEmpty()) {
-            query += " AND (cast(s.barcode as text) iLIKE :keyWord OR p.brand iLIKE :keyWord OR p.name iLIKE :keyWord OR sp.color iLIKE :keyWord)";
-            params.addValue("keyWord", "%" + keyWord + "%");
-        }
-
-        String countSql = "SELECT COUNT(*) FROM (" + query + ") AS count_query";
-        int count = namedParameterJdbcTemplate.query(countSql, params, (resultSet, i) ->
-                resultSet.getInt("count")
-        ).stream().findFirst().orElseThrow();
-
-        int totalPage = (int) Math.ceil((double) count / size);
-        int offset = (page - 1) * size;
-        query += " LIMIT :limit OFFSET :offset";
-        params.addValue("limit", size);
-        params.addValue("offset", offset);
-
-        List<SupplyProductResponse> supplyProductResponses = namedParameterJdbcTemplate.query(query, params, (resultSet, i) ->
-                new SupplyProductResponse(
-                        resultSet.getLong("product_id"),
-                        resultSet.getLong("sub_product_id"),
-                        resultSet.getLong("size_id"),
-                        resultSet.getString("image"),
-                        resultSet.getInt("barcode"),
-                        resultSet.getInt("quantity"),
-                        resultSet.getString("name"),
-                        resultSet.getString("vendor_number"),
-                        resultSet.getString("brand_name"),
-                        resultSet.getString("sizes"),
-                        resultSet.getString("color"))
-        );
-        return PaginationResponse.<SupplyProductResponse>builder()
-                .elements(supplyProductResponses)
-                .currentPage(page)
-                .totalPages(totalPage)
-                .build();
-    }
-
-    @Override
-    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(Long warehouseId, LocalDate date, int size, int page) {
         int offset = (page - 1) * size;
         String deliveryFactorSql = """
                 SELECT w.id AS w_id,
                        w.name AS w_name
                 FROM warehouses w
                 """;
-        if (keyword != null) {
-            deliveryFactorSql += "WHERE w.name iLIKE '%" + keyword + "%'";
+        if (warehouseId != null) {
+            deliveryFactorSql += "WHERE w.supplyId = " + warehouseId;
         }
 
         int totalCount = totalCount(deliveryFactorSql, size);
 
-        deliveryFactorSql += "LIMIT " + size + " OFFSET " + offset;
+        deliveryFactorSql += " LIMIT " + size + " OFFSET " + offset;
 
         List<DeliveryFactorResponse> deliveryFactorResponses = jdbcTemplate.query(deliveryFactorSql, (resultSet, rowNum) -> {
             DeliveryFactorResponse deliveryFactorResponse = new DeliveryFactorResponse();
@@ -219,6 +149,47 @@ public class SupplyCustomRepositoryImpl implements SupplyCustomRepository {
             warehouseCostResponses.add(warehouseCostResponse);
         }
         return warehouseCostResponses;
+    }
+
+    @Override
+    public List<SupplyInfoResponse> findById(Long supplyId) {
+        String productPackageSql = """
+                SELECT DISTINCT pp.id                    AS productPackageId,
+                                pp.package_barcode       AS packageBarcode,
+                                pp.package_barcode_image AS packageBarcodeImage
+                FROM supplies sp
+                         JOIN supply_products s ON sp.id = s.supply_id
+                         JOIN supply_products_product_packages sppp ON s.id = sppp.supply_product_id
+                         JOIN product_packages pp ON pp.id = sppp.product_package_id
+                WHERE sp.id = ?
+                """;
+        return jdbcTemplate.query(productPackageSql, (innerResult, i) -> {
+            SupplyInfoResponse packageResponse = SupplyInfoResponse.builder()
+                    .supplyId(supplyId)
+                    .productPackageId(innerResult.getLong("productPackageId"))
+                    .packageBarcode(innerResult.getString("packageBarcode"))
+                    .packageBarcodeImage(innerResult.getString("packageBarcodeImage")).build();
+
+
+            String numberOfProductResponseSql = """
+                    SELECT s.barcode           AS barcodeProduct,
+                           sppp.product_counts AS quantityProduct
+                    FROM product_packages pp
+                             JOIN supply_products_product_packages sppp ON pp.id = sppp.product_package_id
+                             JOIN supply_products sp ON sp.id = sppp.supply_product_id
+                             JOIN sizes s ON s.id = sp.size_id
+                    WHERE pp.id = ?
+                    """;
+            List<NumberOfProductResponse> numberOfProductResponses = jdbcTemplate.query(numberOfProductResponseSql, (innerMostResult, j) -> {
+                return NumberOfProductResponse.builder()
+                        .barcodeProduct(innerMostResult.getString("barcodeProduct"))
+                        .quantityProduct(innerMostResult.getInt("quantityProduct")).build();
+            }, packageResponse.getProductPackageId());
+
+            packageResponse.setNumberOfProductResponses(numberOfProductResponses);
+            return packageResponse;
+        }, supplyId);
+
     }
 
     private WarehouseCostResponse warehouseCost(Long warehouseId, SupplyType deliveryType, LocalDate date) {

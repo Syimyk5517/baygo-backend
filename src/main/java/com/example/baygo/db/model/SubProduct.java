@@ -56,6 +56,6 @@ public class SubProduct {
     @ManyToMany(mappedBy = "favorites", cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<Buyer> buyers;
 
-    @ManyToMany(mappedBy = "subProducts")
+    @ManyToMany(mappedBy = "subProducts",cascade = {PERSIST, MERGE, REFRESH, DETACH})
     private List<FbsWarehouse> fbsWarehouse;
 }

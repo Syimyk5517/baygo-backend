@@ -18,9 +18,7 @@ public record SupplyAccessCardRequest(
         @NotNull(message = "Необходимо указать марка автомобиля")
         @NameValid(message = "марка автомобиля должно содержать от 2 до 40 символов.")
         String brand,
-
-        @NotBlank(message = "Номер телефона не должен быть пустым")
-        @PhoneNumberValid(message = "Номер телефона должен начинаться с +996, состоять из 13 символов и должен быть действительным!")
+        @NotBlank(message = "Номер автомобиля не должен быть пустым")
         String number
 ) {
 }

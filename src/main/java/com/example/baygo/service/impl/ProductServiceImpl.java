@@ -32,6 +32,7 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class ProductServiceImpl implements ProductService {
+    private final FbsWarehouseRepository fbsWarehouseRepository;
     private final SubProductRepository subProductRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final SizeRepository sizeRepository;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final BuyerRepository buyerRepository;
+    private final QuestionOfBuyerRepository questionOfBuyerRepository;
 
     @Override
     public SimpleResponse saveProduct(SaveProductRequest request) {
@@ -52,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
         product.setBrand(request.brand());
         product.setName(request.name());
         product.setDateOfCreate(LocalDate.now());
+        product.setDateOfChange(LocalDate.now());
         product.setSeason(request.season());
         product.setComposition(request.composition());
         product.setSubCategory(subCategory);
@@ -93,6 +96,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PaginationResponseWithQuantity<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
+                                                                                    Long categoryId,
+                                                                                    Long subCategoryId,
                                                                                     List<String> sizes,
                                                                                     List<String> compositions,
                                                                                     List<String> brands,
@@ -120,7 +125,10 @@ public class ProductServiceImpl implements ProductService {
         brands = getDefaultIfEmpty(brands);
         colors = getDefaultIfEmpty(colors);
 
-        Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, keyWord, sizes, compositions, brands, colors,
+        if(categoryId != null && subCategoryId != null){
+            categoryId = null;
+        }
+        Page<ProductBuyerResponse> allProducts = productRepository.finds(buyerId, categoryId, subCategoryId, keyWord,sizes, compositions, brands, colors,
                 minPrice, maxPrice, filterBy, pageable);
 
         return PaginationResponseWithQuantity.<ProductBuyerResponse>builder()
@@ -153,8 +161,10 @@ public class ProductServiceImpl implements ProductService {
                     buyerRepository.removeSizeFromBaskets(size.getId());
                 }
             }
-            buyerRepository.removeSizeFromLastViews(subProductId);
-            buyerRepository.removeSizeFromFavorites(subProductId);
+            buyerRepository.removeSubProductFromLastViews(subProductId);
+            buyerRepository.removeSubProductFromFavorites(subProductId);
+            questionOfBuyerRepository.deleteBuyerQuestionBySubProductId(subProductId);
+            fbsWarehouseRepository.removeSubProductFromWarehouse(subProductId);
             subProductRepository.delete(subProduct);
 
         }
@@ -224,5 +234,10 @@ public class ProductServiceImpl implements ProductService {
                 .httpStatus(HttpStatus.OK)
                 .message("Продукт с ID: %s успешно обновлен.".formatted(product.getId()))
                 .build();
+    }
+
+    @Override
+    public List<ProductBuyerResponse> findAllSimilarProducts(Long productId) {
+        return productRepository.findAllSimilarProducts(productId);
     }
 }

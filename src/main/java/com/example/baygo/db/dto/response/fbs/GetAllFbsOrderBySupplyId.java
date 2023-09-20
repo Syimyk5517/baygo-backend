@@ -5,18 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class GetAllFbsOrderBySupplyId {
     private String image;
-    private int barcode;
+    private String barcode;
     private int quantity;
     private String productName;
     private String size;
     private String color;
     private BigDecimal price;
-    private LocalDateTime dateTime;
+    private LocalDate dateOfOrder;
 }

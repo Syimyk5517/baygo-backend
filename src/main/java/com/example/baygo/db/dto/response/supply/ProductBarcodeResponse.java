@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record ProductBarcodeResponse(
-        Integer barcodeProduct,
+        String barcodeProduct,
         String productName,
         String productDescription
 ) {

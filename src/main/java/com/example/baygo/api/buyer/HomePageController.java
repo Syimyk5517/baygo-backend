@@ -38,7 +38,20 @@ public class HomePageController {
     @Operation(summary = "Get fashion products!", description = "This method gets fashion products for home page!")
     @GetMapping("/fashions")
     @PermitAll
-    public List<HomePageResponse> getFashionProducts() {
+    public List<HomePageResponse> getFashionProductsForHomePage() {
         return homePageService.getFashionProductsForHomePage();
+    }
+
+    @Operation(summary = "Get popular brands!", description = "This method gets products which brands are popular for home page!")
+    @GetMapping("/brands")
+    @PermitAll
+    public List<HomePageResponse> getPopularBrandsForHomePage() {
+        return homePageService.getPopularBrandsForHomePage();
+    }
+    @Operation(summary = "Find all favorite products",description = "This method find all favorite products ")
+    @GetMapping("/favorite_products")
+    @PermitAll
+    public List<HomePageResponse> findAllFavoriteItems(){
+        return homePageService.findAllFavoriteItems();
     }
 }

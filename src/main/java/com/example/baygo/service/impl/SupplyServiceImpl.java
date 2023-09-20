@@ -5,10 +5,7 @@ import com.example.baygo.db.dto.request.fbb.*;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
 import com.example.baygo.db.dto.response.deliveryFactor.WarehouseCostResponse;
-import com.example.baygo.db.dto.response.supply.DeliveryDraftResponse;
-import com.example.baygo.db.dto.response.supply.ProductBarcodeResponse;
-import com.example.baygo.db.dto.response.supply.SupplySellerProductResponse;
-import com.example.baygo.db.dto.response.supply.WarehouseResponse;
+import com.example.baygo.db.dto.response.supply.*;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.db.model.enums.SupplyStatus;
@@ -80,12 +77,18 @@ public class SupplyServiceImpl implements SupplyService {
     @Override
     public PaginationResponse<SupplyProductResponse> getSupplyProducts(Long supplyId, String keyWord, int page, int size) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
-        return customRepository.getSupplyProducts(sellerId, supplyId, keyWord, page, size);
-    }
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<SupplyProductResponse> supplyProductPage = repository.getSupplyProducts(sellerId, supplyId, keyWord,pageable);
 
+        return PaginationResponse.<SupplyProductResponse>builder()
+                .elements(supplyProductPage.getContent())
+                .currentPage(supplyProductPage.getNumber() + 1)
+                .totalPages(supplyProductPage.getTotalPages())
+                .build();
+    }
     @Override
-    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(String keyword, LocalDate date, int size, int page) {
-        return customRepository.findAllDeliveryFactor(keyword, date, size, page);
+    public PaginationResponse<DeliveryFactorResponse> findAllDeliveryFactor(Long warehouseId, LocalDate date, int size, int page) {
+        return customRepository.findAllDeliveryFactor(warehouseId, date, size, page);
     }
 
     @Override
@@ -124,10 +127,10 @@ public class SupplyServiceImpl implements SupplyService {
 
     @Override
     public PaginationResponse<SupplySellerProductResponse> getSellerProducts(
-            String searchWithBarcode, String category, String brand, int page, int pageSize) {
+            String searchWithBarcode, Long subCategoryId, int page, int pageSize) {
         Long sellerId = jwtService.getAuthenticate().getSeller().getId();
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<SupplySellerProductResponse> productResponses = repository.getSellerProducts(sellerId, searchWithBarcode, category, brand, pageable);
+        Page<SupplySellerProductResponse> productResponses = repository.getSellerProducts(sellerId, searchWithBarcode, subCategoryId, pageable);
         return new PaginationResponse<>(productResponses.getContent(),
                 productResponses.getNumber() + 1,
                 productResponses.getTotalPages());
@@ -165,7 +168,6 @@ public class SupplyServiceImpl implements SupplyService {
         supply.setSeller(user.getSeller());
         supply.setIsDraft(true);
         supply.setWarehouse(warehouse);
-        supply.setPlannedDate(supplyRequest.plannedDate());
         supply.setSupplyType(supplyRequest.supplyType());
         supply.setCreatedAt(LocalDate.now());
         supply.setChangedAt(LocalDate.now());
@@ -197,6 +199,7 @@ public class SupplyServiceImpl implements SupplyService {
         supply.setCommission(supplyWrapperRequest.commission());
         supply.setStatus(SupplyStatus.PLANNED);
         supply.setPlannedDate(supplyWrapperRequest.plannedDate());
+        supply.setChangedAt(LocalDate.now());
         supply.setIsDraft(false);
         for (ProductPackagesRequest packagesRequest : supplyWrapperRequest.productPackagesRequests()) {
             Map<SupplyProduct, Integer> productCounts = new HashMap<>();
@@ -206,12 +209,14 @@ public class SupplyServiceImpl implements SupplyService {
                 productCounts.put(supplyProduct, numberOfProductsRequest.quantityProduct());
             }
             ProductPackages productPackages = new ProductPackages();
-            productPackages.setPackageNumber(packagesRequest.packageNumber());
+            productPackages.setPackageBarcode(packagesRequest.packageBarcode());
+            productPackages.setPackageBarcodeImage(packagesRequest.packageBarcodeImage());
             productPackages.setProductCounts(productCounts);
             productPackagesRepository.save(productPackages);
         }
         AccessCard accessCard = AccessCard.builder()
-                .deliveryPass(supplyWrapperRequest.supplyDeliveryRequest().deliveryPass())
+                .barcode(supplyWrapperRequest.supplyDeliveryRequest().barcode())
+                .barcodeImage(supplyWrapperRequest.supplyDeliveryRequest().barcodeImage())
                 .driverFirstName(supplyWrapperRequest.supplyDeliveryRequest().driverName())
                 .driverLastName(supplyWrapperRequest.supplyDeliveryRequest().driverSurname())
                 .numberOfCar(supplyWrapperRequest.supplyDeliveryRequest().carNumber())
@@ -224,6 +229,16 @@ public class SupplyServiceImpl implements SupplyService {
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("Поставка с идентификатором %s успешно сохранено!!!", supply.getId())).build();
+    }
+
+    @Override
+    public List<SupplyInfoResponse> findById(Long supplyId) {
+        return customRepository.findById(supplyId);
+    }
+
+    @Override
+    public AccessCardResponse findBySupplyId(Long supplyId) {
+        return repository.findBySupplyId(supplyId);
     }
 
 

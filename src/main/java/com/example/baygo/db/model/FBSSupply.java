@@ -22,8 +22,8 @@ public class FBSSupply {
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime receivedAt;
-    private int quantityOfProducts;
     private String qrCode;
+    private String qrCodeImage;
 
     @Enumerated(EnumType.STRING)
     private FBSSupplyStatus fbsSupplyStatus;
@@ -34,8 +34,7 @@ public class FBSSupply {
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "seller_id")
     private Seller seller;
-    @OneToOne
-    private AccessCard accessCard;
+
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;

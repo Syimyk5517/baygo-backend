@@ -11,11 +11,11 @@ import java.util.List;
 public interface FBSSupplyService {
     SimpleResponse saveSupply(SupplyRequest supplyRequest);
 
-    List<GetAllFbsSupplies> getAllFbsSupplies();
+    List<GetAllFbsSupplies> getAllFbsSupplies(boolean isOnAssembly);
 
     GetSupplyWithOrders getSupplyByIdWithOrders(Long supplyId);
 
     SimpleResponse saveAssemblyTask(SupplyOrderRequest supplyOrderRequest);
 
-
+    SimpleResponse createSupply(String nameOfSupply);
 }

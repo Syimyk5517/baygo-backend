@@ -1,10 +1,12 @@
 package com.example.baygo.repository.custom.impl;
 
-import com.example.baygo.db.dto.request.SaveSizeRequest;
-import com.example.baygo.db.dto.response.*;
+import com.example.baygo.db.dto.response.ColorResponse;
+import com.example.baygo.db.dto.response.PaginationResponse;
+import com.example.baygo.db.dto.response.ProductResponseForSeller;
+import com.example.baygo.db.dto.response.SizeSellerResponse;
+import com.example.baygo.db.dto.response.product.ProductGetByIdResponse;
+import com.example.baygo.db.dto.response.product.SizeResponse;
 import com.example.baygo.repository.custom.CustomProductRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,8 +20,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final JdbcTemplate jdbcTemplate;
-    @PersistenceContext
-    private final EntityManager entityManager;
 
     @Override
     public PaginationResponse<ProductResponseForSeller> getAll(Long sellerId, Long categoryId, String keyWord, String sortBy, boolean ascending, int page, int size) {
@@ -45,7 +45,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                            sp.color as color,
                            (select s.size from sizes s where s.sub_product_id = sp.id limit 1) as size,
                            (select s.barcode from sizes s where s.sub_product_id = sp.id limit 1) as barcode,
-                           (select s.quantity from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
+                           (select (s.fbb_quantity + s.fbs_quantity)  from sizes s where s.sub_product_id = sp.id limit 1) as quantity,
                            (select total from count_cte) as total_count
                     from sub_products sp
                              join products pr on sp.product_id = pr.id
@@ -61,13 +61,13 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                    s.id,
                    s.size,
                    s.barcode,
-                   s.quantity
+                   (s.fbs_quantity + s.fbb_quantity) as quantity
                 from sizes s
                 where s.sub_product_id = ?
                 """;
         String categoryCondition = "";
         if (categoryId != null) {
-            categoryCondition = " and c.id = " + categoryId;
+            categoryCondition = " and c.supplyId = " + categoryId;
         }
 
         List<Object> params = new ArrayList<>();
@@ -124,14 +124,15 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 rs.getDate("date_of_change").toLocalDate(),
                 rs.getString("color"),
                 rs.getString("size"),
-                rs.getInt("barcode"),
+                rs.getString("barcode"),
                 rs.getInt("quantity"),
                 jdbcTemplate.query(getSizes, ((resultSet, rowNum1) -> new SizeSellerResponse(
                         resultSet.getLong("id"),
                         resultSet.getString("size"),
-                        resultSet.getInt("barcode"),
+                        resultSet.getString("barcode"),
                         resultSet.getInt("quantity")
                 )), rs.getLong("sub_product_id"))));
+
 
         return PaginationResponse.<ProductResponseForSeller>builder()
                 .elements(response)
@@ -140,74 +141,79 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 .build();
     }
 
-//    @Override
-//    public ProductGetByIdResponse getById(Long id) {
+    @Override
+    public ProductGetByIdResponse getById(Long id, Long subProductId) {
 //        String query = """
-//                SELECT sp.id as subProductId, MAX(p.manufacturer) as manufacturer,
-//                                       p.name, p.brand,sp.articulbg, p.season, p.composition,sp.price ,sp.articulbg,
-//                                       sp.articul_of_seller as articulOfSeller,sp.height,sp.weight,sp.width,sp.length,sp.description
-//                                FROM sub_products sp
-//                                JOIN products p on sp.product_id = p.id
-//                                LEFT JOIN sizes s on sp.id = s.sub_product_id
-//                                JOIN sub_product_images spi on sp.id = spi.sub_product_id
-//                                WHERE sp.id = ?
-//                                GROUP BY sp.id, p.name, p.brand, sp.articulbg, p.season, p.composition, sp.description""";
-//        Object[] params = {id};
+//                    SELECT sp.id as subProductId,p.id as productId,s.id as sizeId, p.name,  sp.color, p.brand, sp.price, sp.articul_of_seller, sp.description,
+//                        COUNT(r.id) as amountOfReviews,
+//                           COALESCE(SUM(r.amount_of_like), 0) as totalLikes,
+//                           COALESCE(AVG(r.grade), 0) as averageRating
+//                    FROM sub_products sp
+//                    JOIN sizes s on sp.id = s.sub_product_id
+//                    JOIN products p on sp.product_id = p.id
+//                    LEFT JOIN reviews r ON sp.id = r.sub_product_id
+//                    WHERE sp.id = ?
+//                    GROUP BY sp.id,p.id,s.id, sp.color, sp.price,p.name, p.brand, sp.price, sp.articul_of_seller, sp.description
+//                """;
+//        Object[] params = {subProductId};
+//
 //        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query, params);
 //        if (rows.isEmpty()) {
 //            return null;
 //        }
+//
 //        Map<String, Object> row = rows.get(0);
-//        Long ids = (Long) row.get("subProductId");
+//        Long subProductId1 = (Long) row.get("subProductId");
+//        Long productId = (Long) row.get("productId");
+//        Long sizeId = (Long) row.get("sizeId");
 //        String name = (String) row.get("name");
+//        String color = (String) row.get("color");
 //        String brand = (String) row.get("brand");
 //        BigDecimal price = (BigDecimal) row.get("price");
-//        String manufacturer = (String) row.get("manufacturer");
-//        String season = (String) row.get("season");
-//        String composition = (String) row.get("composition");
-//        Integer articulbg = (Integer)row.get("articulbg");
-//        String articulOfSeller = (String) row.get("articulOfSeller");
+//        String articul = (String) row.get("articul_of_seller");
 //        String description = (String) row.get("description");
-//        Integer height = (Integer) row.get("height");
-//        double weight = (double) row.get("weight");
-//        Integer width = (Integer) row.get("width");
-//        Integer length = (Integer) row.get("length");
+//        double rating = ((BigDecimal) row.get("averageRating")).doubleValue();
+//        int amountOfReviews = ((Number) row.get("amountOfReviews")).intValue();
+//        int totalLikes = rows.stream()
+//                .mapToInt(r -> ((Number) r.get("totalLikes")).intValue())
+//                .sum();
 //
-//        String getSizes = """
-//                select
-//                   s.size as size,
-//                   s.barcode as barcode
-//                from sizes s
-//                where s.sub_product_id = ?
-//                """;
-//        List<SaveSizeRequest> sizeSellerResponses = jdbcTemplate.query(getSizes, params, (rs, i) -> {
-//            String size = rs.getString("size");
-//            int barcode = rs.getInt("barcode");
-//            return new SaveSizeRequest( size, barcode);
-//        });
+//        int percentageOfLikes = 0;
+//        if (totalLikes != 0) {
+//            percentageOfLikes = Math.round((float) totalLikes / totalLikes * 100);
+//        }
 //
 //        String colorQuery = """
-//                SELECT sp.color,
-//                 sp.color_hex_code
-//                FROM sub_products sp
-//                WHERE sp.product_id = ?""";
+//                    SELECT sp.color, sp.color_hex_code
+//                    FROM sub_products sp
+//                    WHERE sp.product_id = ?
+//                """;
+//
 //        List<ColorResponse> colorResponses = jdbcTemplate.query(colorQuery, params, (rs, rowNum) -> {
 //            String colorHex = rs.getString("color_hex_code");
 //            String color1 = rs.getString("color");
 //            return new ColorResponse(colorHex, color1);
 //        });
 //
-//        String images = """
-//                SELECT  ARRAY_AGG(sp.images) as images
-//                FROM sub_product_images sp
-//                WHERE sp.sub_product_id = ?""";
-//        List<ImageResponse> imageResponses = jdbcTemplate.query(images, params, (rs, rowNum) -> {
-//            String images1 = rs.getString("images");
-//            return new ImageResponse(images1);
+//
+//        String sizeQuery = """
+//                    SELECT s.id,  s.size
+//                    FROM sub_products sp
+//                    JOIN sizes s ON sp.id = s.sub_product_id
+//                    WHERE sp.id= ?
+//                """;
+//
+//        List<SizeResponse> sizeResponses = jdbcTemplate.query(sizeQuery, params, (rs, rowNum) -> {
+//            Long sizeId1 = (Long) row.get("sizeId");
+//            String size = rs.getString("size");
+//
+//
+//            return new SizeResponse(sizeId1,size);
 //        });
-//        return new ProductGetByIdResponse(ids, manufacturer, brand, name,
-//                 season, composition, description, articulbg, articulOfSeller,
-//                height, width, length, weight, price,
-//                colorResponses, sizeSellerResponses, imageResponses);
-//    }
+//
+//
+//        return new ProductGetByIdResponse(subProductId1,productId,sizeId, name, color, articul, brand, price, rating, amountOfReviews, percentageOfLikes, colorResponses, sizeResponses, description);
+        return null;
+    }
+
 }

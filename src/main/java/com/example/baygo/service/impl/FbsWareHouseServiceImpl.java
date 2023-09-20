@@ -4,6 +4,7 @@ import com.example.baygo.config.jwt.JwtService;
 import com.example.baygo.db.dto.request.fbs.ProductRequest;
 import com.example.baygo.db.dto.request.fbs.ShipmentRequest;
 import com.example.baygo.db.dto.request.fbs.WarehouseRequest;
+import com.example.baygo.db.dto.response.SellerFBSWarehouseResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.FBSWareHouseAddProduct;
 import com.example.baygo.db.dto.response.fbs.ProductGetAllResponse;
@@ -30,6 +31,12 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
     private final JwtService jwtService;
 
     @Override
+    public List<SellerFBSWarehouseResponse> getSellerFBSWarehouses() {
+        Seller seller = jwtService.getAuthenticate().getSeller();
+        return seller.getFbsWarehouse().stream().map(w-> new SellerFBSWarehouseResponse(w.getId(), w.getName())).toList();
+    }
+
+    @Override
     public SimpleResponse saveWarehouse(WarehouseRequest warehouseRequest) {
         User user = jwtService.getAuthenticate();
         Seller seller = user.getSeller();
@@ -42,8 +49,8 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
                 .houseNumber(warehouseRequest.houseNumber())
                 .phoneNumber(warehouseRequest.phoneNumber())
                 .workingDay(warehouseRequest.dayOfWeek())
-                .preparingSupply(warehouseRequest.preparingSupply())
-                .assemblyTime(warehouseRequest.assemblyTime())
+                .countOfDaysToPrepareAnOrder(warehouseRequest.countOfDaysToPrepareAnOrder())
+                .hourToAssemble(warehouseRequest.hourToAssemble())
                 .seller(seller).build();
         fbsWarehouseRepository.save(fbsWarehouse);
 
@@ -90,8 +97,8 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
     }
 
     @Override
-    public List<ProductGetAllResponse> getAllProduct(Long wareHouseId) {
+    public List<ProductGetAllResponse> getAllProduct(Long wareHouseId, String keyWord) {
         Seller seller = jwtService.getAuthenticate().getSeller();
-        return fbsWarehouseRepository.getAllProduct(seller.getId(), wareHouseId);
+        return fbsWarehouseRepository.getAllProduct(seller.getId(), wareHouseId, keyWord);
     }
 }

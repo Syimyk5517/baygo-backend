@@ -1,19 +1,17 @@
 package com.example.baygo.db.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class BuyerOrderHistoryDetailResponse {
-    private LocalDateTime dateOfOrder;
+    private Long orderId;
+    private String dateOfOrder;
     private String orderNumber;
     private boolean withDelivery;
     private BigDecimal beforeDiscountPrice;
@@ -28,7 +26,8 @@ public class BuyerOrderHistoryDetailResponse {
         this.products.addAll(product);
     }
 
-    public BuyerOrderHistoryDetailResponse(LocalDateTime dateOfOrder, String orderNumber, boolean withDelivery, BigDecimal beforeDiscountPrice, BigDecimal discountPrice, BigDecimal afterDiscountPrice) {
+    public BuyerOrderHistoryDetailResponse(Long orderId, String dateOfOrder, String orderNumber, boolean withDelivery, BigDecimal beforeDiscountPrice, BigDecimal discountPrice, BigDecimal afterDiscountPrice) {
+        this.orderId = orderId;
         this.dateOfOrder = dateOfOrder;
         this.orderNumber = orderNumber;
         this.withDelivery = withDelivery;

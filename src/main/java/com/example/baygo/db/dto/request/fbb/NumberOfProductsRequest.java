@@ -7,7 +7,7 @@ import lombok.Builder;
 @Builder
 public record NumberOfProductsRequest(
         @Positive(message = "Баркод продукта должен быть положительным")
-        int barcodeProduct,
+        String barcodeProduct,
         @Min(value = 1, message = "Количество должно быть больше нуля")
         int quantityProduct
 ) {

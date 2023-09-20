@@ -16,6 +16,8 @@ public interface ProductService {
 
 
     PaginationResponseWithQuantity<ProductBuyerResponse> getAllProductsBuyer(String keyWord,
+                                                                             Long categoryId,
+                                                                             Long subCategoryId,
                                                                              List<String> sizes,
                                                                              List<String> compositions,
                                                                              List<String> brands,
@@ -32,4 +34,6 @@ public interface ProductService {
     UpdateProductDTO getById(Long productId);
 
     SimpleResponse updateProduct(UpdateProductDTO request);
+
+    List<ProductBuyerResponse> findAllSimilarProducts(Long productId);
 }

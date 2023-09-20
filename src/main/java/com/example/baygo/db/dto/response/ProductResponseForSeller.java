@@ -15,7 +15,7 @@ public record ProductResponseForSeller(
         LocalDate dateOfChange,
         String color,
         String size,
-        int barcode,
+        String barcode,
         int quantity,
         List<SizeSellerResponse> sizes
 ) {

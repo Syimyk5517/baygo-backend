@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BuyerRepository extends JpaRepository<Buyer, Long> {
+    Buyer getBuyerByUserId (Long userId);
     @Query("SELECT NEW com.example.baygo.db.dto.response.buyer.BuyerProfileInfoResponse(b.photo, b.fullName, b.dateOfBirth, b.gender, b.address, u.email, u.phoneNumber ) " +
             "FROM Buyer b " +
             " join b.user u " +
@@ -22,9 +23,11 @@ public interface BuyerRepository extends JpaRepository<Buyer, Long> {
 
     @Modifying
     @Query(value = "delete from buyers_last_views bb where bb.sub_products_id = :subProductId", nativeQuery = true)
-    void removeSizeFromLastViews(Long subProductId);
+    void removeSubProductFromLastViews(Long subProductId);
 
     @Modifying
     @Query(value = "delete from buyers_favorites bb where bb.sub_products_id = :subProductId", nativeQuery = true)
-    void removeSizeFromFavorites(Long subProductId);
+    void removeSubProductFromFavorites(Long subProductId);
+
+
 }

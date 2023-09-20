@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BuyerOrdersHistoryResponse {
     private Long orderId;
-    private LocalDateTime dateOfOrder;
+    private String dateOfOrder;
     private String orderNumber;
-    private int quantityOfProducts;
+    private Long quantityOfProducts;
     private BigDecimal totalPrice;
 }

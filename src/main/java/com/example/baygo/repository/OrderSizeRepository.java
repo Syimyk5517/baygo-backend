@@ -7,12 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface OrderSizeRepository extends JpaRepository<OrderSize, Long> {
-    List<OrderSize> findAllByIdIn(List<Long> singletonList);
+    @Query("SELECT SUM (r.productQuantity) FROM OrderSize o JOIN Return r ON r.orderSize.id = o.id WHERE o.id =?1")
+    Integer countOfProductsToBeReturned(Long id);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.admin.AdminFBBOrderResponse(" +
             "os.id, os.qrCode, p.name, os.quantity, CONCAT(sel.firstName, ' ', sel.lastName), " +

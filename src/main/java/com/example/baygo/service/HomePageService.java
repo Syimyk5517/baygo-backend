@@ -10,4 +10,7 @@ public interface HomePageService {
      List<HomePageResponse> getBestsellersForHomePage();
      List<HomePageResponse> getHotSalesForHomePage();
      List<HomePageResponse> getFashionProductsForHomePage();
+     List<HomePageResponse> getPopularBrandsForHomePage();
+
+     List<HomePageResponse> findAllFavoriteItems();
 }

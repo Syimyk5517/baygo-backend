@@ -8,11 +8,11 @@ public record SupplySellerProductResponse(
         Long productSizeId,
         String imageProduct,
         String categoryProduct,
-        int barcodeProduct,
-        String vendorCodeSeller,
+        String barcodeProduct,
+        String acticulOfSeller,
+        int acticulBG,
         String brandProduct,
         String sizeProduct,
         String colorProduct
-
 ) {
 }
