@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAuthority('SELLER')")
 public class SellerAdvertisementController {
     private final AdvertisementService advertisementService;
-    @Operation(summary = "Save of promotion",description = "This method will save promotion of seller")
+
+    @Operation(summary = "Save of promotion", description = "This method will save promotion of seller")
     @PostMapping
-    public SimpleResponse saveAdvertisement(@Valid @RequestBody AdvertisementSaveRequest saveRequest){
+    public SimpleResponse saveAdvertisement(@Valid @RequestBody AdvertisementSaveRequest saveRequest) {
         return advertisementService.saveAdvertisement(saveRequest);
     }
 }

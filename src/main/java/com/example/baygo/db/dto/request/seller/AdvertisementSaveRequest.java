@@ -1,19 +1,19 @@
 package com.example.baygo.db.dto.request.seller;
 
+import com.example.baygo.db.model.enums.AdvertisementPlace;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public record AdvertisementSaveRequest(
 
         @NotBlank(message = "Бренд не должен быть пустым!!!")
         String brand,
-        @NotBlank(message = "Почта не должна быть пустой")
-        @Email(message = "Напишите действительный адрес электронной почты!")
-        String email,
         @NotNull(message = "Категория должна быть указана!!!")
         Long categoryId,
+        AdvertisementPlace advertisementPlace,
         @FutureOrPresent(message = "Дата начала акции должна быть в будущем или сегодня!")
         LocalDate startPromotion,
 
@@ -28,11 +28,11 @@ public record AdvertisementSaveRequest(
 
         @Min(value = 0, message = "Прогноз отображения рекламы должен быть не менее 0")
         int displayForecast,
-
+        Boolean isDay,
+        Boolean isNew,
         @NotBlank(message = "Фото не должно быть пустым")
         String photo,
-
-        @NotBlank(message = "URL не должен быть пустым")
-        String url
+        @NotNull(message = "Выберите продукт для ссылки")
+        List<Long> subProductId
 ) {
 }

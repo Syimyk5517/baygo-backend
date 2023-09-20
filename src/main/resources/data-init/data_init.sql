@@ -560,11 +560,11 @@ VALUES (1,
         2547, 100, 'средний', 30),
        (70,
         8466, 130, 'большой', 30);
-INSERT INTO advertisements(id,brand, start_date, finish_date, company_budget, cost_per_millennium, display_forecast,url, banner_id, category_id,user_id)
-VALUES (1,'Meniki', '2023-09-15', '2023-09-30', 10000.00, 5.00, 1000,'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Ffree-photos-vectors%2Fmarketplace-banner&psig=AOvVaw0SvBZeSblpZVZ2LAvTWpBo&ust=1695244208342000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCPj8nfzKt4EDFQAAAAAdAAAAABAE', 1, 2,1),
-       (2,'Sapat', '2023-10-01', '2023-10-15', 15000.00, 6.50, 1200,'https://www.google.com/url?sa=i&url=https%3A%2F%2Fbr.freepik.com%2Fvetores-premium%2Fdesign-de-banner-para-banner-de-sexta-feira-negra-de-sexta-feira-negra_33501499.htm&psig=AOvVaw0SvBZeSblpZVZ2LAvTWpBo&ust=1695244208342000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCPj8nfzKt4EDFQAAAAAdAAAAABAJ', 3, 3,2),
-       (3,'Табылга', '2023-11-01', '2023-11-15', 12000.00, 4.75, 900,'https://www.google.com/url?sa=i&url=https%3A%2F%2Fbr.freepik.com%2Fvetores-premium%2Fvenda-de-banner-simples-de-sexta-feira-negra-para-a-temporada-de-sexta-feira-negra_32994686.htm&psig=AOvVaw0SvBZeSblpZVZ2LAvTWpBo&ust=1695244208342000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCPj8nfzKt4EDFQAAAAAdAAAAABAR', 2, 1,2),
-       (4,'Сайма', '2023-12-01', '2023-12-15', 8000.00, 3.25, 800,'https://www.google.com/url?sa=i&url=https%3A%2F%2Fbr.freepik.com%2Fvetores-premium%2Fmodelo-de-banner-de-oferta-especial-de-sexta-feira-negra_33619085.htm&psig=AOvVaw0SvBZeSblpZVZ2LAvTWpBo&ust=1695244208342000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCPj8nfzKt4EDFQAAAAAdAAAAABAZ', 4, 2,1);
+INSERT INTO advertisements(id,brand, start_date,finish_date,is_day,is_new,advertisement_place,  company_budget, cost_per_millennium, display_forecast, banner_id, category_id,seller_id)
+VALUES (1,'Meniki', '2023-09-15', '2023-09-30',TRUE,TRUE,'MAIN', 10000.00, 5.00, 1000, 1, 2,1),
+       (2,'Sapat', '2023-10-01', '2023-10-15',False,TRUE ,'WOMAN',15000.00, 6.50, 1200, 3, 3,2),
+       (3,'Табылга', '2023-11-01', '2023-11-15',TRUE,TRUE,'MAN', 12000.00, 4.75, 900, 2, 1,2),
+       (4,'Сайма', '2023-12-01', '2023-12-15',FALSE,TRUE,'MAIN', 8000.00, 3.25, 800, 4, 2,1);
 
 INSERT INTO orders(id, date_of_order, order_number,
                    payment_type, total_price, with_delivery,
