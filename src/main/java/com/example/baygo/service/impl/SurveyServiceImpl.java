@@ -96,7 +96,7 @@ public class SurveyServiceImpl implements SurveyService {
 
         for (Long optionIde : passSurveyRequest.optionIdes()) {
             options.add(optionRepository.findById(optionIde)
-                    .orElseThrow(() -> new NotFoundException("Option with id " + optionIde + " not found")));
+                    .orElseThrow(() -> new NotFoundException("Option with supplyId " + optionIde + " not found")));
         }
 
         answer.setFullName(passSurveyRequest.fullName());

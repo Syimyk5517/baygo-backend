@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +21,11 @@ public class Warehouse {
     @SequenceGenerator(name = "warehouse_gen", sequenceName = "warehouse_seq", allocationSize = 1, initialValue = 16)
     private Long id;
     private String name;
-    private String location;
-    BigDecimal transitCost;
+    private String region;
+    private String address;
+    private BigDecimal transitCost;
+    @OneToMany(mappedBy = "warehouse", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<FBSSupply> fbsSupply;
+
+
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('BUYER')")
 public class BuyerFavoriteController {
+
     private final FavoriteService favoriteService;
 
     @GetMapping
@@ -24,7 +25,7 @@ public class BuyerFavoriteController {
     public PaginationResponse<FavoriteResponse> getAllFavorites(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         return favoriteService.getAllFavorProduct(page, size, search);
     }
 

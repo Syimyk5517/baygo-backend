@@ -1,10 +1,7 @@
 package com.example.baygo.db.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -12,12 +9,13 @@ import static jakarta.persistence.CascadeType.*;
 @Setter
 @Entity
 @Table(name = "supply_products")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SupplyProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_product_gen")
-    @SequenceGenerator(name = "supply_product_gen", sequenceName = "supply_product_seq", allocationSize = 1,initialValue = 31)
+    @SequenceGenerator(name = "supply_product_gen", sequenceName = "supply_product_seq", allocationSize = 1,initialValue = 80)
     private Long id;
     private int quantity;
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
@@ -26,4 +24,5 @@ public class SupplyProduct {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     @JoinColumn(name = "size_id")
     private Size size;
+
 }
