@@ -63,6 +63,8 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         String buyers_last_views = "delete from buyers_last_views b where b.buyer_id = ?";
         String review_images = "delete from review_images r where r.review_id in (select r.id from reviews r where r.buyer_id = ?)";
         String reviews = "delete from reviews r where r.buyer_id = ?";
+        String buyer_questions = "delete from buyer_questions bq where bq.buyer_id = ?";
+        String notifications_buyers = "delete from notifications_buyers bn where bn.buyer_id = ?";
         String buyersQuery = "delete from buyers b where b.id = ?";
         jdbcTemplate.update(appeals, buyer.getId());
         jdbcTemplate.update(buyers_baskets, buyer.getId());
@@ -70,6 +72,8 @@ public class BuyerProfileServiceImpl implements BuyerProfileService {
         jdbcTemplate.update(buyers_last_views, buyer.getId());
         jdbcTemplate.update(review_images, buyer.getId());
         jdbcTemplate.update(reviews, buyer.getId());
+        jdbcTemplate.update(buyer_questions, buyer.getId());
+        jdbcTemplate.update(notifications_buyers, buyer.getId());
         jdbcTemplate.update(buyersQuery, buyer.getId());
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
