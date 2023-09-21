@@ -1,5 +1,7 @@
 package com.example.baygo;
 
+import com.example.baygo.db.dto.response.AuthenticationResponse;
+import com.example.baygo.db.model.enums.Role;
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,11 @@ public class BaygoApplication {
     @GetMapping("/")
     public String greeting() {
         return "<h1> Welcome to BuyGo! <h1>";
+    }
+
+    @GetMapping("/12")
+    public AuthenticationResponse get() {
+        return new AuthenticationResponse("test", Role.ADMIN, "token", "message" );
     }
 
 }

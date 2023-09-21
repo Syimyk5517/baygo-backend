@@ -27,9 +27,9 @@ public class BuyerReviewController {
     }
 
     @Operation(summary = "Get all reviews by sub product_id")
-    @GetMapping("/subProductId")
+    @GetMapping("/{subProductId}")
     @PreAuthorize("hasAuthority('BUYER')")
-    public ReviewGetByIdResponse getReviewByProduct(@RequestParam Long subProductId, @RequestParam(required = false) boolean withImages) {
+    public ReviewGetByIdResponse getReviewByProduct(@PathVariable Long subProductId, @RequestParam(required = false) boolean withImages) {
         return service.getAllReviewByProduct(subProductId, withImages);
     }
 }
