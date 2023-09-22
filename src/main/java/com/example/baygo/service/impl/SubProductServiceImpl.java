@@ -8,9 +8,12 @@ import com.example.baygo.db.model.User;
 import com.example.baygo.repository.ProductRepository;
 import com.example.baygo.repository.SizeRepository;
 import com.example.baygo.repository.SubProductRepository;
+import com.example.baygo.repository.UserRepository;
 import com.example.baygo.repository.custom.CustomProductRepository;
 import com.example.baygo.service.SubProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,15 +24,16 @@ public class SubProductServiceImpl implements SubProductService {
     private final ProductRepository productRepository;
     private final SubProductRepository subProductRepository;
     private final SizeRepository sizeRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ProductGetByIdResponse getById(Long subProductId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        User user = userRepository.findByEmail(login).orElse(null);
+        Long buyerId = (user != null) ? user.getBuyer().getId() : null;
 
-
-//        User user = jwtService.getAuthenticate();
-//        Buyer buyer = user.getBuyer();
-//        return customProductRepository.getById(buyer.getId(), subProductId);
-        ProductGetByIdResponse productGetByIdResponse = productRepository.getProductByIdForBuyer(subProductId).orElseThrow(
+        ProductGetByIdResponse productGetByIdResponse = productRepository.getProductByIdForBuyer(buyerId, subProductId).orElseThrow(
                 () -> new NotFoundException("Продукт с id - %s не найден ".formatted(subProductId)));
         productGetByIdResponse.setImages(subProductRepository.getImagesSubProductId(subProductId));
         productGetByIdResponse.setColors(subProductRepository.findSubProductByProductId(productGetByIdResponse.getProductId()));

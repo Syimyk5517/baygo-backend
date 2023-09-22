@@ -21,11 +21,12 @@ public class ProductGetByIdResponse {
     private double rating;
     private Long amountOfReviews;
     private String description;
+    private boolean isFavorite;
     private List<String> images;
     private List<ColorsOfSubProductResponse> colors;
     private List<SizeResponse> sizes;
 
-    public ProductGetByIdResponse(Long productId, Long suProductId, String name, String color, String colorHexCode, int articul, String brand, BigDecimal price, int percentOfDiscount, double rating, Long amountOfReviews, String description) {
+    public ProductGetByIdResponse(Long productId, Long suProductId, String name, String color, String colorHexCode, int articul, String brand, BigDecimal price, int percentOfDiscount, double rating, Long amountOfReviews, String description, boolean isFavorite) {
         this.productId = productId;
         this.suProductId = suProductId;
         this.name = name;
@@ -38,6 +39,7 @@ public class ProductGetByIdResponse {
         this.rating = rating;
         this.amountOfReviews = amountOfReviews;
         this.description = description;
+        this.isFavorite = isFavorite;
     }
 }
 

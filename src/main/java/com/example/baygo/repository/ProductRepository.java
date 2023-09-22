@@ -155,16 +155,18 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.product.ProductGetByIdResponse(
             p.id, sp.id, p.name, sp.color, sp.colorHexCode, sp.articulBG, p.brand, sp.price, COALESCE(d.percent, 0), p.rating,
-            COUNT (r.id), sp.description)
+            COUNT (r.id), sp.description, CASE WHEN f.id IS NOT NULL THEN true ELSE false END)
             FROM SubProduct sp
             JOIN sp.product p
             JOIN sp.sizes s
             LEFT JOIN sp.discount d
             LEFT JOIN sp.reviews r
+            LEFT JOIN Buyer b ON b.id = :buyerId
+            LEFT JOIN b.favorites f ON sp.id = f.id
             WHERE sp.id = :subProductId
-            GROUP BY p.id, sp.id, p.name, sp.color, sp.articulBG, p.brand, sp.price, d.percent, p.rating, sp.description
+            GROUP BY p.id, sp.id, p.name, sp.color, sp.articulBG, p.brand, sp.price, d.percent, p.rating, sp.description, f.id
             """)
-    Optional<ProductGetByIdResponse> getProductByIdForBuyer(Long subProductId);
+    Optional<ProductGetByIdResponse> getProductByIdForBuyer(Long buyerId, Long subProductId);
 
     @Query("""
             SELECT NEW com.example.baygo.db.dto.response.ProductBuyerResponse(
