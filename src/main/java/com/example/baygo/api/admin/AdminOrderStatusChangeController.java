@@ -63,4 +63,5 @@ public class AdminOrderStatusChangeController {
     public long countTotalFBSOrderQuantity() {
         return adminOrderService.countFBSOrder();
     }
+
 }
