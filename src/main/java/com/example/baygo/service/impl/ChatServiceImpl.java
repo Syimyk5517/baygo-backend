@@ -86,13 +86,19 @@ public class ChatServiceImpl implements ChatService {
     public SimpleResponse updateMessage(Long messageId, MessageRequest messageRequest) {
         Message message = messageRepository.findById(messageId).orElseThrow(
                 () -> new NotFoundException(String.format("Сообщения с идентификатором %s не найден!", messageId)));
-        if (message.getIsSeller()) {
-            throw new BadRequestException("Вы не можете изменить чужое сообщение");
+        Chat chat = chatRepository.findById(messageRequest.chatId())
+                .orElseThrow(() -> new NotFoundException(String.format("Чат с идентификатором %s не найден!", messageRequest.chatId())));
+        if (chat.getMessages().contains(message)) {
+            if (message.getIsSeller()) {
+                throw new BadRequestException("Вы не можете изменить чужое сообщение");
+            }
+            message.setMessage(messageRequest.message());
+            message.setImage(messageRequest.image());
+            message.setTime(LocalDateTime.now());
+            messageRepository.save(message);
+        } else {
+            throw new BadRequestException("Вы этом чате такой собщения нету");
         }
-        message.setMessage(messageRequest.message());
-        message.setImage(messageRequest.image());
-        message.setTime(LocalDateTime.now());
-        messageRepository.save(message);
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
                 .message(String.format("Сообщения с идентификатором %s успешно изменен!", messageId)).build();

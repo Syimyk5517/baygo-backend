@@ -5,9 +5,11 @@ import com.example.baygo.db.dto.response.chat.ChatResponse;
 import com.example.baygo.db.dto.response.chat.MessageResponse;
 import com.example.baygo.db.dto.response.chat.NewMessageResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
+import com.example.baygo.db.model.Chat;
 import com.example.baygo.db.model.Message;
 import com.example.baygo.db.model.User;
 import com.example.baygo.db.model.enums.Role;
+import com.example.baygo.repository.ChatRepository;
 import com.example.baygo.repository.MessageRepository;
 import com.example.baygo.repository.custom.CustomChatRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
     private final JdbcTemplate jdbcTemplate;
     private final JwtService jwtService;
     private final MessageRepository messageRepository;
+    private final ChatRepository chatRepository;
 
     @Override
     public List<ChatResponse> findAll() {
@@ -61,6 +64,8 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
     @Override
     public ChatResponse findById(Long targetChatId) {
         User user = jwtService.getAuthenticate();
+        Chat chat = chatRepository.findById(targetChatId).orElseThrow(
+                () -> new NotFoundException(String.format("Чат с идентификатором %s не найден.", targetChatId)));
         String singleChatSql = """
                 SELECT c.id AS chatId,
                        CONCAT(s.first_name, ' ', s.last_name) AS fullName
@@ -98,7 +103,7 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
             }, chatResponse.getId());
             chatResponse.setMessages(messageResponses);
             return chatResponse;
-        }, targetChatId);
+        }, chat.getId());
 
     }
 
@@ -135,7 +140,7 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
         return """
                  SELECT
                  m.message as message,
-                 m.supplyId as messageId,
+                 m.id as messageId,
                  m.image as image,
                  m.is_seller as isSeller,
                  CAST(m.time AS DATE) as extractedDate,
