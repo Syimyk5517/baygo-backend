@@ -7,6 +7,7 @@ import com.example.baygo.db.dto.response.SellerFBSWarehouseResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.FBSWareHouseAddProduct;
 import com.example.baygo.db.dto.response.fbs.ProductGetAllResponse;
+import com.example.baygo.db.dto.response.fbs.SellerFBSWarehousesResponse;
 import com.example.baygo.service.FBSSupplyService;
 import com.example.baygo.service.FbsWareHouseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,14 @@ public class FBSWarehouseController {
     public List<SellerFBSWarehouseResponse> getSellerFBSWarehouses() {
         return wareHouseService.getSellerFBSWarehouses();
     }
+
+    @Operation(summary = "Get all fbs warehouses of seller", description = "This method will get all fbs warehouses of seller")
+    @GetMapping("/get-all")
+    public List<SellerFBSWarehousesResponse> getAllSellerFBSWarehouses() {
+        return wareHouseService.getAllSellerFBSWarehouses();
+    }
+
+
 
     @Operation(summary = "Save fbs warehouse", description = "The method will save fbs warehouse")
     @PostMapping

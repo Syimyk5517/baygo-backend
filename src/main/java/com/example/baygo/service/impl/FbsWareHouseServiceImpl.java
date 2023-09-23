@@ -8,6 +8,7 @@ import com.example.baygo.db.dto.response.SellerFBSWarehouseResponse;
 import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.fbs.FBSWareHouseAddProduct;
 import com.example.baygo.db.dto.response.fbs.ProductGetAllResponse;
+import com.example.baygo.db.dto.response.fbs.SellerFBSWarehousesResponse;
 import com.example.baygo.db.exceptions.NotFoundException;
 import com.example.baygo.db.model.*;
 import com.example.baygo.repository.FbsWarehouseRepository;
@@ -100,5 +101,11 @@ public class FbsWareHouseServiceImpl implements FbsWareHouseService {
     public List<ProductGetAllResponse> getAllProduct(Long wareHouseId, String keyWord) {
         Seller seller = jwtService.getAuthenticate().getSeller();
         return fbsWarehouseRepository.getAllProduct(seller.getId(), wareHouseId, keyWord);
+    }
+
+    @Override
+    public List<SellerFBSWarehousesResponse> getAllSellerFBSWarehouses() {
+        Long sellerId = jwtService.getAuthenticate().getSeller().getId();
+        return fbsWarehouseRepository.getAllWarehouses(sellerId);
     }
 }

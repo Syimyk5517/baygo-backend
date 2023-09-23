@@ -25,9 +25,7 @@ public record SupplyDeliveryRequest(
         @NotBlank(message = "Необходимо указать марка автомобиля")
         @NameValid(message = "марка автомобиля должно содержать от 2 до 40 символов.")
         String carBrand,
-
-        @NotBlank(message = "Номер телефона не должен быть пустым")
-        @PhoneNumberValid(message = "Номер телефона должен начинаться с +996, состоять из 13 символов и должен быть действительным!")
+        @NotBlank(message = "Номер машины не должен быть пустым")
         String carNumber,
         @NotNull(message = "Тип упаковки не может быть пустым")
         SupplyType supplyType,

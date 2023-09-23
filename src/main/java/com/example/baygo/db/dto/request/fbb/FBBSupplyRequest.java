@@ -8,12 +8,12 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record FBBSupplyRequest(
+public record FBBSupplyRequest (
         @NotNull(message = "Идентификатор склада не может быть пустым")
         Long warehouseId,
         @NotNull(message = "Тип упаковки не может быть пустым")
         SupplyType supplyType,
         @Valid
         List<SupplyChooseRequest> supplyChooseRequests
-) {
+){
 }

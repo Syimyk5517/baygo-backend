@@ -67,7 +67,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 """;
         String categoryCondition = "";
         if (categoryId != null) {
-            categoryCondition = " and c.supplyId = " + categoryId;
+            categoryCondition = " and c.id = " + categoryId;
         }
 
         List<Object> params = new ArrayList<>();
