@@ -1,5 +1,6 @@
 package com.example.baygo.service;
 
+import com.example.baygo.db.dto.request.ProductDimensionsRequest;
 import com.example.baygo.db.dto.request.fbb.FBBSupplyRequest;
 import com.example.baygo.db.dto.request.fbb.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
@@ -10,6 +11,7 @@ import com.example.baygo.db.model.enums.SupplyStatus;
 import com.example.baygo.db.model.enums.SupplyType;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,8 +45,10 @@ public interface SupplyService {
     List<ProductBarcodeResponse> getAllBarcodeProducts(Long supplyId);
 
     SimpleResponse willCompleteTheDelivery(SupplyWrapperRequest supplyWrapperRequest);
+
     List<SupplyInfoResponse> findById(Long supplyId);
+
     AccessCardResponse findBySupplyId(Long supplyId);
 
-
+    BigDecimal getCalculation(ProductDimensionsRequest request);
 }

@@ -17,7 +17,7 @@ public record SupplyWrapperRequest(
         Long supplyId,
         @FutureOrPresent(message = "Дата планирования должна быть будущей или текущей")
         LocalDate plannedDate,
-        @DecimalMin(value = "0.01", message = "Стоимость поставки должна быть больше 0")
+        @NotNull(message = "Необходимо указать стоимость поставки.")
         BigDecimal supplyCost,
         @NotBlank(message = "Комиссия не может быть пустой")
         @NotNull(message = "Необходимо указать комиссию.")

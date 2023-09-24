@@ -1,6 +1,7 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.config.jwt.JwtService;
+import com.example.baygo.db.dto.request.ProductDimensionsRequest;
 import com.example.baygo.db.dto.request.fbb.*;
 import com.example.baygo.db.dto.response.*;
 import com.example.baygo.db.dto.response.deliveryFactor.DeliveryFactorResponse;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -241,5 +243,10 @@ public class SupplyServiceImpl implements SupplyService {
         return repository.findBySupplyId(supplyId);
     }
 
-
+    @Override
+    public BigDecimal getCalculation(ProductDimensionsRequest request) {
+        BigDecimal commission = new BigDecimal(2);
+        double volume = request.height() * request.length() * request.width();
+        return commission.multiply(BigDecimal.valueOf(volume)).multiply(BigDecimal.valueOf(request.amount()));
+    }
 }

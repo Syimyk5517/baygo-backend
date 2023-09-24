@@ -1,6 +1,7 @@
 package com.example.baygo.api.seller;
 
 import com.example.baygo.db.dto.request.PackingRequest;
+import com.example.baygo.db.dto.request.ProductDimensionsRequest;
 import com.example.baygo.db.dto.request.fbb.FBBSupplyRequest;
 import com.example.baygo.db.dto.request.fbb.SupplyWrapperRequest;
 import com.example.baygo.db.dto.response.*;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -151,4 +153,9 @@ public class SellerSupplyController {
         return service.findBySupplyId(supplyId);
     }
 
+    @Operation(summary="Calculation of product for supply",description = "This method will calculate")
+    @PostMapping("/calculation")
+    public BigDecimal getCalculation(@RequestBody ProductDimensionsRequest request){
+        return service.getCalculation(request);
+    }
 }

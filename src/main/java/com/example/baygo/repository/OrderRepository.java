@@ -34,13 +34,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN os.size s " +
             "JOIN s.subProduct sp " +
             "JOIN sp.product p " +
+            "JOIN p.subCategory sc " +
+            "JOIN sc.category c " +
             "JOIN o.buyer b " +
             "WHERE p.seller.id = :sellerId " +
             "AND os.isFbbOrder = TRUE " +
             "AND (:keyword IS NULL OR p.name ILIKE %:keyword% OR b.fullName ILIKE %:keyword%) " +
             "AND (:status IS NULL OR os.orderStatus = :status) " +
+            "AND (:categoryId IS NULL OR c.id = :categoryId)" +
             "ORDER BY o.dateOfOrder DESC")
-    Page<FBBOrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Pageable pageable);
+    Page<FBBOrderResponse> getAllOrders(Long sellerId, String keyword, OrderStatus status, Long categoryId, Pageable pageable);
 
     @Query("SELECT NEW com.example.baygo.db.dto.response.fbs.FBSOrdersResponse(" +
             "o.id, os.id, sp.mainImage, s.barcode, os.fbsQuantity, p.name, sp.articulOfSeller, s.size, " +
