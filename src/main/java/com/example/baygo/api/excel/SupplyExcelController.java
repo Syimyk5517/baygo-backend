@@ -58,7 +58,7 @@ public class SupplyExcelController {
     @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductInfoExcelResponse> willReceiveAllInformationAboutTheProductAndBoxViaExcel(@RequestParam(name = "file") MultipartFile multipartFile) throws IOException {
+    public List<ProductInfoExcelResponse> willReceiveAllInformationAboutTheProductAndBoxViaExcel(@RequestParam(name = "file")  MultipartFile multipartFile) throws IOException {
         return excelService.willReceiveAllInformationAboutTheProductAndBoxViaExcel(multipartFile);
     }
 }
