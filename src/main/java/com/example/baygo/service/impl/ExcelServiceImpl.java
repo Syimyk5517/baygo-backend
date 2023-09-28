@@ -1,24 +1,23 @@
 package com.example.baygo.service.impl;
 
 import com.example.baygo.db.dto.request.excel.ProductExcelRequest;
-import com.example.baygo.db.dto.response.SimpleResponse;
 import com.example.baygo.db.dto.response.excel.ProductInfoExcelResponse;
 import com.example.baygo.db.exceptions.BadRequestException;
 import com.example.baygo.service.ExcelService;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.odftoolkit.simple.SpreadsheetDocument;
-import org.odftoolkit.simple.table.Row;
-import org.odftoolkit.simple.table.Table;
-import org.springframework.http.HttpStatus;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ExcelServiceImpl implements ExcelService {
 
 
     @Override
-    public SimpleResponse downloadProductInfoExcelTemplate(List<ProductExcelRequest> productExcelRequests, HttpServletResponse httpServletResponse) throws IOException {
+    public File downloadProductInfoExcelTemplate(List<ProductExcelRequest> productExcelRequests) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Информация о продуктах");
         HSSFRow headerRow = sheet.createRow(0);
@@ -65,14 +64,13 @@ public class ExcelServiceImpl implements ExcelService {
         workbook.write(fileOutputStream);
         fileOutputStream.close();
         workbook.close();
+        return tempFile;
 
-        httpServletResponse.setContentType("application/vnd.ms-excel");
-        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=product_info.xls");
-        return exportExcel(httpServletResponse, tempFile);
+
     }
 
     @Override
-    public SimpleResponse downloadProductPackageBarcodeTemplate(List<String> productPackageBarcode, HttpServletResponse httpServletResponse) throws IOException {
+    public File downloadProductPackageBarcodeTemplate(List<String> productPackageBarcode) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Штрих-коды Коробы");
         HSSFRow headerRow = sheet.createRow(0);
@@ -97,71 +95,46 @@ public class ExcelServiceImpl implements ExcelService {
         fileOutputStream.close();
         workbook.close();
 
-        httpServletResponse.setContentType("application/vnd.ms-excel");
-        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=barcode_box.xls");
-        return exportExcel(httpServletResponse, tempFile);
+        return tempFile;
     }
 
     @Override
     public List<ProductInfoExcelResponse> willReceiveAllInformationAboutTheProductAndBoxViaExcel(MultipartFile multipartFile) {
         List<ProductInfoExcelResponse> productInfoExcelResponses = new ArrayList<>();
-        if (!multipartFile.isEmpty()) {
-            try (InputStream is = multipartFile.getInputStream()) {
-                SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.loadDocument(is);
-                Table table = spreadsheetDocument.getSheetByIndex(0);
-
-                boolean skipHeader = true;
-
-                for (Row row : table.getRowList()) {
-                    if (skipHeader) {
-                        skipHeader = false;
-                        continue;
-                    }
-
-                    String barcodeBox = row.getCellByIndex(0).getStringValue();
-                    String barcodeProduct = row.getCellByIndex(1).getStringValue();
-                    String quantityProduct = row.getCellByIndex(2).getStringValue();
-
-                    ProductInfoExcelResponse infoExcelResponse = ProductInfoExcelResponse.builder()
-                            .barcodeProduct(barcodeProduct)
-                            .quantityProduct(quantityProduct)
-                            .barcodeBox(barcodeBox).build();
-                    productInfoExcelResponses.add(infoExcelResponse);
-                }
-            } catch (Exception e) {
-                throw new BadRequestException(e.getMessage());
-            }
-        } else {
+        if (multipartFile.isEmpty()) {
             throw new BadRequestException("Ваш excel файл пустой.");
         }
+        try (InputStream is = multipartFile.getInputStream()) {
 
-        return productInfoExcelResponses;
-    }
-
-
-    private SimpleResponse exportExcel(HttpServletResponse httpServletResponse, File tempFile) throws IOException {
-        ServletOutputStream ops = httpServletResponse.getOutputStream();
-        FileInputStream fileInputStream = new FileInputStream(tempFile);
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-            ops.write(buffer, 0, bytesRead);
-        }
-        ops.flush();
-        ops.close();
-        fileInputStream.close();
-
-        if (tempFile.exists()) {
-            if (tempFile.delete()) {
-                System.out.println("Файл Excel успешно удален.");
-            } else {
-                System.err.println("Ошибка при удалении файла Excel.");
+            String fileName = multipartFile.getOriginalFilename();
+            if (fileName != null && !fileName.endsWith(".xlsx")) {
+                throw new BadRequestException("Неверный формат файла. Пожалуйста, загрузите файл в формате .xlsx.");
             }
-        }
+            XSSFWorkbook workbook = new XSSFWorkbook(is);
+            XSSFSheet sheet = workbook.getSheetAt(0);
 
-        return SimpleResponse.builder()
-                .httpStatus(HttpStatus.OK)
-                .message("Файл Excel успешно создан.").build();
+            boolean skipHeader = true;
+
+            for (Row row : sheet) {
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
+
+                String barcodeBox = row.getCell(0).getStringCellValue();
+                String barcodeProduct = row.getCell(1).getStringCellValue();
+                String quantityProduct = row.getCell(2).getStringCellValue();
+
+                ProductInfoExcelResponse infoExcelResponse = ProductInfoExcelResponse.builder()
+                        .barcodeProduct(barcodeProduct)
+                        .quantityProduct(quantityProduct)
+                        .barcodeBox(barcodeBox).build();
+                productInfoExcelResponses.add(infoExcelResponse);
+            }
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return productInfoExcelResponses;
     }
 }
 
